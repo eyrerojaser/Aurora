@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Únete a la lista de espera de Aurora - Tu guía de empoderamiento personal">
+  <title>Aurora - Lista de Espera</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(135deg, #ffd4e5 0%, #ffe9f3 50%, #faf5f0 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .landing-container {
+      max-width: 600px;
+      width: 100%;
+      background: white;
+      border-radius: 30px;
+      padding: 3rem 2rem;
+      box-shadow: 0 20px 60px rgba(255, 212, 229, 0.4);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .landing-container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(244, 197, 66, 0.1) 0%, transparent 70%);
+      animation: pulse 8s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+
+    .logo-container {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 20px rgba(244, 197, 66, 0.3));
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #8b4789;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+    }
+
+    .subtitle {
+      font-size: 1.4rem;
+      color: #5a4f4f;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .description {
+      font-size: 1rem;
+      color: #6b3f3f;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      padding: 0 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .features-list {
+      list-style: none;
+      text-align: left;
+      max-width: 450px;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .features-list li {
+      color: #6b3f3f;
+      font-size: 1rem;
+      margin-bottom: 0.8rem;
+      line-height: 1.5;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .features-list li::before {
+      content: '🌸';
+      margin-right: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    .closing-text {
+      font-size: 1rem;
+      color: #6b3f3f;
+      margin-bottom: 2rem;
+      padding: 0 1rem;
+      position: relative;
+      z-index: 1;
+      font-style: italic;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      text-align: left;
+      position: relative;
+      z-index: 1;
+    }
+
+    .form-group label {
+      display: block;
+      color: #8b4789;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      border: 2px solid #ffd4e5;
+      border-radius: 15px;
+      font-size: 1rem;
+      font-family: 'Quicksand', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #f4c542;
+      box-shadow: 0 0 0 3px rgba(244, 197, 66, 0.1);
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 1.2rem 2rem;
+      background: linear-gradient(135deg, #f4c542 0%, #f4a742 100%);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(244, 197, 66, 0.3);
+      transition: all 0.3s ease;
+      font-family: 'Quicksand', sans-serif;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(244, 197, 66, 0.4);
+    }
+
+    .btn-submit:active {
+      transform: translateY(-1px);
+    }
+
+    .success-message {
+      display: none;
+      background: linear-gradient(135deg, #d4f4dd 0%, #e8f8ec 100%);
+      border: 2px solid #4caf50;
+      border-radius: 20px;
+      padding: 2rem;
+      margin-top: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .success-message.visible {
+      display: block;
+      animation: slideIn 0.5s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .success-message h3 {
+      color: #4caf50;
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .success-message p {
+      color: #2e7d32;
+      font-size: 1rem;
+    }
+
+    .benefits {
+      margin-top: 2rem;
+      text-align: left;
+      background: linear-gradient(135deg, #fff5f8 0%, #fffaf5 100%);
+      padding: 1.5rem;
+      border-radius: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .benefits h3 {
+      color: #8b4789;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.8rem;
+      color: #6b3f3f;
+    }
+
+    .benefit-item::before {
+      content: '✨';
+      margin-right: 0.8rem;
+      font-size: 1.2rem;
+    }
+
+    .coming-soon-banner {
+      background: linear-gradient(135deg, #8b4789 0%, #a855a7 100%);
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 25px;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      display: inline-block;
+      position: relative;
+      z-index: 1;
+      animation: gentle-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes gentle-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    .gift-box {
+      background: linear-gradient(135deg, #fff9e6 0%, #fffdf5 100%);
+      border: 2px solid #f4c542;
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin: 1.5rem 0 2rem 0;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      position: relative;
+      z-index: 1;
+      animation: gift-glow 3s ease-in-out infinite;
+    }
+
+    @keyframes gift-glow {
+      0%, 100% { box-shadow: 0 5px 20px rgba(244, 197, 66, 0.2); }
+      50% { box-shadow: 0 8px 30px rgba(244, 197, 66, 0.4); }
+    }
+
+    .gift-icon {
+      font-size: 2.5rem;
+      flex-shrink: 0;
+    }
+
+    .gift-text {
+      text-align: left;
+    }
+
+    .gift-text strong {
+      color: #8b4789;
+      font-size: 1.1rem;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    .gift-text p {
+      color: #6b3f3f;
+      margin: 0.2rem 0;
+      font-size: 0.95rem;
+    }
+
+    .gift-details {
+      color: #8b7d7d !important;
+      font-size: 0.85rem !important;
+    }
+
+    .journal-download {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px dashed #4caf50;
+    }
+
+    .btn-download {
+      display: inline-block;
+      background: linear-gradient(135deg, #f4c542 0%, #f4a742 100%);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 700;
+      margin: 0.8rem 0;
+      box-shadow: 0 5px 15px rgba(244, 197, 66, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .btn-download:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(244, 197, 66, 0.4);
+    }
+
+    .email-note {
+      font-size: 0.9rem;
+      color: #2e7d32;
+      margin-top: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .landing-container {
+        padding: 2rem 1.5rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .subtitle {
+        font-size: 1rem;
+      }
+
+      .logo-container {
+        width: 100px;
+        height: 100px;
+      }
+
+      .gift-box {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .gift-text {
+        text-align: center;
+      }
+
+      .coming-soon-banner {
+        font-size: 0.9rem;
+        padding: 0.6rem 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="landing-container">
+    <div class="coming-soon-banner">
+      🚀 Lanzamiento: Enero 2026
+    </div>
+    
+    <div class="logo-container">
+      <img src="/icon-512.png" alt="Aurora Logo">
+    </div>
+    
+    <h1>✨ Aurora ✨</h1>
+    <p class="subtitle">Tu App de Empoderamiento Personal</p>
+    
+    <p class="description">
+      Estamos preparando algo hermoso para ti. Únete a la lista de espera y sé de las primeras en recibir acceso exclusivo a Aurora:
+    </p>
+
+    <ul class="features-list">
+      <li>Diario emocional</li>
+      <li>Cartas de poder</li>
+      <li>Herramientas para metas, hábitos y crecimiento</li>
+    </ul>
+
+    <p class="closing-text">
+      ...y una comunidad que te inspira a brillar.
+    </p>
+    
+    <div class="gift-box">
+      <div class="gift-icon">🎁</div>
+      <div class="gift-text">
+        <strong>¡Regalo exclusivo al registrarte!</strong>
+        <p>Recibe GRATIS nuestro Journal Digital de Empoderamiento</p>
+        <p class="gift-details">📖 100 páginas con frases motivadoras para cada día</p>
+      </div>
+    </div>
+
+    <form id="waitlistForm">
+      <div class="form-group">
+        <label for="nombre">💫 Tu nombre</label>
+        <input type="text" id="nombre" name="nombre" placeholder="Ej: María García" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">📧 Tu email</label>
+        <input type="email" id="email" name="email" placeholder="tu@email.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="telefono">📱 Tu teléfono</label>
+        <input type="tel" id="telefono" name="telefono" placeholder="+52 123 456 7890" required>
+      </div>
+
+      <button type="submit" class="btn-submit">
+        🌸 Quiero ser de las primeras
+      </button>
+    </form>
+
+    <div class="success-message" id="successMessage">
+      <h3>¡Bienvenida a Aurora! 🎉</h3>
+      <p>Te has registrado exitosamente.</p>
+      <div class="journal-download">
+        <p>🎁 <strong>Tu regalo está listo:</strong></p>
+        <a href="https://drive.google.com/file/d/1xugsU4D5UvwICkxYjhlQIpc_HIoY0TCO/view?usp=sharing" target="_blank" class="btn-download">
+          📖 Descargar mi Journal de Empoderamiento
+        </a>
+        <p class="email-note">También te lo enviamos a tu email 💌</p>
+      </div>
+    </div>
+
+    <div class="benefits">
+      <h3>💖 ¿Qué obtendrás con Aurora?</h3>
+      <div class="benefit-item">Diario emocional con detección de sentimientos</div>
+      <div class="benefit-item">Cartas de poder personalizadas</div>
+      <div class="benefit-item">Sistema de metas y hábitos</div>
+      <div class="benefit-item">Afirmaciones diarias transformadoras</div>
+      <div class="benefit-item">Collage y vision board creativo</div>
+      <div class="benefit-item">Comunidad de mujeres empoderadas</div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('waitlistForm');
+    const successMessage = document.getElementById('successMessage');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = {
+        nombre: document.getElementById('nombre').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        telefono: document.getElementById('telefono').value.trim() || null
+      };
+
+      try {
+        const response = await fetch('/api/lista-espera', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          form.style.display = 'none';
+          successMessage.classList.add('visible');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          if (data.error === 'EMAIL_YA_REGISTRADO') {
+            alert('✅ Este email ya está en nuestra lista de espera.\n\n💌 Revisa tu bandeja de entrada (y spam) para encontrar tu Journal de Empoderamiento.\n\nSi no lo encuentras, escríbenos a auroraempowerment26@gmail.com');
+          } else {
+            alert('Hubo un error al registrarte. Por favor intenta de nuevo.');
+          }
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Hubo un error de conexión. Por favor intenta de nuevo.');
+      }
+    });
+  </script>
+</body>
+</html>

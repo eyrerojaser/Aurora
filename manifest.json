@@ -1,0 +1,79 @@
+{
+  "id": "com.aurora.empowerment",
+  "name": "Aurora – Tu Guía de Empoderamiento",
+  "short_name": "Aurora",
+  "version": "1.2.3",
+  "start_url": "/?v=123",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#faf5f0",
+  "theme_color": "#ffd4e5",
+  "description": "Tu compañera de empoderamiento personal: diario emocional, metas, hábitos y más.",
+  "orientation": "portrait-primary",
+  "lang": "es",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "categories": ["health", "lifestyle", "productivity"],
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
+  "share_target": {
+    "action": "/app",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "screenshots": [
+    {
+      "src": "/static/screenshots/mobile-1.png",
+      "sizes": "768x1408",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Pantalla de inicio Aurora - Móvil"
+    },
+    {
+      "src": "/static/screenshots/desktop-1.png",
+      "sizes": "1408x768",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Dashboard Aurora - Escritorio"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/icon-144.png",
+      "type": "image/png",
+      "sizes": "144x144",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-256.png",
+      "type": "image/png",
+      "sizes": "256x256",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-384.png",
+      "type": "image/png",
+      "sizes": "384x384",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ]
+}

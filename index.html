@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#ffd4e5"/>
+  <meta name="description" content="Tu compañera de empoderamiento personal: diario emocional, metas, hábitos y más."/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+  <meta name="apple-mobile-web-app-title" content="Aurora"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" href="/icon-192.png"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png"/>
+  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+  <title>Aurora - Tu Guía de Empoderamiento</title>
+  <link rel="stylesheet" href="style.css?v=120" />
+  
+  <!-- ⭐ ADMIN MODE EARLY DETECTION -->
+  <script>
+    if (new URLSearchParams(window.location.search).has('admin')) {
+      console.log('🔧 Modo Admin detectado en HEAD');
+      localStorage.setItem('usuario', 'Admin');
+      document.addEventListener('DOMContentLoaded', () => {
+        const dashboard = document.getElementById('seccion-dashboard');
+        const menu = document.getElementById('seccion-menu');
+        const misCitas = document.getElementById('btn-mis-citas');
+        const header = document.querySelector('header');
+        const btnFlotante = document.querySelector('.btn-menu-flotante');
+        
+        if (dashboard) dashboard.classList.remove('activa');
+        if (menu) menu.classList.add('activa');
+        if (misCitas) misCitas.classList.add('visible');
+        if (header) {
+          header.textContent = 'Admin';
+          header.classList.remove('oculto');
+        }
+        if (btnFlotante) btnFlotante.classList.remove('oculto');
+        
+        console.log('✅ Admin portal activado desde HEAD');
+      });
+    }
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(reg => console.log('✅ SW registrado'))
+          .catch(err => console.log('❌ Error SW', err));
+      });
+    }
+  </script>
+</head>
+<body>
+  <header class="oculto">Aurora</header>
+  
+  <!-- Botón flotante para volver al menú -->
+  <button class="btn-menu-flotante oculto" onclick="mostrarMenu()" title="Volver al Menú">
+    📋
+  </button>
+  
+
+  
+
+  <main>
+    <!-- SECCIÓN MI DÍA (DASHBOARD) - PORTADA PRINCIPAL -->
+    <section id="seccion-dashboard" class="seccion activa">
+      <div class="portada-principal" id="portadaPrincipal">
+        <div class="portada-imagen activa" id="imagenPortada1"></div>
+        <div class="portada-imagen" id="imagenPortada2"></div>
+        <div class="portada-overlay"></div>
+        <div class="portada-contenido">
+          <div class="portada-logo">
+            <img src="/icon-512.png" alt="Aurora Logo" class="logo-aurora-grande" />
+          </div>
+          <h1 class="titulo-aurora-grande">Aurora</h1>
+          <h2 class="subtitulo-aurora">Tu Guía de Empoderamiento</h2>
+          <div class="frase-portada-container">
+            <p class="frase-portada" id="fraseMotivacional">✨ Cada día es una nueva oportunidad para brillar ✨</p>
+          </div>
+          <button class="btn-entrar-app" onclick="mostrarMenu()">✨ Entrar ✨</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN MENÚ DE CATEGORÍAS -->
+    <section id="seccion-menu" class="seccion">
+      <div class="menu-categorias-section">
+        <p class="menu-categorias-subtitulo-unico">✨ Elige dónde quieres brillar hoy 💕</p>
+        
+        <div class="categorias-grid">
+          <div class="categoria-item" onclick="mostrarSeccion('inicio')">
+            <div class="categoria-card" style="background-image: url('/static/images/categorias/ritual-diario.png')">
+              <div class="categoria-overlay"></div>
+            </div>
+            <div class="categoria-nombre">Mi Ritual Diario</div>
+          </div>
+          
+          <div class="categoria-item" onclick="mostrarSeccion('empoderamiento')">
+            <div class="categoria-card" style="background-image: url('/static/images/categorias/empoderamiento.png')">
+              <div class="categoria-overlay"></div>
+            </div>
+            <div class="categoria-nombre">Empoderamiento</div>
+          </div>
+          
+          <div class="categoria-item" onclick="mostrarSeccion('cartas-poder')">
+            <div class="categoria-card" style="background-image: url('/static/images/categorias/cartas-poder.png')">
+              <div class="categoria-overlay"></div>
+            </div>
+            <div class="categoria-nombre">Cartas de Poder</div>
+          </div>
+          
+          <div class="categoria-item categoria-premium-locked" onclick="verificarAccesoPremium('cartas-premium')">
+            <div class="categoria-card" style="background-image: url('/static/images/categorias/cartas-poder.png')">
+              <div class="categoria-overlay"></div>
+              <div class="premium-lock-badge">🔒</div>
+            </div>
+            <div class="categoria-nombre">Cartas de Poder Premium <span class="premium-tag">Premium</span></div>
+          </div>
+          
+          <div class="categoria-item categoria-premium-locked" onclick="verificarAccesoPremium('afirmaciones')">
+            <div class="categoria-card" style="background-image: url('/static/images/categorias/afirmaciones.png')">
+              <div class="categoria-overlay"></div>
+              <div class="premium-lock-badge">🔒</div>
+            </div>
+            <div class="categoria-nombre">Afirmaciones <span class="premium-tag">Premium</span></div>
+          </div>
+          
+          <div class="categoria-item" onclick="mostrarSeccion('amor-propio')">
+            <div class="categoria-card" style="background-image: url('/static/images/categorias/amor-propio.png')">
+              <div class="categoria-overlay"></div>
+            </div>
+            <div class="categoria-nombre">Amor Propio</div>
+          </div>
+          
+          <div class="categoria-item" onclick="mostrarSeccion('autoestima')">
+            <div class="categoria-card" style="background-image: url('/static/images/categorias/autoestima.png')">
+              <div class="categoria-overlay"></div>
+            </div>
+            <div class="categoria-nombre">Autoestima</div>
+          </div>
+          
+          <div class="categoria-item" onclick="mostrarSeccion('calma')">
+            <div class="categoria-card" style="background-image: url('/static/images/categorias/calma.jpg')">
+              <div class="categoria-overlay"></div>
+            </div>
+            <div class="categoria-nombre">Calma y Bienestar</div>
+          </div>
+          
+          <div class="categoria-item" onclick="mostrarSeccion('diario')">
+            <div class="categoria-card" style="background-image: url('/static/images/categorias/diario.png')">
+              <div class="categoria-overlay"></div>
+            </div>
+            <div class="categoria-nombre">Mi Diario</div>
+          </div>
+          
+          <div class="categoria-item" onclick="mostrarSeccion('crecimiento')">
+            <div class="categoria-card" style="background-image: url('/static/images/categorias/crecimiento.png')">
+              <div class="categoria-overlay"></div>
+            </div>
+            <div class="categoria-nombre">Crecimiento</div>
+          </div>
+          
+          <div class="categoria-item categoria-premium-locked" onclick="verificarAccesoPremium('collage')">
+            <div class="categoria-card" style="background-image: url('/static/images/categorias/collage.png')">
+              <div class="categoria-overlay"></div>
+              <div class="premium-lock-badge">🔒</div>
+            </div>
+            <div class="categoria-nombre">Mi Collage <span class="premium-tag">Premium</span></div>
+          </div>
+          
+          <div class="categoria-item categoria-premium-locked" onclick="verificarAccesoPremium('mi-año')">
+            <div class="categoria-card" style="background-image: url('/static/images/categorias/flores.png')">
+              <div class="categoria-overlay"></div>
+              <div class="premium-lock-badge">🔒</div>
+            </div>
+            <div class="categoria-nombre">El Año donde Florezco <span class="premium-tag">Premium</span></div>
+          </div>
+          
+          <div class="categoria-item" onclick="mostrarSeccion('progreso')">
+            <div class="categoria-card" style="background-image: url('/static/images/categorias/progreso.png')">
+              <div class="categoria-overlay"></div>
+            </div>
+            <div class="categoria-nombre">Mi Progreso</div>
+          </div>
+          
+          <div class="categoria-item categoria-habitos categoria-premium-locked" onclick="verificarAccesoPremium('habitos-calendario')">
+            <div class="categoria-card" style="background-image: url('/static/images/categorias/habitos.jpg');">
+              <div class="categoria-overlay"></div>
+              <div class="premium-lock-badge">🔒</div>
+            </div>
+            <div class="categoria-nombre">Calendario de Hábitos <span class="premium-tag">Premium</span></div>
+          </div>
+          
+          
+          <div class="categoria-item categoria-tienda" onclick="window.open('https://auroraempowerment.store/', '_blank')">
+            <div class="categoria-card categoria-card-tienda" style="background-image: url('/static/images/categorias/tienda.jpg')">
+              <div class="categoria-overlay"></div>
+              <div class="tienda-badge-categoria">🛍️</div>
+            </div>
+            <div class="categoria-nombre">Tienda Aurora</div>
+            <div class="categoria-descripcion">Productos con propósito que te inspiran cada día ✨</div>
+          </div>
+          
+          <div class="categoria-item categoria-premium" onclick="irACheckoutPremium()">
+            <div class="categoria-card categoria-card-premium">
+              <div class="categoria-overlay"></div>
+              <div class="premium-badge-categoria">👑</div>
+              <div class="premium-precio-badge">7 días gratis</div>
+            </div>
+            <div class="categoria-nombre">🔓 Desbloquear Premium</div>
+            <div class="categoria-descripcion">Acceso a TODAS las funciones ✨</div>
+          </div>
+          
+        </div>
+        
+        <button class="btn-volver-inicio" onclick="volverInicio()">🌸 Volver a Inicio</button>
+      </div>
+    </section>
+
+    <!-- SECCIÓN INICIO (Registro y bienvenida) -->
+    <section id="seccion-inicio" class="seccion">
+      <!-- Registro de Usuario (solo si no está registrado) -->
+      <div id="registro-form-container" class="registro-usuario-section">
+        <div class="portada-aurora">
+          <img src="/icon-512.png" alt="Aurora Logo" class="logo-portada" />
+          <h2 class="titulo-portada">Aurora</h2>
+          <p class="tagline-portada">Tu Guía de Empoderamiento Personal</p>
+        </div>
+        
+        <!-- Registration Form v2.1 - Email Collection ENABLED - 2025-12-03 20:55 -->
+        <form id="userForm">
+          <h3>✨ Bienvenida a Aurora</h3>
+          <p style="text-align: center; color: #8b7d7d; margin-bottom: 20px;">
+            Crea tu cuenta para comenzar tu transformación
+          </p>
+          
+          <label for="nombre">Tu nombre:</label>
+          <input type="text" id="nombre" name="nombre" placeholder="Escribe tu nombre" required autofocus />
+          
+          <label for="email">Tu email:</label>
+          <input type="email" id="email" name="email" placeholder="tu@email.com" required />
+          
+          <button type="submit">🌸 Comenzar</button>
+        </form>
+
+        <div id="coachResponse"></div>
+      </div>
+
+      <!-- Dashboard completo (solo si está registrado) -->
+      <div id="dashboard-content" style="display: none;">
+        <!-- Estadísticas Rápidas -->
+        <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon"><img src="/static/images/icono-metas.png" alt="Metas" class="stat-icon-img"></div>
+          <div class="stat-numero" id="metas-activas-count">0</div>
+          <div class="stat-label">Metas activas</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><img src="/static/images/icono-logros.png" alt="Logros" class="stat-icon-img"></div>
+          <div class="stat-numero" id="metas-completadas-count">0</div>
+          <div class="stat-label">Logros</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-numero" id="racha-dias-count">0</div>
+          <div class="stat-label">Días de poder</div>
+        </div>
+        <div class="stat-card nivel-logros-card">
+          <div class="nivel-icono">🏆</div>
+          <div class="nivel-label">Nivel de Logros</div>
+          <div class="nivel-numero" id="nivel-logros-numero">1</div>
+          <div class="nivel-barra-container">
+            <div class="nivel-barra-fill" id="nivel-barra-fill"></div>
+          </div>
+          <div class="nivel-descripcion" id="nivel-descripcion">Principiante</div>
+        </div>
+      </div>
+
+      <!-- MI RITUAL DIARIO -->
+      <div class="mi-ritual-diario-container">
+        <div class="ritual-diario-header">
+          <h1>✨ Mi Ritual Diario ✨</h1>
+          <p>Tu espacio sagrado para comenzar y cerrar cada día con intención</p>
+        </div>
+
+        <!-- 1. Ritual Matutino -->
+        <div class="ritual-section matutino">
+          <h3>🌅 Ritual Matutino</h3>
+          <p class="ritual-descripcion">Comienza tu día con intención y poder</p>
+          
+          <div class="afirmacion-sugerida-box">
+            <p class="afirmacion-label">💫 Afirmación sugerida:</p>
+            <p id="afirmacion-sugerida" class="afirmacion-texto"></p>
+            <button onclick="generarAfirmacionAleatoria()" class="btn-renovar">🔄 Otra afirmación</button>
+          </div>
+          
+          <label>✨ Tu afirmación del día:</label>
+          <textarea id="afirmacion-matutina" rows="4" placeholder="Ej: Soy capaz de lograr todo lo que me proponga"></textarea>
+          
+          <label>🎯 Intención para hoy:</label>
+          <textarea id="intencion-dia" rows="4" placeholder="¿Qué deseas lograr o sentir hoy?"></textarea>
+          
+          <button onclick="guardarRitualMatutino()" class="btn-guardar-ritual">🌟 Completar Ritual Matutino</button>
+        </div>
+
+        <!-- 2. Pausa Consciente -->
+        <div class="ritual-section pausa-consciente">
+          <h3>🧘‍♀️ Pausa Consciente</h3>
+          <p class="ritual-descripcion">Un momento de calma en medio de tu día</p>
+          
+          <div class="respiracion-box">
+            <p class="respiracion-instruccion">Respira profundo y conecta contigo</p>
+            <div class="circulo-respiracion" id="circulo-respiracion">
+              <span id="texto-respiracion">Inhala</span>
+            </div>
+            <button onclick="iniciarRespiracion()" class="btn-respiracion">🌬️ Iniciar Respiración Guiada</button>
+          </div>
+          
+          <label>💭 ¿Cómo te sientes ahora mismo?</label>
+          <textarea id="pausa-sentimiento" rows="3" placeholder="Describe cómo te encuentras en este momento..."></textarea>
+          
+          <label>🌸 Un pensamiento positivo:</label>
+          <textarea id="pausa-pensamiento" rows="3" placeholder="Escribe algo que te haga sonreír..."></textarea>
+          
+          <button onclick="guardarPausaConsciente()" class="btn-guardar-pausa">🧘‍♀️ Guardar Mi Pausa</button>
+        </div>
+
+        <!-- 3. Gratitud -->
+        <div class="gratitud-section">
+          <h3>🙏 Gratitud</h3>
+          <p class="gratitud-descripcion">Escribe 3 cosas por las que estés agradecida hoy</p>
+          
+          <div class="gratitudes-inputs">
+            <input type="text" id="gratitud1" placeholder="1. Estoy agradecida por..." maxlength="100" />
+            <input type="text" id="gratitud2" placeholder="2. Me siento afortunada de..." maxlength="100" />
+            <input type="text" id="gratitud3" placeholder="3. Valoro mucho..." maxlength="100" />
+          </div>
+          
+          <button onclick="guardarGratitudes()" class="btn-guardar-gratitud">💖 Guardar Gratitudes</button>
+        </div>
+
+        <!-- 4. Ritual Nocturno -->
+        <div class="ritual-section nocturno">
+          <h3>🌙 Ritual Nocturno</h3>
+          <p class="ritual-descripcion">Cierra tu día con reflexión y paz</p>
+          
+          <label>✨ Reflexión del día:</label>
+          <textarea id="reflexion-noche" rows="4" placeholder="¿Qué aprendiste hoy? ¿De qué te sientes orgullosa?"></textarea>
+          
+          <label>🌟 Lo mejor de hoy fue:</label>
+          <textarea id="mejor-del-dia" rows="3" placeholder="El momento más bonito de tu día..."></textarea>
+          
+          <button onclick="guardarRitualNocturno()" class="btn-guardar-ritual">🌙 Completar Ritual Nocturno</button>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN EMPODERAMIENTO -->
+    <section id="seccion-empoderamiento" class="seccion">
+      <div class="bienvenida">
+        <h1>💪 Empoderamiento</h1>
+        <p>✨ Desarrolla tu poder interior a través de desafíos y ejercicios prácticos</p>
+      </div>
+
+      <!-- Desafío del Día -->
+      <div class="desafio-section">
+        <h3>🎯 Desafío del Día</h3>
+        <p class="desafio-descripcion">Un pequeño reto diario para expandir tu zona de confort</p>
+        <div id="desafio-del-dia" class="desafio-card">
+          <p class="desafio-texto">Hoy, di NO a algo que no quieres hacer sin sentir culpa</p>
+        </div>
+        <button onclick="generarNuevoDesafio()" class="btn-nuevo-desafio">🔄 Nuevo Desafío</button>
+        <button onclick="completarDesafio()" class="btn-completar-desafio">✅ He Completado Este Desafío</button>
+      </div>
+
+      <!-- Ejercicios de Empoderamiento -->
+      <div class="ejercicios-section">
+        <h3>📝 Ejercicios Prácticos</h3>
+        
+        <div class="ejercicio-card">
+          <h4>🗣️ Encuentra Tu Voz</h4>
+          <p>Escribe sobre una situación donde quieres expresar tu opinión:</p>
+          <textarea id="ejercicio-voz" rows="6" placeholder="¿Qué necesitas decir? ¿A quién?"></textarea>
+          <button onclick="guardarEjercicio('voz')" class="btn-guardar-ejercicio">💾 Guardar</button>
+        </div>
+
+        <div class="ejercicio-card">
+          <h4>⚡ Define Tus Límites</h4>
+          <p>Escribe 3 límites que necesitas establecer en tu vida:</p>
+          <textarea id="ejercicio-limites" rows="6" placeholder="1. No...\n2. No...\n3. No..."></textarea>
+          <button onclick="guardarEjercicio('limites')" class="btn-guardar-ejercicio">💾 Guardar</button>
+        </div>
+
+        <div class="ejercicio-card">
+          <h4>👑 Tu Poder Personal</h4>
+          <p>Completa: "Soy poderosa cuando..."</p>
+          <textarea id="ejercicio-poder" rows="6" placeholder="Describe momentos donde te has sentido en tu poder"></textarea>
+          <button onclick="guardarEjercicio('poder')" class="btn-guardar-ejercicio">💾 Guardar</button>
+        </div>
+      </div>
+
+      <!-- Tracker de Logros de Empoderamiento -->
+      <div class="logros-empoderamiento-section">
+        <h3>🏆 Mis Logros de Empoderamiento</h3>
+        <div id="logros-empoderamiento-lista" class="logros-lista"></div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN CARTAS DE PODER -->
+    <section id="seccion-cartas-poder" class="seccion">
+      <div class="bienvenida">
+        <h1>🎴 Cartas de Poder</h1>
+        <p>✨ Voltea una carta y recibe el mensaje que necesitas para brillar hoy</p>
+      </div>
+
+      <!-- Test de Estado de Ánimo (Premium) -->
+      <div id="test-animo-premium" class="test-animo-container" style="display: none;">
+        <div class="test-animo-card">
+          <h3>💭 ¿Cómo te sientes hoy?</h3>
+          <p>Cuéntame tu estado de ánimo y recibirás una carta especial</p>
+          <textarea id="input-animo" placeholder="Ejemplo: Me siento cansada y triste, necesito motivación..." rows="4"></textarea>
+          <button onclick="analizarEstadoAnimo()" class="btn-analizar-animo">✨ Recibir mi Carta de Poder</button>
+        </div>
+      </div>
+
+      <!-- Modal para mostrar carta personalizada -->
+      <div id="modal-carta-personalizada" class="modal-carta-personalizada" style="display: none;">
+        <div class="modal-carta-content">
+          <button onclick="cerrarCartaPersonalizada()" class="btn-cerrar-modal">✕</button>
+          <div class="carta-personalizada-mujer">
+            <img src="/static/images/mujer_empoderamiento.png" alt="Mujer empoderamiento">
+          </div>
+          <h3 id="titulo-carta-personalizada"></h3>
+          <p id="mensaje-carta-personalizada"></p>
+          <button onclick="cerrarCartaPersonalizada()" class="btn-continuar">💫 Continuar</button>
+        </div>
+      </div>
+
+      <div class="cartas-poder-section">
+        <p class="cartas-instrucciones">💫 Haz clic en cualquier carta para revelar tu mensaje de poder</p>
+        
+        <div class="cartas-contador">
+          <p>Cartas reveladas: <span id="cartas-reveladas">0</span> / <span id="cartas-total">20</span></p>
+          <button onclick="reiniciarCartas()" class="btn-reiniciar-cartas">🔄 Reiniciar Cartas</button>
+        </div>
+
+        <div class="cartas-grid" id="cartasGrid">
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN AFIRMACIONES (NUEVA SECCIÓN SEPARADA) -->
+    <section id="seccion-afirmaciones" class="seccion">
+      <div class="bienvenida">
+        <h1>💫 Afirmaciones Poderosas</h1>
+        <p>✨ Reprograma tu mente con afirmaciones que transforman</p>
+      </div>
+
+      <!-- Afirmaciones Categorizadas -->
+      <div class="afirmaciones-section">
+        <h3>🌈 Categorías de Afirmaciones</h3>
+        <p class="afirmaciones-descripcion">Elige una categoría y practica afirmaciones poderosas diariamente</p>
+        
+        <div class="categoria-tabs">
+          <button onclick="mostrarAfirmacionesCategoria('belleza')" class="tab-afirmacion active">💅 Belleza</button>
+          <button onclick="mostrarAfirmacionesCategoria('cuerpo')" class="tab-afirmacion">🧘‍♀️ Cuerpo</button>
+          <button onclick="mostrarAfirmacionesCategoria('mente')" class="tab-afirmacion">🧠 Mente</button>
+          <button onclick="mostrarAfirmacionesCategoria('valor')" class="tab-afirmacion">💎 Valor</button>
+        </div>
+
+        <div id="afirmaciones-container" class="afirmaciones-container">
+          <p class="afirmacion-texto" id="afirmacion-actual">Soy hermosa tal como soy, mi belleza es única e irreemplazable</p>
+          <button onclick="siguienteAfirmacion()" class="btn-siguiente-afirmacion">🔄 Siguiente Afirmación</button>
+        </div>
+
+        <div class="afirmacion-personalizada">
+          <h4>✍️ Crea Tu Afirmación Personal</h4>
+          <textarea id="afirmacion-personal" rows="8" placeholder="Escribe tu propia afirmación poderosa..."></textarea>
+          <button onclick="guardarAfirmacionPersonal()" class="btn-guardar-afirmacion">💾 Guardar Mi Afirmación</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN AMOR PROPIO -->
+    <section id="seccion-amor-propio" class="seccion">
+      <div class="bienvenida">
+        <h1>💗 Amor Propio</h1>
+        <p>✨ Cultiva una relación amorosa contigo misma</p>
+      </div>
+
+      <!-- Reflexiones Guiadas -->
+      <div class="reflexiones-section">
+        <h3>📝 Reflexiones de Amor Propio</h3>
+        
+        <div class="reflexion-card">
+          <h4>🌸 ¿Qué amas de ti hoy?</h4>
+          <textarea id="reflexion-amor" rows="6" placeholder="Escribe 3 cosas que amas de ti..."></textarea>
+          <button onclick="guardarReflexion('amor')" class="btn-guardar-reflexion">💾 Guardar</button>
+        </div>
+
+        <div class="reflexion-card">
+          <h4>💝 Carta a Ti Misma</h4>
+          <p>Escríbete una carta de amor y compasión</p>
+          <textarea id="carta-amor" rows="8" placeholder="Querida yo..."></textarea>
+          <button onclick="guardarReflexion('carta')" class="btn-guardar-reflexion">💾 Guardar</button>
+        </div>
+      </div>
+
+      <!-- Celebración de Victorias -->
+      <div class="victorias-section">
+        <h3>🎉 Celebra Tus Victorias</h3>
+        <p>Cada logro merece ser celebrado, sin importar cuán pequeño parezca</p>
+        
+        <div class="nueva-victoria">
+          <input type="text" id="nueva-victoria" placeholder="Hoy me siento orgullosa de..." />
+          <button onclick="agregarVictoria()" class="btn-agregar-victoria">✨ Celebrar</button>
+        </div>
+
+        <div id="mis-victorias" class="victorias-lista"></div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN AUTOESTIMA -->
+    <section id="seccion-autoestima" class="seccion">
+      <div class="bienvenida">
+        <h1>🌟 Autoestima</h1>
+        <p>✨ Fortalece tu valoración personal y reconoce tu grandeza</p>
+      </div>
+
+      <!-- Medidor Visual de Autoestima -->
+      <div class="medidor-autoestima-section">
+        <h3>📊 ¿Cómo está tu autoestima hoy?</h3>
+        <p class="medidor-descripcion">Mueve el deslizador para reflejar cómo te sientes</p>
+        
+        <div class="medidor-container">
+          <input type="range" id="medidor-autoestima" min="1" max="10" value="5" class="slider-autoestima" oninput="actualizarMedidor(this.value)">
+          <div class="medidor-valor">
+            <span id="valor-autoestima">5</span>/10
+          </div>
+          <p id="mensaje-autoestima" class="mensaje-autoestima">Estás en camino de brillar</p>
+        </div>
+        
+        <button onclick="guardarMedidorAutoestima()" class="btn-guardar-medidor">💾 Registrar Mi Estado</button>
+      </div>
+
+      <!-- Ejercicios de Autovaloración -->
+      <div class="autovaloracion-section">
+        <h3>💎 Ejercicios de Autovaloración</h3>
+        
+        <div class="ejercicio-valoracion">
+          <h4>🌟 Mis 5 Cualidades Más Valiosas</h4>
+          <p>Lista 5 cualidades que hacen de ti alguien especial</p>
+          <div class="cualidades-inputs">
+            <input type="text" id="cualidad1" placeholder="1. Soy..." />
+            <input type="text" id="cualidad2" placeholder="2. Soy..." />
+            <input type="text" id="cualidad3" placeholder="3. Soy..." />
+            <input type="text" id="cualidad4" placeholder="4. Soy..." />
+            <input type="text" id="cualidad5" placeholder="5. Soy..." />
+          </div>
+          <button onclick="guardarCualidades()" class="btn-guardar-cualidades">💾 Guardar</button>
+        </div>
+
+        <div class="ejercicio-valoracion">
+          <h4>🏆 Logros de los que me siento orgullosa</h4>
+          <textarea id="logros-orgullosa" rows="6" placeholder="Escribe los logros que te hacen sentir orgullosa..."></textarea>
+          <button onclick="guardarLogrosOrgullosa()" class="btn-guardar-logros">💾 Guardar</button>
+        </div>
+      </div>
+
+      <!-- Registro de Fortalezas -->
+      <div class="fortalezas-section">
+        <h3>💪 Mi Banco de Fortalezas</h3>
+        <p>Cada vez que notes una fortaleza en ti, agrégala aquí</p>
+        
+        <div class="agregar-fortaleza">
+          <input type="text" id="nueva-fortaleza" placeholder="Ej: Soy resiliente, soy creativa, soy valiente..." />
+          <button onclick="agregarFortaleza()" class="btn-agregar-fortaleza">✨ Agregar Fortaleza</button>
+        </div>
+
+        <div id="mis-fortalezas" class="fortalezas-lista"></div>
+      </div>
+
+      <!-- Historial de Autoestima -->
+      <div class="historial-autoestima-section">
+        <h3>📈 Mi Evolución</h3>
+        <div id="grafico-autoestima" class="grafico-container">
+          <p>Aquí verás cómo ha evolucionado tu autoestima con el tiempo</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN CALMA Y BIENESTAR -->
+    <section id="seccion-calma" class="seccion seccion-calma">
+      <div class="calma-container">
+        <div class="calma-header">
+          <h1>🌿 Calma y Bienestar 🌿</h1>
+          <p>Tu refugio de paz interior cuando necesites serenidad</p>
+        </div>
+
+        <!-- Respiración Guiada -->
+        <div class="calma-card respiracion-card">
+          <h2>🌬️ Respiración para la Calma</h2>
+          <p>Cierra los ojos y déjate guiar por el ritmo de tu respiración</p>
+          
+          <div class="respiracion-visual">
+            <div class="circulo-calma" id="circulo-calma">
+              <span id="texto-calma">Respira</span>
+            </div>
+          </div>
+          
+          <div class="respiracion-controles">
+            <button class="btn-calma-respirar" onclick="iniciarRespiracionCalma()">🌬️ Comenzar</button>
+            <select id="tipo-respiracion" class="select-respiracion">
+              <option value="relajante">Relajante (4-7-8)</option>
+              <option value="equilibrio">Equilibrio (4-4-4-4)</option>
+              <option value="rapida">Calmante Rápida (3-3-3)</option>
+            </select>
+          </div>
+          
+          <div class="contador-respiraciones">
+            <span>Respiraciones: <strong id="contador-resp">0</strong></span>
+          </div>
+        </div>
+
+        <!-- Técnica 5-4-3-2-1 Grounding -->
+        <div class="calma-card grounding-card">
+          <h2>🌍 Técnica 5-4-3-2-1</h2>
+          <p>Conecta con el presente usando tus sentidos</p>
+          
+          <div class="grounding-ejercicio">
+            <div class="grounding-item" style="--accent-color: #fff2f8;">
+              <span class="grounding-numero">5</span>
+              <span class="grounding-sentido">👁️ COSAS que puedo VER</span>
+              <input type="text" class="grounding-input" id="grounding-5" placeholder="Escribe 5 cosas que ves ahora...">
+            </div>
+            
+            <div class="grounding-item" style="--accent-color: #fdeaf4;">
+              <span class="grounding-numero">4</span>
+              <span class="grounding-sentido">✋ COSAS que puedo TOCAR</span>
+              <input type="text" class="grounding-input" id="grounding-4" placeholder="Escribe 4 cosas que puedes tocar...">
+            </div>
+            
+            <div class="grounding-item" style="--accent-color: #f8d6e6;">
+              <span class="grounding-numero">3</span>
+              <span class="grounding-sentido">👂 COSAS que puedo OÍR</span>
+              <input type="text" class="grounding-input" id="grounding-3" placeholder="Escribe 3 sonidos que escuchas...">
+            </div>
+            
+            <div class="grounding-item" style="--accent-color: #fdeaf4;">
+              <span class="grounding-numero">2</span>
+              <span class="grounding-sentido">👃 COSAS que puedo OLER</span>
+              <input type="text" class="grounding-input" id="grounding-2" placeholder="Escribe 2 olores que percibes...">
+            </div>
+            
+            <div class="grounding-item" style="--accent-color: #fff2f8;">
+              <span class="grounding-numero">1</span>
+              <span class="grounding-sentido">👅 COSA que puedo SABOREAR</span>
+              <input type="text" class="grounding-input" id="grounding-1" placeholder="Escribe 1 sabor...">
+            </div>
+          </div>
+          
+          <button class="btn-guardar-grounding" onclick="guardarGrounding()">💾 Guardar mi Momento de Calma</button>
+        </div>
+
+        <!-- Afirmaciones Calmantes -->
+        <div class="calma-card afirmaciones-calma-card">
+          <h2>💜 Afirmaciones para la Paz Interior</h2>
+          <p>Repite estas palabras cuando necesites tranquilidad</p>
+          
+          <div class="afirmacion-calma-display">
+            <p id="afirmacion-calma-texto">"Estoy segura. Estoy en paz. Todo está bien en este momento."</p>
+            <button class="btn-nueva-afirmacion" onclick="nuevaAfirmacionCalma()">✨ Nueva Afirmación</button>
+          </div>
+        </div>
+
+        <!-- Libera tus Pensamientos -->
+        <div class="calma-card liberar-card">
+          <h2>📝 Libera lo que te Pesa</h2>
+          <p>Escribe aquí lo que te preocupa y déjalo ir</p>
+          
+          <textarea id="pensamientos-liberar" class="textarea-liberar" rows="5" placeholder="Escribe aquí lo que te causa ansiedad o estrés... Al escribirlo, comienzas a liberarlo..."></textarea>
+          
+          <div class="botones-liberar">
+            <button class="btn-liberar" onclick="liberarPensamientos()">🍃 Dejar Ir</button>
+            <button class="btn-guardar-reflexion" onclick="guardarReflexionCalma()">💾 Guardar Reflexión</button>
+          </div>
+        </div>
+
+        <!-- Mensaje de Cierre -->
+        <div class="calma-mensaje-final">
+          <p>🌸 Recuerda: La calma está siempre dentro de ti. Solo necesitas un momento para encontrarla. 🌸</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN MI DIARIO PERSONAL -->
+    <section id="seccion-diario" class="seccion">
+      <div class="diario-personal-page">
+        <div class="diario-personal-header">
+          <div class="diario-libreta-icon">📔</div>
+          <h1 class="diario-personal-titulo">Mi Diario Personal</h1>
+          <p class="diario-personal-subtitulo">Tu espacio seguro para escribir, reflexionar y crecer</p>
+        </div>
+
+        <div class="diario-libreta">
+          <div class="diario-libreta-espiral"></div>
+          <div class="diario-libreta-contenido">
+            <form id="diario-form">
+              <div class="diario-fecha-hoy" id="diario-fecha-hoy"></div>
+
+              <div class="diario-mood-section">
+                <p class="diario-mood-label">Como me siento hoy:</p>
+                <div class="diario-mood-opciones" id="diario-mood-opciones">
+                  <button type="button" class="diario-mood-btn" data-mood="feliz" onclick="seleccionarMood(this)">😊<span>Feliz</span></button>
+                  <button type="button" class="diario-mood-btn" data-mood="tranquila" onclick="seleccionarMood(this)">😌<span>Tranquila</span></button>
+                  <button type="button" class="diario-mood-btn" data-mood="agradecida" onclick="seleccionarMood(this)">🥰<span>Agradecida</span></button>
+                  <button type="button" class="diario-mood-btn" data-mood="motivada" onclick="seleccionarMood(this)">💪<span>Motivada</span></button>
+                  <button type="button" class="diario-mood-btn" data-mood="pensativa" onclick="seleccionarMood(this)">🤔<span>Pensativa</span></button>
+                  <button type="button" class="diario-mood-btn" data-mood="triste" onclick="seleccionarMood(this)">😢<span>Triste</span></button>
+                  <button type="button" class="diario-mood-btn" data-mood="ansiosa" onclick="seleccionarMood(this)">😰<span>Ansiosa</span></button>
+                  <button type="button" class="diario-mood-btn" data-mood="cansada" onclick="seleccionarMood(this)">😴<span>Cansada</span></button>
+                </div>
+              </div>
+
+              <div class="diario-escritura-section">
+                <div class="diario-font-toolbar">
+                  <button type="button" class="diario-font-btn active" data-font="'Georgia', serif" onclick="cambiarFuenteDiario(this)" style="font-family: 'Georgia', serif;">Aa</button>
+                  <button type="button" class="diario-font-btn" data-font="'Courier New', monospace" onclick="cambiarFuenteDiario(this)" style="font-family: 'Courier New', monospace;">Aa</button>
+                  <button type="button" class="diario-font-btn" data-font="'Comic Sans MS', 'Segoe Print', cursive" onclick="cambiarFuenteDiario(this)" style="font-family: 'Comic Sans MS', cursive;">Aa</button>
+                  <button type="button" class="diario-font-btn" data-font="'Palatino Linotype', 'Book Antiqua', Palatino, serif" onclick="cambiarFuenteDiario(this)" style="font-family: 'Palatino Linotype', serif;">Aa</button>
+                  <button type="button" class="diario-font-btn" data-font="'Trebuchet MS', 'Lucida Sans', sans-serif" onclick="cambiarFuenteDiario(this)" style="font-family: 'Trebuchet MS', sans-serif;">Aa</button>
+                  <button type="button" class="diario-font-btn" data-font="'Brush Script MT', 'Segoe Script', cursive" onclick="cambiarFuenteDiario(this)" style="font-family: 'Brush Script MT', cursive;">Aa</button>
+                </div>
+                <textarea 
+                  id="diario-texto-entrada" 
+                  class="diario-textarea-rayada"
+                  placeholder="Querido diario...&#10;&#10;Hoy quiero contarte que...&#10;&#10;Lo que más me marcó fue...&#10;&#10;Mañana espero..."
+                  rows="12"
+                ></textarea>
+              </div>
+
+              <div class="diario-gratitud-section">
+                <p class="diario-gratitud-label">🌸 Hoy agradezco:</p>
+                <input type="text" id="diario-gratitud-1" class="diario-gratitud-input" placeholder="1. " />
+                <input type="text" id="diario-gratitud-2" class="diario-gratitud-input" placeholder="2. " />
+                <input type="text" id="diario-gratitud-3" class="diario-gratitud-input" placeholder="3. " />
+              </div>
+
+              <button type="submit" class="diario-btn-guardar">
+                💾 Guardar en mi Diario
+              </button>
+            </form>
+
+            <div id="mensaje-diario" class="mensaje-diario"></div>
+          </div>
+        </div>
+
+        <div class="diario-entradas-section">
+          <h3 class="diario-entradas-titulo">📖 Mis Páginas Anteriores</h3>
+          <div id="lista-entradas-diario" class="diario-entradas-lista"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN CRECIMIENTO PERSONAL -->
+    <section id="seccion-crecimiento" class="seccion">
+      <div class="crecimiento-page">
+        <div class="crecimiento-header">
+          <span class="flor-decorativa izq">🌸</span>
+          <div class="crecimiento-titulo-box">
+            <h1 class="crecimiento-titulo">📈 Crecimiento Personal</h1>
+            <p class="crecimiento-subtitulo">Define tus metas y avanza a tu ritmo ✨</p>
+          </div>
+          <span class="flor-decorativa der">🌸</span>
+        </div>
+
+        <div class="crecimiento-container">
+          <button type="button" class="btn-crear-meta-grande" onclick="mostrarFormularioMeta()">
+            ✨ Crear Nueva Meta
+          </button>
+
+          <div id="formulario-meta-expandible" class="formulario-meta-expandible" style="display: none;">
+            <form id="metaForm">
+              <input type="text" id="titulo" name="titulo" placeholder="Título de tu meta..." required />
+              <textarea id="descripcion" name="descripcion" placeholder="¿Por qué es importante esta meta para ti?" rows="2" required></textarea>
+              <select id="categoria" name="categoria" required>
+                <option value="">Selecciona categoría</option>
+                <option value="salud">🧘‍♀️ Salud y Bienestar</option>
+                <option value="belleza">💅 Belleza y Cuidado Personal</option>
+                <option value="desarrollo">📚 Desarrollo Personal</option>
+                <option value="trabajo">💼 Trabajo y Carrera</option>
+                <option value="relaciones">💖 Relaciones</option>
+                <option value="hobbies">🎨 Hobbies y Creatividad</option>
+              </select>
+              <input type="date" id="fechaLimite" name="fechaLimite" required />
+              <button type="submit" class="btn-guardar-meta">💫 Guardar Meta</button>
+            </form>
+          </div>
+
+          <div class="metas-activas-card">
+            <div class="card-header-icon">📋</div>
+            <h3>Metas Activas</h3>
+            <p class="card-descripcion">Aquí aparecerán tus metas en progreso. Visualiza y sigue tus objetivos.</p>
+            <div id="metasActivas" class="metas-grid"></div>
+          </div>
+
+          <div class="logros-card">
+            <div class="card-header-icon">🏆</div>
+            <h3>Logros Completados</h3>
+            <p class="card-descripcion">Aquí verás tus metas completadas. ¡Sigue avanzando hacia tus logros! ✨</p>
+            <div id="logrosCompletados" class="logros-grid"></div>
+            <p class="mensaje-vacio" id="mensaje-sin-logros">✨ No hay metas completadas aún ✨</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN MI COLLAGE -->
+    <section id="seccion-collage" class="seccion">
+      <div class="diario-scrapbook-page">
+        <div class="diario-scrapbook-header">
+          <h1 class="diario-scrapbook-title">🎨 Mi Collage Creativo ✨</h1>
+          <p class="diario-scrapbook-subtitle">Tu espacio libre para crear, decorar y soñar sin límites</p>
+        </div>
+
+        <div class="diario-scrapbook-container">
+          <form id="collage-form" class="diario-scrapbook-form">
+            
+            <!-- Canvas de Collage - Área para fotos y stickers -->
+            <div class="scrapbook-canvas-section">
+              <label class="scrapbook-label">🌸 Crea tu collage con fotos, stickers y todo lo que quieras:</label>
+              
+              <!-- Pestañas de opciones mejoradas -->
+              <div class="canvas-tabs">
+                <button type="button" class="canvas-tab active" onclick="cambiarTabCollage('subir')">📷 Foto</button>
+                <button type="button" class="canvas-tab" onclick="cambiarTabCollage('galeria')">🖼️ Galería</button>
+                <button type="button" class="canvas-tab" onclick="cambiarTabCollage('stickers')">✨ Stickers</button>
+                <button type="button" class="canvas-tab" onclick="cambiarTabCollage('fondos')">🎨 Fondos</button>
+              </div>
+
+              <!-- Panel: Subir Foto -->
+              <div id="panel-collage-subir" class="canvas-panel active">
+                <label class="btn-agregar-foto">
+                  📷 Seleccionar Foto de mi Dispositivo
+                  <input 
+                    type="file" 
+                    id="collage-foto-input" 
+                    accept="image/*" 
+                    style="display: none;"
+                    onchange="agregarFotoAlCollage(event)"
+                  />
+                </label>
+              </div>
+
+              <!-- Panel: Mis Fotos (Galería) -->
+              <div id="panel-collage-galeria" class="canvas-panel">
+                <div id="collage-galeria-fotos" class="galeria-fotos-guardadas">
+                  <p style="text-align: center; color: #8b7355; opacity: 0.7;">Aquí aparecerán las fotos que uses</p>
+                </div>
+              </div>
+
+              <!-- Panel: Stickers -->
+              <div id="panel-collage-stickers" class="canvas-panel">
+                <h4 style="color: #d4895b; margin: 1rem 0 0.5rem;">🌸 Naturaleza</h4>
+                <div class="stickers-grid">
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🌸')">🌸</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🌺')">🌺</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🌷')">🌷</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🪷')">🪷</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🌻')">🌻</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🍀')">🍀</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🌿')">🌿</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🦋')">🦋</div>
+                </div>
+                
+                <h4 style="color: #d4895b; margin: 1rem 0 0.5rem;">💖 Amor</h4>
+                <div class="stickers-grid">
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('💕')">💕</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('💗')">💗</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('💝')">💝</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🩷')">🩷</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🩵')">🩵</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('💜')">💜</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🤍')">🤍</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🫶')">🫶</div>
+                </div>
+                
+                <h4 style="color: #d4895b; margin: 1rem 0 0.5rem;">✨ Brillos</h4>
+                <div class="stickers-grid">
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('✨')">✨</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('💫')">💫</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🌟')">🌟</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('⭐')">⭐</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🔮')">🔮</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('💎')">💎</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🌙')">🌙</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('☀️')">☀️</div>
+                </div>
+                
+                <h4 style="color: #d4895b; margin: 1rem 0 0.5rem;">🎀 Cute</h4>
+                <div class="stickers-grid">
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🎀')">🎀</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🧸')">🧸</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🍭')">🍭</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🍰')">🍰</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🧁')">🧁</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🍓')">🍓</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🍒')">🍒</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🌈')">🌈</div>
+                </div>
+                
+                <h4 style="color: #d4895b; margin: 1rem 0 0.5rem;">👑 Poder</h4>
+                <div class="stickers-grid">
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('👑')">👑</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🏆')">🏆</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('💪')">💪</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🎯')">🎯</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🔥')">🔥</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('⚡')">⚡</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('🚀')">🚀</div>
+                  <div class="sticker-item" onclick="agregarStickerAlCollage('💯')">💯</div>
+                </div>
+              </div>
+
+              <!-- Panel: Fondos & Texto -->
+              <div id="panel-collage-fondos" class="canvas-panel">
+                <h4 style="color: #d4895b; margin: 0 0 0.8rem;">🎨 Fondos</h4>
+                <div class="fondos-grid">
+                  <div class="fondo-item" style="background: linear-gradient(135deg, #fef9f3 0%, #fff 50%, #fef5f9 100%);" onclick="cambiarFondoCollage('linear-gradient(135deg, #fef9f3 0%, #fff 50%, #fef5f9 100%)')">
+                    <span>Original</span>
+                  </div>
+                  <div class="fondo-item" style="background: linear-gradient(135deg, #ffe9f3 0%, #ffd4e5 100%);" onclick="cambiarFondoCollage('linear-gradient(135deg, #ffe9f3 0%, #ffd4e5 100%)')">
+                    <span>Rosado</span>
+                  </div>
+                  <div class="fondo-item" style="background: linear-gradient(135deg, #fff5e6 0%, #ffe9d6 100%);" onclick="cambiarFondoCollage('linear-gradient(135deg, #fff5e6 0%, #ffe9d6 100%)')">
+                    <span>Beige</span>
+                  </div>
+                  <div class="fondo-item" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);" onclick="cambiarFondoCollage('linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)')">
+                    <span>Azul</span>
+                  </div>
+                  <div class="fondo-item" style="background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);" onclick="cambiarFondoCollage('linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%)')">
+                    <span>Lavanda</span>
+                  </div>
+                  <div class="fondo-item" style="background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%);" onclick="cambiarFondoCollage('linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%)')">
+                    <span>Amarillo</span>
+                  </div>
+                  <div class="fondo-item" style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);" onclick="cambiarFondoCollage('linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)')">
+                    <span>Verde</span>
+                  </div>
+                  <div class="fondo-item" style="background: #ffffff;" onclick="cambiarFondoCollage('#ffffff')">
+                    <span>Blanco</span>
+                  </div>
+                </div>
+
+                <h4 style="color: #d4895b; margin: 1.5rem 0 0.8rem;">✍️ Texto</h4>
+                <button type="button" onclick="agregarTextoAlCollage()" class="btn-agregar-texto">
+                  ➕ Agregar Texto
+                </button>
+                <p style="font-size: 0.85rem; color: #8b7355; margin-top: 0.5rem; opacity: 0.8;">
+                  Haz doble clic en el texto para editarlo
+                </p>
+              </div>
+
+              <!-- Canvas donde se pegan fotos y stickers -->
+              <div id="collage-canvas" class="scrapbook-canvas">
+                <div class="canvas-placeholder">
+                  <p>👆 Crea tu collage aquí</p>
+                  <p style="font-size: 0.9rem; opacity: 0.7;">Agrega fotos, stickers, texto y decóralo a tu gusto</p>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button type="submit" class="btn-guardar-scrapbook" style="flex: 1;">💾 Guardar Collage</button>
+              <button type="button" onclick="limpiarBotonesCollage()" class="btn-guardar-scrapbook" style="flex: 1; background: linear-gradient(135deg, #ff9800, #f57c00);">🧹 Limpiar Botones</button>
+            </div>
+          </form>
+
+          <div id="mensaje-collage" class="mensaje-diario"></div>
+          
+          <!-- Collages Anteriores -->
+          <div class="scrapbook-entradas-anteriores">
+            <h3 class="scrapbook-label">🎨 Collages Guardados</h3>
+            <div id="lista-collages" class="scrapbook-lista-entradas"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN EL AÑO DONDE FLOREZCO -->
+    <section id="seccion-mi-año" class="seccion">
+      <div class="año-florezco-page">
+        <div class="año-florezco-header">
+          <h1 class="año-florezco-title">🌺 El Año donde Florezco 2026 ✨</h1>
+          <p class="año-florezco-subtitle">Tu tablero de visión: Visualiza, sueña y crea el año de tus sueños</p>
+        </div>
+
+        <div class="año-florezco-container">
+          <!-- Vision Board Principal -->
+          <div class="vision-board-section">
+            <h2 class="vision-board-titulo">✨ Mi Tablero de Visión 2026</h2>
+            <p class="vision-board-descripcion">Crea un collage visual con todo lo que quieres lograr, experimentar y ser este año</p>
+            
+            <!-- Pestañas de opciones mejoradas -->
+            <div class="canvas-tabs">
+              <button type="button" class="canvas-tab active" onclick="cambiarTabVision('subir')">📷 Foto</button>
+              <button type="button" class="canvas-tab" onclick="cambiarTabVision('stickers')">✨ Stickers</button>
+              <button type="button" class="canvas-tab" onclick="cambiarTabVision('fondos')">🎨 Fondos</button>
+            </div>
+
+            <!-- Panel: Subir Foto -->
+            <div id="panel-vision-subir" class="canvas-panel active">
+              <label class="btn-agregar-foto">
+                📷 Seleccionar Foto
+                <input 
+                  type="file" 
+                  id="vision-foto-input" 
+                  accept="image/*" 
+                  style="display: none;"
+                  onchange="agregarFotoAlVision(event)"
+                />
+              </label>
+            </div>
+
+            <!-- Panel: Stickers -->
+            <div id="panel-vision-stickers" class="canvas-panel">
+              <h4 style="color: #d4895b; margin: 1rem 0 0.5rem;">🌸 Flores & Naturaleza</h4>
+              <div class="stickers-grid">
+                <div class="sticker-item" onclick="agregarStickerAlVision('🌸')">🌸</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('🌺')">🌺</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('🌹')">🌹</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('🌻')">🌻</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('🦋')">🦋</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('🌈')">🌈</div>
+              </div>
+              
+              <h4 style="color: #d4895b; margin: 1rem 0 0.5rem;">✨ Éxito & Logros</h4>
+              <div class="stickers-grid">
+                <div class="sticker-item" onclick="agregarStickerAlVision('🏆')">🏆</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('👑')">👑</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('💎')">💎</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('🎯')">🎯</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('⭐')">⭐</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('✨')">✨</div>
+              </div>
+              
+              <h4 style="color: #d4895b; margin: 1rem 0 0.5rem;">💰 Abundancia & Dinero</h4>
+              <div class="stickers-grid">
+                <div class="sticker-item" onclick="agregarStickerAlVision('💰')">💰</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('💵')">💵</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('💸')">💸</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('🤑')">🤑</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('💳')">💳</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('🏦')">🏦</div>
+              </div>
+              
+              <h4 style="color: #d4895b; margin: 1rem 0 0.5rem;">✈️ Viajes & Aventuras</h4>
+              <div class="stickers-grid">
+                <div class="sticker-item" onclick="agregarStickerAlVision('✈️')">✈️</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('🌍')">🌍</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('🗺️')">🗺️</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('🏖️')">🏖️</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('🏔️')">🏔️</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('🗼')">🗼</div>
+              </div>
+              
+              <h4 style="color: #d4895b; margin: 1rem 0 0.5rem;">💕 Amor & Familia</h4>
+              <div class="stickers-grid">
+                <div class="sticker-item" onclick="agregarStickerAlVision('💕')">💕</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('💖')">💖</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('💝')">💝</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('👨‍👩‍👧‍👦')">👨‍👩‍👧‍👦</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('🏠')">🏠</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('🤗')">🤗</div>
+              </div>
+              
+              <h4 style="color: #d4895b; margin: 1rem 0 0.5rem;">💪 Salud & Bienestar</h4>
+              <div class="stickers-grid">
+                <div class="sticker-item" onclick="agregarStickerAlVision('💪')">💪</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('🧘‍♀️')">🧘‍♀️</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('🏃‍♀️')">🏃‍♀️</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('🥗')">🥗</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('💆‍♀️')">💆‍♀️</div>
+                <div class="sticker-item" onclick="agregarStickerAlVision('🌿')">🌿</div>
+              </div>
+            </div>
+
+            <!-- Panel: Fondos & Frases -->
+            <div id="panel-vision-fondos" class="canvas-panel">
+              <h4 style="color: #d4895b; margin: 0 0 0.8rem;">🎨 Fondos</h4>
+              <div class="fondos-grid">
+                <div class="fondo-item" style="background: linear-gradient(135deg, #ffe9f3 0%, #ffd4e5 100%);" onclick="cambiarFondoVision('linear-gradient(135deg, #ffe9f3 0%, #ffd4e5 100%)')">
+                  <span>Rosado</span>
+                </div>
+                <div class="fondo-item" style="background: linear-gradient(135deg, #fff5e6 0%, #ffe9d6 100%);" onclick="cambiarFondoVision('linear-gradient(135deg, #fff5e6 0%, #ffe9d6 100%)')">
+                  <span>Beige</span>
+                </div>
+                <div class="fondo-item" style="background: linear-gradient(135deg, #fff9e6 0%, #f4c542 30%);" onclick="cambiarFondoVision('linear-gradient(135deg, #fff9e6 0%, #f4c542 30%)')">
+                  <span>Dorado</span>
+                </div>
+                <div class="fondo-item" style="background: #ffffff;" onclick="cambiarFondoVision('#ffffff')">
+                  <span>Blanco</span>
+                </div>
+              </div>
+
+              <h4 style="color: #d4895b; margin: 1.5rem 0 0.8rem;">✍️ Frases de Poder</h4>
+              <div class="frases-rapidas">
+                <button type="button" onclick="agregarFraseAlVision('Este es mi año')" class="btn-frase-rapida">Este es mi año</button>
+                <button type="button" onclick="agregarFraseAlVision('Merezco abundancia')" class="btn-frase-rapida">Merezco abundancia</button>
+                <button type="button" onclick="agregarFraseAlVision('Soy imparable')" class="btn-frase-rapida">Soy imparable</button>
+                <button type="button" onclick="agregarFraseAlVision('Todo es posible')" class="btn-frase-rapida">Todo es posible</button>
+                <button type="button" onclick="agregarFraseAlVision('Florezco cada día')" class="btn-frase-rapida">Florezco cada día</button>
+              </div>
+              <button type="button" onclick="agregarTextoAlVision()" class="btn-agregar-texto">
+                ➕ Agregar Texto Personalizado
+              </button>
+            </div>
+
+            <!-- Canvas Vision Board -->
+            <div id="vision-canvas" class="vision-canvas">
+              <div class="canvas-placeholder" id="vision-placeholder">
+                <p>🌟 Crea tu tablero de visión 2026</p>
+                <p style="font-size: 0.9rem; opacity: 0.7;">Agrega fotos de tus sueños, metas, lugares que quieres visitar...</p>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button onclick="guardarVisionBoard()" class="btn-guardar-vision" style="flex: 1;">💾 Guardar mi Vision Board 2026</button>
+              <button type="button" onclick="limpiarBotonesVision()" class="btn-guardar-vision" style="flex: 1; background: linear-gradient(135deg, #ff9800, #f57c00);">🧹 Limpiar Botones</button>
+            </div>
+          </div>
+
+          <!-- Metas del Año -->
+          <div class="metas-año-section">
+            <h2 class="vision-board-titulo">🎯 Mis Metas para Este Año</h2>
+            <div class="agregar-meta-año">
+              <input type="text" id="nueva-meta-año" placeholder="Ej: Viajar a París, Ahorrar $10,000, Aprender francés..." />
+              <button onclick="agregarMetaAño()" class="btn-agregar-meta-año">✨ Agregar Meta</button>
+            </div>
+            <div id="lista-metas-año" class="lista-metas-año"></div>
+          </div>
+
+          <!-- Palabra del Año -->
+          <div class="palabra-año-section">
+            <h2 class="vision-board-titulo">💫 Mi Palabra del Año 2026</h2>
+            <p style="text-align: center; color: #8b7d7d; margin-bottom: 1rem;">Una palabra que te inspire todo el año</p>
+            <input type="text" id="palabra-año-input" placeholder="Ej: FLORECER, ABUNDANCIA, VALENTÍA..." maxlength="20" />
+            <button onclick="guardarPalabraAño()" class="btn-guardar-palabra">✨ Guardar mi Palabra</button>
+            <div id="palabra-año-display" class="palabra-año-display"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN AI COACH PREMIUM -->
+    <section id="seccion-ai-coach" class="seccion">
+      <div class="bienvenida">
+        <h1>💜 Mensajes de Apoyo</h1>
+        <p>✨ Palabras de ánimo de Aurora según cómo te sientes</p>
+      </div>
+
+      <div class="ai-coach-container">
+        <div class="chat-container">
+          <div id="chat-messages" class="chat-messages">
+            <div class="chat-message ai">
+              <div class="message-avatar">💜</div>
+              <div class="message-content">
+                <p>¡Hola hermosa! Soy Aurora. Cuéntame cómo te sientes y te comparto un mensaje de apoyo sobre:</p>
+                <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                  <li>Consejos de autoestima y amor propio</li>
+                  <li>Motivación para alcanzar tus metas</li>
+                  <li>Apoyo emocional cuando lo necesites</li>
+                  <li>Ejercicios de mindfulness y bienestar</li>
+                </ul>
+                <p>¿En qué puedo ayudarte hoy? 💜</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="chat-input-container">
+            <textarea id="chat-input" placeholder="Escribe tu mensaje aquí..." rows="2"></textarea>
+            <button onclick="enviarMensajeCoach()" class="btn-enviar-chat">
+              <span>Enviar</span>
+              <span>✨</span>
+            </button>
+          </div>
+        </div>
+        
+        <div class="coach-tips">
+          <h3>💡 Temas populares</h3>
+          <div class="tips-buttons">
+            <button onclick="preguntaRapida('¿Cómo puedo aumentar mi autoestima?')">Autoestima</button>
+            <button onclick="preguntaRapida('Dame un ejercicio de mindfulness')">Mindfulness</button>
+            <button onclick="preguntaRapida('Necesito motivación para hoy')">Motivación</button>
+            <button onclick="preguntaRapida('¿Cómo superar el miedo al fracaso?')">Superar miedos</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN MI PROGRESO -->
+    <section id="seccion-progreso" class="seccion">
+      <div class="bienvenida">
+        <h1>📊 Mi Progreso</h1>
+        <p>✨ Gestiona tu información y comparte Aurora</p>
+      </div>
+
+      <div class="datos-container">
+        <div class="datos-peligro">
+          <h3>⚠️ Zona de Peligro</h3>
+          <p>Esta acción borrará TODOS tus datos de forma permanente (diarios, metas, tareas, gratitudes, rituales).</p>
+          <button onclick="borrarTodosLosDatos()" class="btn-borrar-todo">🗑️ Borrar TODOS mis datos</button>
+        </div>
+      </div>
+
+      <!-- Compartir App -->
+      <div class="compartir-whatsapp-section">
+        <h3>💌 Comparte Aurora con tus amigas</h3>
+        <p class="compartir-descripcion">Invita a tus amigas a unirse a esta hermosa comunidad de empoderamiento</p>
+        <button onclick="compartirWhatsApp()" class="btn-whatsapp">💚 Compartir por WhatsApp</button>
+      </div>
+
+      <!-- Banner Amazon Planners -->
+      <div class="amazon-journal-banner">
+        <div class="journal-content">
+          <div class="journal-icon">🗓️✨</div>
+          <div class="journal-text">
+            <h3>💜 Aurora te recomienda</h3>
+            <p>Descubre nuestra colección de Planners físicos diseñados especialmente para tu viaje de empoderamiento. ¡Organiza en papel tus metas y tus días! 🌸</p>
+          </div>
+        </div>
+        <a href="https://amazon.com/author/eyrejournals" target="_blank" rel="noopener noreferrer" class="btn-amazon-journal">
+          <span>✨ Ver Planners en Amazon</span>
+        </a>
+      </div>
+
+    </section>
+
+    <!-- SECCIÓN PREMIUM 👑 -->
+    <section id="seccion-premium" class="seccion">
+      <!-- CTA Principal - Mostrar según estado Premium -->
+      <div class="premium-cta-section" style="padding-top: 1rem;">
+        <!-- Cuando NO es Premium -->
+        <div id="premium-inactivo" class="premium-cta-card">
+          <div class="premium-badge-grande" style="margin-bottom: 1rem;">👑 PREMIUM</div>
+          
+          <p style="font-size: 1.15rem; color: #8b4789; font-weight: bold; margin-bottom: 0.25rem;">🎁 Pruébalo 7 días gratis</p>
+          <p class="premium-nota" style="margin-bottom: 1.25rem;">Elige tu plan. No se cobra nada hasta que termine la prueba.</p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 0.75rem;">
+            <div style="background: #ffffff; border: 2px solid #ffd4e5; border-radius: 18px; padding: 1.25rem 1rem;">
+              <p style="color: #8b7d7d; font-weight: bold; letter-spacing: 1px; font-size: 0.8rem; margin-bottom: 0.4rem;">MENSUAL</p>
+              <div class="premium-precio-hero" style="margin-bottom: 0.25rem;">
+                <span class="precio-numero">$6.99</span>
+                <span class="precio-periodo">/mes</span>
+              </div>
+              <p style="color: #8b7d7d; font-size: 0.85rem; margin-bottom: 1rem;">Pagas mes a mes</p>
+              <button onclick="iniciarCheckout('mensual', this)" id="btn-premium" class="btn-hacerse-premium-grande btn-plan-premium" style="width: 100%;">
+                ✨ EMPEZAR GRATIS ✨
+              </button>
+            </div>
+            <div style="background: linear-gradient(135deg, #fff9e6 0%, #fffdf5 100%); border: 2px solid #f4c542; border-radius: 18px; padding: 1.25rem 1rem; position: relative;">
+              <span style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #f4c542; color: #ffffff; font-size: 0.75rem; font-weight: bold; padding: 0.2rem 0.8rem; border-radius: 12px; white-space: nowrap;">AHORRAS 2 MESES</span>
+              <p style="color: #8b7d7d; font-weight: bold; letter-spacing: 1px; font-size: 0.8rem; margin-bottom: 0.4rem;">ANUAL</p>
+              <div class="premium-precio-hero" style="margin-bottom: 0.25rem;">
+                <span class="precio-numero">$69.99</span>
+                <span class="precio-periodo">/año</span>
+              </div>
+              <p style="color: #8b7d7d; font-size: 0.85rem; margin-bottom: 1rem;">Equivale a $5.83 al mes</p>
+              <button onclick="iniciarCheckout('anual', this)" id="btn-premium-anual" class="btn-hacerse-premium-grande btn-plan-premium" style="width: 100%;">
+                ✨ EMPEZAR GRATIS ✨
+              </button>
+            </div>
+          </div>
+          <p class="premium-nota" style="margin-bottom: 0.5rem;">Cancela cuando quieras • Sin compromisos</p>
+          <p style="color: #8b7d7d; font-size: 0.8rem;">La prueba gratis es para nuevas suscriptoras. Al terminar los 7 días se cobra el plan que elegiste.</p>
+          
+          <div style="background: linear-gradient(135deg, #fff9e6 0%, #fffdf5 100%); padding: 1rem; border-radius: 15px; margin-top: 1.5rem; border: 2px solid #f4c542;">
+            <p style="font-size: 1rem; color: #8b4789; font-weight: bold; margin-bottom: 0.5rem;">🔓 Incluye:</p>
+            <p style="color: #8b7d7d; font-size: 0.9rem;">40 Cartas de Poder • Afirmaciones • Mi Collage • Vision Board • Calendario de Hábitos</p>
+          </div>
+          
+          <div class="premium-garantias" style="margin-top: 1rem;">
+            <div class="garantia-item">🔒 Pago 100% seguro</div>
+          </div>
+        </div>
+
+        <!-- Cuando YA es Premium -->
+        <div id="premium-activo" class="premium-cta-card premium-activo-limpio" style="display: none;">
+          <div class="premium-activo-header">
+            <span class="corona-grande">👑</span>
+            <h2>¡Ya eres Premium!</h2>
+          </div>
+          <p style="color: #8b7d7d; margin-top: 1rem;">Tienes acceso completo a todas las categorías Premium</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SECCIÓN CALENDARIO DE HÁBITOS (PREMIUM) -->
+    <section id="seccion-habitos-calendario" class="seccion">
+      <div id="contenido-habitos-calendario"></div>
+      <button class="btn-volver-inicio" onclick="volverInicio()">🌸 Volver a Inicio</button>
+    </section>
+
+  </main>
+
+  <script src="device-id.js?v=1"></script>
+  <script src="fotos.js?v=1"></script>
+  <script src="auth.js?v=1002"></script>
+  <script src="sync.js?v=1000"></script>
+  <script src="script.js?v=1006"></script>
+  <script src="diario.js?v=1006"></script>
+  <script src="metas.js?v=1001"></script>
+  <script src="dashboard.js?v=1001"></script>
+  <script src="datos.js?v=1000"></script>
+  <script src="empoderamiento.js?v=999"></script>
+  <script src="collage.js?v=1004"></script>
+  <script src="vision-board.js?v=1004"></script>
+  <script src="premium.js?v=4"></script>
+  <script src="habitos-calendario.js?v=10"></script>
+  <!-- Funciones de limpieza (inline para evitar caché) -->
+  <script>
+    function limpiarBotonesCollage() {
+      const canvas = document.getElementById('collage-canvas');
+      if (!canvas) {
+        alert('❌ No se encontró el canvas');
+        return;
+      }
+      
+      let eliminados = 0;
+      
+      // Eliminar TODOS los botones dentro del canvas (excepto el placeholder)
+      const todosLosBotones = canvas.querySelectorAll('button');
+      todosLosBotones.forEach(btn => {
+        btn.remove();
+        eliminados++;
+      });
+      
+      // Eliminar todos los divs con clase element-resize-btns
+      const resizeContainers = canvas.querySelectorAll('div.element-resize-btns');
+      resizeContainers.forEach(container => {
+        container.remove();
+        eliminados++;
+      });
+      
+      alert('🧹 Se eliminaron ' + eliminados + ' botones flotantes!');
+    }
+    
+    function limpiarBotonesVision() {
+      const canvas = document.getElementById('vision-canvas');
+      if (!canvas) {
+        alert('❌ No se encontró el canvas');
+        return;
+      }
+      
+      let eliminados = 0;
+      
+      // Eliminar TODOS los botones dentro del canvas
+      const todosLosBotones = canvas.querySelectorAll('button');
+      todosLosBotones.forEach(btn => {
+        btn.remove();
+        eliminados++;
+      });
+      
+      // Eliminar todos los divs con clase element-resize-btns
+      const resizeContainers = canvas.querySelectorAll('div.element-resize-btns');
+      resizeContainers.forEach(container => {
+        container.remove();
+        eliminados++;
+      });
+      
+      alert('🧹 Se eliminaron ' + eliminados + ' botones flotantes!');
+    }
+  </script>
+  
+  <!-- Service Worker DESACTIVADO temporalmente para evitar conflictos de caché -->
+  <script>
+    // DESACTIVAR Y LIMPIAR todos los Service Workers
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        registrations.forEach(registration => {
+          console.log('🗑️ Eliminando Service Worker:', registration);
+          registration.unregister();
+        });
+        console.log('✅ Todos los Service Workers eliminados - Aurora funcionando sin caché');
+      });
+    }
+  </script>
+
+  <!-- ⭐ ADMIN AUTO-LOGIN: Detectar parámetro ?admin -->
+  <script>
+    function activarAdminPortal() {
+      // Verificar si la URL tiene ?admin o ?admin=true
+      const urlParams = new URLSearchParams(window.location.search);
+      const isAdmin = urlParams.has('admin');
+      
+      if (isAdmin) {
+        console.log('🔧 Modo Admin detectado - Auto-login activado');
+        
+        // Registrar usuario Admin automáticamente
+        localStorage.setItem('usuario', 'Admin');
+        
+        // Crear usuario completo para backend si no existe
+        if (!localStorage.getItem('usuarioId')) {
+          const adminUser = {
+            id: 'admin-' + Date.now(),
+            nombre: 'Admin',
+            fecha_registro: new Date().toISOString()
+          };
+          localStorage.setItem('usuarioId', adminUser.id);
+          localStorage.setItem('usuarioData', JSON.stringify(adminUser));
+        }
+        
+        // Ocultar portada principal
+        const portada = document.getElementById('seccion-dashboard');
+        if (portada) {
+          portada.classList.remove('activa');
+        }
+        
+        // Mostrar directamente el menú de categorías
+        const menu = document.getElementById('seccion-menu');
+        if (menu) {
+          menu.classList.add('activa');
+        }
+        
+        // Actualizar header con nombre de usuario
+        const header = document.querySelector('header');
+        if (header) {
+          header.textContent = 'Admin';
+          header.classList.remove('oculto');
+        }
+        
+        // Mostrar botón flotante
+        const btnFlotante = document.querySelector('.btn-menu-flotante');
+        if (btnFlotante) {
+          btnFlotante.classList.remove('oculto');
+        }
+        
+        // Mostrar botón de admin de citas
+        const btnMisCitas = document.getElementById('btn-mis-citas');
+        if (btnMisCitas) {
+          btnMisCitas.classList.add('visible');
+          console.log('✅ Botón Mis Citas ahora visible para admin');
+        }
+        
+        console.log('✅ Admin portal listo - Acceso directo al menú');
+      }
+    }
+    
+    // Ejecutar lo antes posible
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', activarAdminPortal);
+    } else {
+      activarAdminPortal();
+    }
+    // Ejecutar también al final de todo
+    window.addEventListener('load', activarAdminPortal);
+  </script>
+</body>
+</html>
+
+  <!-- Modal Premium -->
+  <div id="premium-modal" class="modal-premium" style="display: none;">
+    <div class="modal-premium-content">
+      <button class="modal-close" onclick="cerrarModalPremium()">✕</button>
+      
+      <div class="modal-premium-header">
+        <div class="premium-badge-grande">👑 PREMIUM</div>
+        <h2>Desbloquea esta función</h2>
+        <p class="premium-descripcion">7 días gratis, luego <strong>$6.99/mes</strong> o <strong>$69.99/año</strong></p>
+      </div>
+
+      <div class="modal-premium-beneficios">
+        <h3>✨ Con Premium tendrás:</h3>
+        <ul class="lista-beneficios-modal">
+          <li>🎴 Cartas de Poder ilimitadas</li>
+          <li>📖 Diario avanzado con fotos ilimitadas</li>
+          <li>🎯 Metas y hábitos sin límite</li>
+          <li>🎨 Collages con elementos premium</li>
+          <li>💫 Afirmaciones personalizadas ilimitadas</li>
+          <li>📊 Estadísticas avanzadas</li>
+        </ul>
+      </div>
+
+      <div class="modal-premium-precio">
+        <div class="precio-destacado">
+          <span class="precio-numero">$6.99</span>
+          <span class="precio-periodo">/mes</span>
+        </div>
+        <p class="precio-nota">Cancela cuando quieras</p>
+        <button onclick="iniciarCheckout('mensual', this)" class="btn-hacerse-premium-modal btn-plan-premium">
+          ✨ HACERME PREMIUM ✨
+        </button>
+        <p class="premium-garantia">🔒 Pago seguro con Stripe</p>
+      </div>
+    </div>
+  </div>

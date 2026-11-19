@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Lista de Espera Aurora</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(135deg, #ffd4e5 0%, #fffaf5 100%);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 20px 60px rgba(255, 212, 229, 0.3);
+    }
+
+    h1 {
+      color: #8b4789;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      font-size: 2rem;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #8b7d7d;
+      margin-bottom: 2rem;
+    }
+
+    .login-form {
+      max-width: 400px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: linear-gradient(135deg, #fff5f8 0%, #fffaf5 100%);
+      border-radius: 15px;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      color: #8b4789;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.8rem;
+      border: 2px solid #ffd4e5;
+      border-radius: 10px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1rem;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #f4c542;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #f4c542 0%, #f4a742 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Quicksand', sans-serif;
+      transition: transform 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #fff5f8 0%, #fffaf5 100%);
+      padding: 1.5rem;
+      border-radius: 15px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #8b4789;
+    }
+
+    .stat-label {
+      color: #8b7d7d;
+      margin-top: 0.5rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-secondary {
+      padding: 0.8rem 1.5rem;
+      background: #8b4789;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    thead {
+      background: linear-gradient(135deg, #8b4789 0%, #a558a3 100%);
+      color: white;
+    }
+
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #ffd4e5;
+    }
+
+    tbody tr:hover {
+      background: #fff5f8;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .error {
+      color: #d32f2f;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+
+      .container {
+        padding: 1rem;
+      }
+
+      table {
+        font-size: 0.9rem;
+      }
+
+      th, td {
+        padding: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌸 Panel de Administración</h1>
+    <p class="subtitle">Lista de Espera Aurora</p>
+
+    <!-- Login Form -->
+    <div id="loginForm" class="login-form">
+      <h3 style="text-align: center; color: #8b4789; margin-bottom: 1.5rem;">Acceso Administrativo</h3>
+      <div class="form-group">
+        <label>Contraseña de Admin</label>
+        <input type="password" id="adminPassword" placeholder="Ingresa tu contraseña">
+      </div>
+      <button class="btn" onclick="login()">🔓 Acceder</button>
+      <p class="error" id="loginError"></p>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="hidden">
+      <!-- Stats -->
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-number" id="totalRegistros">0</div>
+          <div class="stat-label">Total Registros</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="registrosHoy">0</div>
+          <div class="stat-label">Hoy</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="registrosSemana">0</div>
+          <div class="stat-label">Esta Semana</div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <button class="btn-secondary" onclick="cargarLista()">🔄 Actualizar</button>
+        <button class="btn-secondary" onclick="exportarCSV()">📥 Descargar CSV</button>
+        <button class="btn-secondary" onclick="cerrarSesion()">🚪 Cerrar Sesión</button>
+      </div>
+
+      <!-- Table -->
+      <div style="overflow-x: auto;">
+        <table id="listaTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Teléfono</th>
+              <th>Fecha de Registro</th>
+            </tr>
+          </thead>
+          <tbody id="listaBody">
+            <tr>
+              <td colspan="5" style="text-align: center; padding: 2rem;">Cargando...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // La contraseña se comprueba en el servidor (ADMIN_PASSWORD en los Secrets de Replit).
+    // Ya no hay ninguna clave escrita en esta página.
+    let registrosData = [];
+
+    function mostrarPanel(visible) {
+      document.getElementById('loginForm').classList.toggle('hidden', visible);
+      document.getElementById('adminPanel').classList.toggle('hidden', !visible);
+    }
+
+    async function login() {
+      const password = document.getElementById('adminPassword').value;
+      const errorEl = document.getElementById('loginError');
+      errorEl.textContent = '';
+
+      try {
+        const response = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ password })
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          mostrarPanel(true);
+          cargarLista();
+        } else if (response.status === 429) {
+          errorEl.textContent = 'Demasiados intentos. Espera un rato.';
+        } else {
+          errorEl.textContent = data.message || 'Contraseña incorrecta';
+        }
+      } catch (error) {
+        errorEl.textContent = 'Error de conexión';
+      }
+    }
+
+    function cerrarSesion() {
+      fetch('/api/admin/logout', { method: 'POST', credentials: 'include' }).catch(() => {});
+      mostrarPanel(false);
+      document.getElementById('adminPassword').value = '';
+    }
+
+    async function cargarLista() {
+      try {
+        const response = await fetch('/api/lista-espera', { credentials: 'include' });
+
+        if (response.status === 401) {
+          mostrarPanel(false);
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error('Error al cargar la lista');
+        }
+
+        const data = await response.json();
+        registrosData = data.registros;
+
+        // Actualizar estadísticas
+        document.getElementById('totalRegistros').textContent = data.total;
+        
+        // Calcular registros de hoy
+        const hoy = new Date().toISOString().split('T')[0];
+        const registrosHoy = data.registros.filter(r => {
+          const fecha = new Date(r.fecha_registro).toISOString().split('T')[0];
+          return fecha === hoy;
+        }).length;
+        document.getElementById('registrosHoy').textContent = registrosHoy;
+
+        // Calcular registros de esta semana
+        const hace7dias = new Date();
+        hace7dias.setDate(hace7dias.getDate() - 7);
+        const registrosSemana = data.registros.filter(r => {
+          return new Date(r.fecha_registro) >= hace7dias;
+        }).length;
+        document.getElementById('registrosSemana').textContent = registrosSemana;
+
+        // Mostrar tabla
+        mostrarTabla(data.registros);
+
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error al cargar la lista de espera');
+      }
+    }
+
+    function mostrarTabla(registros) {
+      const tbody = document.getElementById('listaBody');
+      
+      if (registros.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem;">No hay registros aún</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = registros.map((r, index) => {
+        const fecha = new Date(r.fecha_registro);
+        const fechaFormateada = fecha.toLocaleDateString('es-MX', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        return `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${r.nombre}</td>
+            <td>${r.email}</td>
+            <td>${r.telefono || '-'}</td>
+            <td>${fechaFormateada}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function exportarCSV() {
+      if (registrosData.length === 0) {
+        alert('No hay datos para exportar');
+        return;
+      }
+
+      // Crear CSV
+      const headers = ['#', 'Nombre', 'Email', 'Teléfono', 'Fecha de Registro'];
+      const rows = registrosData.map((r, index) => {
+        const fecha = new Date(r.fecha_registro).toLocaleString('es-MX');
+        return [
+          index + 1,
+          r.nombre,
+          r.email,
+          r.telefono || '',
+          fecha
+        ];
+      });
+
+      let csv = headers.join(',') + '\n';
+      rows.forEach(row => {
+        csv += row.map(cell => `"${cell}"`).join(',') + '\n';
+      });
+
+      // Descargar
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `lista-espera-aurora-${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Auto-login si ya está logueado
+    window.addEventListener('DOMContentLoaded', () => {
+      localStorage.removeItem('admin_logged_in');
+      fetch('/api/admin/sesion', { credentials: 'include' })
+        .then(r => r.json())
+        .then(d => {
+          if (d.admin) {
+            mostrarPanel(true);
+            cargarLista();
+          }
+        })
+        .catch(() => {});
+    });
+
+    // Enter para login
+    document.getElementById('adminPassword').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        login();
+      }
+    });
+  </script>
+</body>
+</html>
