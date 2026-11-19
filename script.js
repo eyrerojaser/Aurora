@@ -375,46 +375,8 @@ function cambiarImagenPortada() {
 }
 
 function iniciarPortada() {
-    console.log('🌸 Iniciando portada Aurora');
-    
-    // Ocultar títulos "Aurora" si el usuario ya está registrado
-    const userName = localStorage.getItem('userName');
-    const tituloAurora = document.querySelector('.titulo-aurora-grande');
-    const subtituloAurora = document.querySelector('.subtitulo-aurora');
-    
-    if (userName) {
-        if (tituloAurora) tituloAurora.style.display = 'none';
-        if (subtituloAurora) subtituloAurora.style.display = 'none';
-    } else {
-        if (tituloAurora) tituloAurora.style.display = 'block';
-        if (subtituloAurora) subtituloAurora.style.display = 'block';
-    }
-    
-    // Establecer primera imagen
-    const imagen1 = document.getElementById('imagenPortada1');
-    const imagen2 = document.getElementById('imagenPortada2');
-    
-    if (imagen1 && imagen2) {
-        // Cargar primera imagen inmediatamente
-        imagen1.style.backgroundImage = `url('${imagenesPortada[0]}')`;
-        imagen1.classList.add('activa');
-        console.log('✅ Primera imagen cargada');
-    }
-    
-    // Mostrar primera frase inmediatamente
-    const fraseEl = document.getElementById('fraseMotivacional');
-    if (fraseEl) {
-        const indice = Math.floor(Math.random() * frases.length);
-        fraseEl.textContent = frases[indice];
-        console.log('✅ Primera frase mostrada:', frases[indice]);
-    }
-    
-    // Cambiar imagen y frase juntas cada 10 segundos
-    setInterval(() => {
-        cambiarImagenPortada();
-        cambiarFrase();
-        console.log('🔄 Rotación imagen + frase');
-    }, 10000);
+    // La portada nueva (amaneceres, saludo y "¿Cómo está tu día hoy?") vive en aurora2.js
+    if (typeof iniciarPortadaAurora === 'function') iniciarPortadaAurora();
 }
 
 function reproducirLink(link) {
@@ -833,50 +795,51 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 
 // ===== CARTAS DE PODER =====
+// Las 40 Cartas de Poder (las mismas del libro). Las 20 primeras son gratis; las otras 20, Premium.
 const FRASES_PODER_BASICAS = [
     "Tu luz es DEMASIADO brillante para esconderla",
-    "El mundo NECESITA tu voz única",
-    "No naciste para vivir en las sombras",
-    "Tu presencia es un REGALO, no una molestia",
-    "Ocupar espacio NO es egoísmo, es tu derecho",
-    "Brilla SIN pedir permiso",
-    "Tu éxito NO opaca a nadie",
-    "Eres DIGNA de ser vista y escuchada",
-    "Atrévete a ser IMPARABLE",
-    "El miedo es mentira, TÚ eres poderosa",
-    "Tu voz merece ser escuchada",
-    "No te hagas pequeña por comodidad ajena",
     "Eres suficiente, SIEMPRE lo has sido",
-    "El mundo te necesita tal como eres",
-    "Tu valentía inspira a otras mujeres",
-    "Mereces ocupar espacio en esta vida",
-    "No pidas permiso para brillar",
-    "Tu poder no necesita aprobación",
-    "Eres una FUERZA imparable",
-    "El escenario es tuyo, sal de las sombras"
+    "No tienes que ganarte el derecho a descansar",
+    "Tu valor no baja cuando alguien no lo ve",
+    "No eres “demasiado”: estabas en el lugar equivocado",
+    "Lo que ya lograste TAMBIÉN cuenta",
+    "No necesitas ser perfecta para ser querida",
+    "Mereces lo mismo que le deseas a tu mejor amiga",
+    "Ocupar espacio NO es egoísmo, es tu derecho",
+    "Tu presencia es un REGALO, no una molestia",
+    "No te hagas pequeña por comodidad ajena",
+    "Tu éxito NO opaca a nadie",
+    "Di lo que piensas aunque te tiemble la voz",
+    "Tu opinión no necesita un “perdón” delante",
+    "Puedes cambiar de idea sin dar explicaciones",
+    "“NO” es una frase completa",
+    "Decepcionar a otros no te hace mala persona",
+    "Cuidarte no es abandonar a nadie",
+    "No tienes que cargar lo que NO es tuyo",
+    "Un límite claro también es una forma de amor"
 ];
 
 const FRASES_PODER_PREMIUM = [
-    "La abundancia fluye hacia ti naturalmente",
-    "Tu intuición es tu mayor superpoder",
-    "Cada obstáculo es un escalón hacia tu grandeza",
-    "El universo conspira a tu favor",
-    "Tu energía atrae lo que necesitas",
-    "Eres la arquitecta de tu propio destino",
-    "Tu vulnerabilidad es tu fortaleza",
-    "Mereces amor incondicional, empezando por ti",
+    "Puedes tener miedo y hacerlo IGUAL",
+    "No tienes que tenerlo todo claro para empezar",
+    "Ya sobreviviste a TODOS tus días difíciles",
+    "Empezar de nuevo no es volver a cero",
+    "Lo que hoy te cuesta, mañana te va a sostener",
+    "Pedir ayuda también es de valientes",
     "Tus cicatrices cuentan historias de victoria",
-    "El rechazo es redirección divina",
-    "Tu autenticidad es magnética",
-    "Eres más resiliente de lo que crees",
-    "Tu paz interior es intocable",
+    "Tu vulnerabilidad es tu fortaleza",
+    "Llorar no te quita lo fuerte",
+    "No le debes tu versión de antes a nadie",
+    "Perdonarte también es avanzar",
+    "Lo que te pasó no es todo lo que eres",
+    "Vas a tu ritmo, y tu ritmo está bien",
     "La perfección es una ilusión, tu esencia es real",
-    "Cada día escribes un nuevo capítulo de tu historia",
-    "Tu corazón sabe el camino, confía en él",
-    "Eres merecedora de todos tus sueños",
-    "Tu presencia cambia la energía de cada lugar",
-    "El límite lo pones tú, y hoy decides no tenerlo",
-    "Eres la protagonista de una historia extraordinaria"
+    "Tu vida no tiene que parecerse a la de nadie",
+    "Tu alegría no tiene que esperar a que todo esté bien",
+    "Lo que es para ti no te pide que te traiciones",
+    "Confía en lo que sientes: tu cuerpo ya lo sabe",
+    "Hoy puedes elegirte, aunque ayer no lo hicieras",
+    "La mujer que quieres ser YA vive en ti"
 ];
 
 let FRASES_PODER = [...FRASES_PODER_BASICAS];
@@ -892,18 +855,16 @@ function inicializarCartasPoder() {
         cartaContainer.className = 'carta-container';
         cartaContainer.dataset.index = index;
         
-        // Asignar fondo rotativo (10 imágenes, se repiten cada 10 cartas)
-        const bgClass = `bg-${(index % 10) + 1}`;
+        // Diseño de la carta: 10 paletas que se turnan, todas del mismo estilo
+        const numPaleta = (index % 10) + 1;
+        const bgClass = `bg-${numPaleta}`;
+        cartaContainer.classList.add(`pal-${numPaleta}`);
         
-        // Las cartas Premium (índice >= 20) tienen la mujer empoderada
+        // Las cartas Premium (índice >= 20) llevan el marco dorado
         const esPremium = index >= 20;
-        const mujerHTML = `
-            <div class="carta-mujer-container">
-                <img src="/static/images/mujer_empoderamiento.png" alt="Mujer empoderamiento" class="carta-mujer">
-            </div>
-        `;
-        
+        if (esPremium) cartaContainer.classList.add('premium');
         const mensajeClass = esPremium ? 'carta-mensaje-premium' : 'carta-mensaje';
+        const fraseHTML = (typeof a2Resaltar === 'function') ? a2Resaltar(frase) : frase;
         
         cartaContainer.innerHTML = `
             <div class="carta">
@@ -911,8 +872,9 @@ function inicializarCartasPoder() {
                     <span class="carta-numero">${index + 1}</span>
                 </div>
                 <div class="carta-reverso">
-                    ${mujerHTML}
-                    <div class="${mensajeClass}">${frase}</div>
+                    <img src="/static/images/cartas-aurora/loto.svg" alt="" class="a2-reverso-loto">
+                    <div class="${mensajeClass}">${fraseHTML}</div>
+                    <span class="a2-reverso-pie">${esPremium ? '✦ PREMIUM ✦' : 'AURORA'}</span>
                 </div>
             </div>
         `;

@@ -52,6 +52,7 @@
       });
     }
   </script>
+  <link rel="stylesheet" href="/aurora2.css?v=1">
 </head>
 <body>
   <header class="oculto">Aurora</header>
@@ -67,20 +68,39 @@
   <main>
     <!-- SECCIÓN MI DÍA (DASHBOARD) - PORTADA PRINCIPAL -->
     <section id="seccion-dashboard" class="seccion activa">
-      <div class="portada-principal" id="portadaPrincipal">
-        <div class="portada-imagen activa" id="imagenPortada1"></div>
-        <div class="portada-imagen" id="imagenPortada2"></div>
-        <div class="portada-overlay"></div>
-        <div class="portada-contenido">
-          <div class="portada-logo">
-            <img src="/icon-512.png" alt="Aurora Logo" class="logo-aurora-grande" />
+      <div class="a2-portada" id="portadaPrincipal">
+        <div class="a2-cielo a2-cielo-1 activa"></div>
+        <div class="a2-cielo a2-cielo-2"></div>
+        <div class="a2-cielo a2-cielo-3"></div>
+        <div class="a2-cielo a2-cielo-4"></div>
+        <div class="a2-cielo a2-cielo-5"></div>
+        <div class="a2-cielo a2-cielo-6"></div>
+        <div class="a2-sol"></div>
+        <div class="a2-adorno" style="top:7%;left:8%;width:34px;height:34px;animation-delay:-2s"><svg viewBox="-12 -12 24 24"><g fill="#F2B8C6"><path d="M0,0 C5,-4.2 3.8,-9.6 0,-12 C-3.8,-9.6 -5,-4.2 0,0 Z" transform="rotate(0)"/><path d="M0,0 C5,-4.2 3.8,-9.6 0,-12 C-3.8,-9.6 -5,-4.2 0,0 Z" transform="rotate(72)"/><path d="M0,0 C5,-4.2 3.8,-9.6 0,-12 C-3.8,-9.6 -5,-4.2 0,0 Z" transform="rotate(144)"/><path d="M0,0 C5,-4.2 3.8,-9.6 0,-12 C-3.8,-9.6 -5,-4.2 0,0 Z" transform="rotate(216)"/><path d="M0,0 C5,-4.2 3.8,-9.6 0,-12 C-3.8,-9.6 -5,-4.2 0,0 Z" transform="rotate(288)"/></g><circle r="2.4" fill="#C39A3B"/></svg></div><div class="a2-adorno" style="top:13%;right:10%;width:22px;height:22px;animation-delay:-6s"><svg viewBox="-12 -12 24 24"><g fill="#D9C7EA"><path d="M0,0 C5,-4.2 3.8,-9.6 0,-12 C-3.8,-9.6 -5,-4.2 0,0 Z" transform="rotate(0)"/><path d="M0,0 C5,-4.2 3.8,-9.6 0,-12 C-3.8,-9.6 -5,-4.2 0,0 Z" transform="rotate(72)"/><path d="M0,0 C5,-4.2 3.8,-9.6 0,-12 C-3.8,-9.6 -5,-4.2 0,0 Z" transform="rotate(144)"/><path d="M0,0 C5,-4.2 3.8,-9.6 0,-12 C-3.8,-9.6 -5,-4.2 0,0 Z" transform="rotate(216)"/><path d="M0,0 C5,-4.2 3.8,-9.6 0,-12 C-3.8,-9.6 -5,-4.2 0,0 Z" transform="rotate(288)"/></g><circle r="2.4" fill="#C39A3B"/></svg></div><div class="a2-adorno" style="top:24%;left:16%;width:12px;height:12px;animation-delay:-4s"><svg viewBox="-10 -10 20 20"><path fill="#C39A3B" d="M0,-10 C2.2,-2.2 2.2,-2.2 10,0 C2.2,2.2 2.2,2.2 0,10 C-2.2,2.2 -2.2,2.2 -10,0 C-2.2,-2.2 -2.2,-2.2 0,-10 Z"/></svg></div><div class="a2-adorno" style="top:20%;right:22%;width:10px;height:10px;animation-delay:-8s"><svg viewBox="-10 -10 20 20"><path fill="#C39A3B" d="M0,-10 C2.2,-2.2 2.2,-2.2 10,0 C2.2,2.2 2.2,2.2 0,10 C-2.2,2.2 -2.2,2.2 -10,0 C-2.2,-2.2 -2.2,-2.2 0,-10 Z"/></svg></div><div class="a2-adorno" style="bottom:16%;left:7%;width:26px;height:26px;animation-delay:-3s"><svg viewBox="-12 -12 24 24"><g fill="#F6D2B4"><path d="M0,0 C5,-4.2 3.8,-9.6 0,-12 C-3.8,-9.6 -5,-4.2 0,0 Z" transform="rotate(0)"/><path d="M0,0 C5,-4.2 3.8,-9.6 0,-12 C-3.8,-9.6 -5,-4.2 0,0 Z" transform="rotate(72)"/><path d="M0,0 C5,-4.2 3.8,-9.6 0,-12 C-3.8,-9.6 -5,-4.2 0,0 Z" transform="rotate(144)"/><path d="M0,0 C5,-4.2 3.8,-9.6 0,-12 C-3.8,-9.6 -5,-4.2 0,0 Z" transform="rotate(216)"/><path d="M0,0 C5,-4.2 3.8,-9.6 0,-12 C-3.8,-9.6 -5,-4.2 0,0 Z" transform="rotate(288)"/></g><circle r="2.4" fill="#C39A3B"/></svg></div><div class="a2-adorno" style="bottom:9%;right:8%;width:38px;height:38px;animation-delay:-9s"><svg viewBox="-12 -12 24 24"><g fill="#F6C9DA"><path d="M0,0 C5,-4.2 3.8,-9.6 0,-12 C-3.8,-9.6 -5,-4.2 0,0 Z" transform="rotate(0)"/><path d="M0,0 C5,-4.2 3.8,-9.6 0,-12 C-3.8,-9.6 -5,-4.2 0,0 Z" transform="rotate(72)"/><path d="M0,0 C5,-4.2 3.8,-9.6 0,-12 C-3.8,-9.6 -5,-4.2 0,0 Z" transform="rotate(144)"/><path d="M0,0 C5,-4.2 3.8,-9.6 0,-12 C-3.8,-9.6 -5,-4.2 0,0 Z" transform="rotate(216)"/><path d="M0,0 C5,-4.2 3.8,-9.6 0,-12 C-3.8,-9.6 -5,-4.2 0,0 Z" transform="rotate(288)"/></g><circle r="2.4" fill="#C39A3B"/></svg></div><div class="a2-adorno" style="bottom:26%;right:14%;width:11px;height:11px;animation-delay:-5s"><svg viewBox="-10 -10 20 20"><path fill="#B5527F" d="M0,-10 C2.2,-2.2 2.2,-2.2 10,0 C2.2,2.2 2.2,2.2 0,10 C-2.2,2.2 -2.2,2.2 -10,0 C-2.2,-2.2 -2.2,-2.2 0,-10 Z"/></svg></div>
+        <div class="a2-contenido">
+          <img src="/static/images/cartas-aurora/loto.svg" alt="Aurora" class="a2-loto" />
+          <p class="a2-saludo" id="a2Saludo">Buenos días</p>
+          <h1 class="a2-nombre" id="a2Nombre">Aurora</h1>
+          <p class="a2-sub" id="a2Sub">Tu guía de empoderamiento</p>
+          <div class="a2-tarjeta" id="a2Checkin">
+            <div class="a2-preguntando">
+              <p class="a2-pregunta">¿Cómo está tu día hoy?</p>
+              <div class="a2-animos"><button type="button" class="a2-animo" onclick="elegirAnimo('feliz')"><span>😊</span><span>Feliz</span></button><button type="button" class="a2-animo" onclick="elegirAnimo('tranquila')"><span>😌</span><span>Tranquila</span></button><button type="button" class="a2-animo" onclick="elegirAnimo('cansada')"><span>😴</span><span>Cansada</span></button><button type="button" class="a2-animo" onclick="elegirAnimo('triste')"><span>😢</span><span>Triste</span></button><button type="button" class="a2-animo" onclick="elegirAnimo('ansiosa')"><span>😰</span><span>Ansiosa</span></button></div>
+            </div>
+            <div class="a2-respuesta">
+              <p class="a2-hoy" id="a2Hoy"></p>
+              <p class="a2-mensaje" id="a2Mensaje"></p>
+              <div class="a2-carta-dia" id="a2CartaDia"></div>
+              <p class="a2-ayuda" id="a2Ayuda"></p>
+              <div class="a2-acciones">
+                <button type="button" class="a2-btn-sec" onclick="escribirAnimoEnDiario()">Escribir en mi diario</button>
+              </div>
+              <button type="button" class="a2-cambiar" onclick="cambiarAnimo()">Cambiar cómo me siento</button>
+            </div>
           </div>
-          <h1 class="titulo-aurora-grande">Aurora</h1>
-          <h2 class="subtitulo-aurora">Tu Guía de Empoderamiento</h2>
-          <div class="frase-portada-container">
-            <p class="frase-portada" id="fraseMotivacional">✨ Cada día es una nueva oportunidad para brillar ✨</p>
-          </div>
-          <button class="btn-entrar-app" onclick="mostrarMenu()">✨ Entrar ✨</button>
+          <p class="a2-frase" id="fraseMotivacional"></p>
+          <button class="a2-btn a2-entrar" onclick="mostrarMenu()">Entrar</button>
+          <div class="a2-puntos"><i class="activo"></i><i></i><i></i><i></i><i></i><i></i></div>
         </div>
       </div>
     </section>
@@ -431,9 +451,7 @@
       <div id="modal-carta-personalizada" class="modal-carta-personalizada" style="display: none;">
         <div class="modal-carta-content">
           <button onclick="cerrarCartaPersonalizada()" class="btn-cerrar-modal">✕</button>
-          <div class="carta-personalizada-mujer">
-            <img src="/static/images/mujer_empoderamiento.png" alt="Mujer empoderamiento">
-          </div>
+          <img src="/static/images/cartas-aurora/loto.svg" alt="" class="a2-modal-loto">
           <h3 id="titulo-carta-personalizada"></h3>
           <p id="mensaje-carta-personalizada"></p>
           <button onclick="cerrarCartaPersonalizada()" class="btn-continuar">💫 Continuar</button>
@@ -1311,9 +1329,9 @@
 
   <script src="device-id.js?v=1"></script>
   <script src="fotos.js?v=1"></script>
-  <script src="auth.js?v=1002"></script>
+  <script src="auth.js?v=1003"></script>
   <script src="sync.js?v=1000"></script>
-  <script src="script.js?v=1006"></script>
+  <script src="script.js?v=1007"></script>
   <script src="diario.js?v=1006"></script>
   <script src="metas.js?v=1001"></script>
   <script src="dashboard.js?v=1001"></script>
@@ -1323,6 +1341,7 @@
   <script src="vision-board.js?v=1004"></script>
   <script src="premium.js?v=4"></script>
   <script src="habitos-calendario.js?v=10"></script>
+  <script src="aurora2.js?v=1"></script>
   <!-- Funciones de limpieza (inline para evitar caché) -->
   <script>
     function limpiarBotonesCollage() {

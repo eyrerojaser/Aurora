@@ -53,8 +53,6 @@ Stripe no se puede cobrar. Las demás funciones siguen andando.
 - **Fotos:** se reducen a 1280 px antes de guardarse; tope de 20 MB por envío.
 - **Notificaciones:** un solo service worker (antes eran dos y se pisaban). Los
   recordatorios avisan mientras Aurora está abierta.
-- **Prueba gratis y plan anual:** 7 días gratis la primera vez; luego $6.99 al mes o
-  $69.99 al año. Si el cobro falla al terminar la prueba, se pierde el Premium.
 - **Mensajes de Apoyo:** el antiguo "AI Coach" cambió de nombre; no usa IA.
 - **Se quitó del proyecto:** `.git`, `aurora_backup.sql` y las capturas de
   `attached_assets` (se conservan las 18 imágenes de adorno que la app usa).
@@ -73,8 +71,8 @@ Stripe no se puede cobrar. Las demás funciones siguen andando.
 
 ## Importante: qué se guarda en la nube y qué no
 
-- **En la nube (servidor):** cuenta, **diario**, metas, Mi Collage, El Año donde
-  Florezco, Calendario de Hábitos y Premium. El diario se guarda primero en el
-  teléfono y sube solo; aparece en cualquier dispositivo donde la usuaria entre.
-- **Solo en el teléfono de cada usuaria:** las gratitudes del día, los rituales,
-  las afirmaciones y las cartas reveladas. Si cambia de teléfono, eso no la sigue.
+- **En la nube (servidor):** cuenta, metas, Mi Collage, El Año donde Florezco,
+  Calendario de Hábitos y Premium.
+- **Solo en el teléfono de cada usuaria:** el diario, las gratitudes, los
+  rituales, las afirmaciones y las cartas reveladas. Si cambia de teléfono o
+  borra los datos del navegador, los pierde.

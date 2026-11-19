@@ -1,0 +1,281 @@
+/* =====================================================================
+   AURORA 2 · nuevo aspecto (portada, entrada, cartas de poder, encabezados)
+   Mismo estilo del planner y del libro "Cartas de Poder".
+   Se carga después de style.css y solo cambia lo que se nombra aquí.
+   ===================================================================== */
+
+@font-face { font-family: 'Lora'; font-weight: 400; font-style: normal; font-display: swap; src: url('/static/fonts/Lora-Regular.woff2') format('woff2'); }
+@font-face { font-family: 'Lora'; font-weight: 500; font-style: normal; font-display: swap; src: url('/static/fonts/Lora-Medium.woff2') format('woff2'); }
+@font-face { font-family: 'Lora'; font-weight: 600; font-style: normal; font-display: swap; src: url('/static/fonts/Lora-SemiBold.woff2') format('woff2'); }
+@font-face { font-family: 'Lora'; font-weight: 400; font-style: italic; font-display: swap; src: url('/static/fonts/Lora-Italic.woff2') format('woff2'); }
+@font-face { font-family: 'Lora'; font-weight: 500; font-style: italic; font-display: swap; src: url('/static/fonts/Lora-MediumItalic.woff2') format('woff2'); }
+
+:root {
+    --a2-ciruela: #8B4789;
+    --a2-ciruela-osc: #6E3A6C;
+    --a2-dorado: #C39A3B;
+    --a2-texto: #56414A;
+    --a2-suave: #8F7D84;
+    --a2-linea: #E8D6DD;
+    --a2-rosa: #F6C9DA;
+    --a2-rosa-claro: #FDEEF4;
+    --a2-serif: 'Lora', 'Georgia', serif;
+}
+
+/* ---------- PORTADA ---------- */
+.a2-portada {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 2.5rem 1.25rem 3rem;
+    box-sizing: border-box;
+    text-align: center;
+}
+.a2-cielo {
+    position: absolute; inset: 0;
+    opacity: 0;
+    transition: opacity 1.6s ease-in-out;
+    z-index: 0;
+}
+.a2-cielo.activa { opacity: 1; }
+/* seis amaneceres: Aurora significa "la luz del amanecer" */
+.a2-cielo-1 { background: linear-gradient(180deg, #F9E3EC 0%, #F7D2E0 46%, #FBE6D8 100%); }
+.a2-cielo-2 { background: linear-gradient(180deg, #EFE7F7 0%, #E2D2EE 46%, #FAE2EA 100%); }
+.a2-cielo-3 { background: linear-gradient(180deg, #FFF1E6 0%, #F8D8C6 46%, #F6CAD8 100%); }
+.a2-cielo-4 { background: linear-gradient(180deg, #FFF8E8 0%, #F5E1B6 46%, #F6D3D9 100%); }
+.a2-cielo-5 { background: linear-gradient(180deg, #F2F6EC 0%, #DEE9D2 46%, #FBEAD9 100%); }
+.a2-cielo-6 { background: linear-gradient(180deg, #ECF5F5 0%, #D4E9E9 46%, #F6DDE6 100%); }
+/* el sol que sale por abajo */
+.a2-sol {
+    position: absolute; left: 50%; bottom: -34vh;
+    width: 120vw; max-width: 900px; aspect-ratio: 1;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,246,232,0.75) 28%, rgba(255,236,214,0.35) 48%, rgba(255,255,255,0) 68%);
+    z-index: 1;
+    animation: a2Respirar 9s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes a2Respirar { 0%, 100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.05); } }
+.a2-adorno { position: absolute; z-index: 1; pointer-events: none; opacity: 0.9; animation: a2Flotar 12s ease-in-out infinite; }
+.a2-adorno svg { display: block; width: 100%; height: 100%; }
+@keyframes a2Flotar { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-14px) rotate(8deg); } }
+
+.a2-contenido {
+    position: relative; z-index: 2;
+    width: 100%; max-width: 430px;
+    display: flex; flex-direction: column; align-items: center;
+}
+.a2-loto { width: 86px; height: auto; margin-bottom: 0.4rem; filter: drop-shadow(0 4px 10px rgba(195,154,59,0.25)); }
+.a2-saludo { font-family: var(--a2-serif); font-style: italic; font-size: 1.05rem; color: var(--a2-suave); margin: 0.2rem 0 0; }
+.a2-nombre { font-family: var(--a2-serif); font-weight: 600; font-size: 2.5rem; line-height: 1.15; color: var(--a2-ciruela); margin: 0.1rem 0 0.25rem; }
+.a2-sub { font-family: var(--a2-serif); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.32em; text-transform: uppercase; color: var(--a2-dorado); margin: 0 0 1.4rem; }
+.a2-filete { width: 64px; height: 1px; background: var(--a2-dorado); margin: 0 auto 1.4rem; opacity: 0.8; }
+
+.a2-tarjeta {
+    width: 100%; box-sizing: border-box;
+    background: rgba(255,255,255,0.78);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    border: 1px solid rgba(195,154,59,0.45);
+    border-radius: 26px;
+    padding: 1.5rem 1.1rem 1.3rem;
+    box-shadow: 0 14px 40px rgba(139,71,137,0.12);
+}
+.a2-pregunta { font-family: var(--a2-serif); font-weight: 500; font-size: 1.38rem; color: var(--a2-texto); margin: 0 0 1.1rem; }
+.a2-animos { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.4rem; }
+.a2-animo {
+    display: flex; flex-direction: column; align-items: center; gap: 0.35rem;
+    background: #FFFFFF; border: 1px solid var(--a2-linea); border-radius: 18px;
+    padding: 0.65rem 0.15rem 0.55rem; cursor: pointer;
+    font-family: var(--a2-serif); font-size: 0.72rem; color: var(--a2-texto);
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.a2-animo span:first-child { font-size: 1.55rem; line-height: 1; }
+.a2-animo:hover, .a2-animo:focus-visible { transform: translateY(-2px); border-color: var(--a2-rosa); box-shadow: 0 6px 16px rgba(246,201,218,0.55); outline: none; }
+
+.a2-respuesta { display: none; }
+.a2-tarjeta.con-respuesta .a2-preguntando { display: none; }
+.a2-tarjeta.con-respuesta .a2-respuesta { display: block; animation: a2Aparecer 0.6s ease both; }
+@keyframes a2Aparecer { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.a2-hoy { font-family: var(--a2-serif); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; color: var(--a2-dorado); margin: 0 0 0.5rem; }
+.a2-mensaje { font-family: var(--a2-serif); font-size: 1.02rem; line-height: 1.55; color: var(--a2-texto); margin: 0 0 1rem; }
+.a2-carta-dia {
+    background: var(--a2-rosa-claro); border-radius: 18px; padding: 0.95rem 1rem; margin: 0 0 1.1rem;
+    font-family: var(--a2-serif); font-style: italic; font-weight: 500; font-size: 1.12rem; line-height: 1.45; color: var(--a2-ciruela);
+}
+.a2-carta-dia small { display: block; font-style: normal; font-weight: 600; font-size: 0.62rem; letter-spacing: 0.25em; color: var(--a2-dorado); margin-bottom: 0.35rem; }
+.a2-carta-dia strong { font-weight: 600; font-style: normal; }
+.a2-ayuda { font-family: var(--a2-serif); font-size: 0.85rem; color: var(--a2-suave); margin: -0.4rem 0 1rem; }
+.a2-acciones { display: flex; flex-direction: column; gap: 0.55rem; }
+.a2-cambiar { background: none; border: none; color: var(--a2-suave); font-family: var(--a2-serif); font-size: 0.85rem; text-decoration: underline; cursor: pointer; margin-top: 0.7rem; }
+
+.a2-frase { font-family: var(--a2-serif); font-style: italic; font-size: 1rem; line-height: 1.5; color: var(--a2-texto); margin: 1.3rem 0.5rem 0; min-height: 3em; transition: opacity 0.8s ease; }
+.a2-frase.oculta { opacity: 0; }
+
+.a2-btn {
+    display: block; width: 100%; box-sizing: border-box;
+    background: var(--a2-ciruela); color: #FFFFFF; border: none; border-radius: 40px;
+    padding: 0.95rem 1.5rem; font-family: var(--a2-serif); font-weight: 600; font-size: 1.02rem; letter-spacing: 0.06em;
+    cursor: pointer; box-shadow: 0 8px 22px rgba(139,71,137,0.28); transition: transform 0.2s ease, background 0.2s ease;
+}
+.a2-btn:hover { background: var(--a2-ciruela-osc); transform: translateY(-1px); }
+.a2-btn:disabled { opacity: 0.6; cursor: default; transform: none; }
+.a2-btn-sec {
+    display: block; width: 100%; box-sizing: border-box;
+    background: #FFFFFF; color: var(--a2-ciruela); border: 1.5px solid var(--a2-ciruela); border-radius: 40px;
+    padding: 0.85rem 1.5rem; font-family: var(--a2-serif); font-weight: 600; font-size: 0.98rem; cursor: pointer;
+}
+.a2-entrar { margin-top: 1.4rem; max-width: 280px; }
+.a2-puntos { display: flex; gap: 6px; justify-content: center; margin-top: 1.1rem; }
+.a2-puntos i { width: 6px; height: 6px; border-radius: 50%; background: rgba(139,71,137,0.22); transition: background 0.4s ease, transform 0.4s ease; }
+.a2-puntos i.activo { background: var(--a2-ciruela); transform: scale(1.25); }
+
+/* ---------- ENTRADA (registro y código) ---------- */
+.a2-login-fondo {
+    position: fixed; inset: 0; z-index: 10000;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.25rem; box-sizing: border-box; overflow-y: auto;
+    background: linear-gradient(180deg, #F9E3EC 0%, #F7D2E0 46%, #FBE6D8 100%);
+}
+.a2-login-fondo::before {
+    content: ''; position: absolute; left: 50%; bottom: -40vh; width: 130vw; max-width: 900px; aspect-ratio: 1;
+    transform: translateX(-50%); border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,246,232,0.7) 30%, rgba(255,255,255,0) 66%);
+    pointer-events: none;
+}
+.a2-login-card {
+    position: relative; width: 100%; max-width: 400px; box-sizing: border-box;
+    background: #FFFFFF; border: 1.5px solid var(--a2-dorado); border-radius: 28px;
+    padding: 2.4rem 1.7rem 1.8rem; text-align: center;
+    box-shadow: 0 18px 50px rgba(139,71,137,0.18);
+}
+.a2-login-card::after {
+    content: ''; position: absolute; inset: 8px; border: 1px solid var(--a2-rosa); border-radius: 21px; pointer-events: none;
+}
+.a2-login-card > * { position: relative; z-index: 1; }
+.a2-login-card .a2-loto { width: 72px; }
+.a2-login-titulo { font-family: var(--a2-serif); font-weight: 600; font-size: 2.6rem; color: var(--a2-ciruela); margin: 0.2rem 0 0.1rem; line-height: 1.1; }
+.a2-login-sub { font-family: var(--a2-serif); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; color: var(--a2-dorado); margin: 0 0 1.2rem; }
+.a2-login-texto { font-family: var(--a2-serif); font-style: italic; font-size: 1.02rem; color: var(--a2-texto); margin: 0 0 1.3rem; line-height: 1.5; }
+.a2-input {
+    display: block; width: 100%; box-sizing: border-box; margin: 0 0 0.75rem;
+    padding: 0.95rem 1.1rem; border: 1.5px solid var(--a2-linea); border-radius: 16px; background: #FFFDFE;
+    font-family: var(--a2-serif); font-size: 1.05rem; color: var(--a2-texto); text-align: center;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.a2-input::placeholder { color: #B9A8AF; }
+.a2-input:focus { outline: none; border-color: var(--a2-ciruela); box-shadow: 0 0 0 4px rgba(139,71,137,0.1); }
+.a2-input-codigo { font-size: 1.7rem; letter-spacing: 0.45em; padding-left: 1.5rem; }
+.a2-login-nota { font-family: var(--a2-serif); font-size: 0.82rem; color: var(--a2-suave); margin: 1.1rem 0 0; line-height: 1.5; }
+.a2-login-error { font-family: var(--a2-serif); font-size: 0.9rem; color: #B23A48; min-height: 1.3rem; margin: 0 0 0.6rem; }
+.a2-login-enlaces { font-family: var(--a2-serif); font-size: 0.9rem; margin: 1.1rem 0 0; color: var(--a2-suave); }
+.a2-login-enlaces a { color: var(--a2-ciruela); }
+
+/* ---------- CARTAS DE PODER ---------- */
+.pal-1 { --c-fondo: #FDEEF4; --c-medio: #F6C9DA; --c-osc: #B5527F; }
+.pal-2 { --c-fondo: #F3EDF8; --c-medio: #D9C7EA; --c-osc: #7E5AA6; }
+.pal-3 { --c-fondo: #FDF1E7; --c-medio: #F6D2B4; --c-osc: #B8733B; }
+.pal-4 { --c-fondo: #F1F5EA; --c-medio: #CFDDBB; --c-osc: #6E8A52; }
+.pal-5 { --c-fondo: #FDF6E3; --c-medio: #F1DCA0; --c-osc: #A9812A; }
+.pal-6 { --c-fondo: #EAF4F4; --c-medio: #BEDDDD; --c-osc: #4F8A8B; }
+.pal-7 { --c-fondo: #FBE9EC; --c-medio: #F2B8C6; --c-osc: #A8456B; }
+.pal-8 { --c-fondo: #FDEEE9; --c-medio: #F5C4B5; --c-osc: #B4583F; }
+.pal-9 { --c-fondo: #F6EAEF; --c-medio: #DDB8C8; --c-osc: #8B4789; }
+.pal-10 { --c-fondo: #FBF1E4; --c-medio: #EFCFA3; --c-osc: #A8702F; }
+
+.carta-frente.bg-1 { background-image: url('/static/images/cartas-aurora/frente-1.svg') !important; }
+.carta-frente.bg-2 { background-image: url('/static/images/cartas-aurora/frente-2.svg') !important; }
+.carta-frente.bg-3 { background-image: url('/static/images/cartas-aurora/frente-3.svg') !important; }
+.carta-frente.bg-4 { background-image: url('/static/images/cartas-aurora/frente-4.svg') !important; }
+.carta-frente.bg-5 { background-image: url('/static/images/cartas-aurora/frente-5.svg') !important; }
+.carta-frente.bg-6 { background-image: url('/static/images/cartas-aurora/frente-6.svg') !important; }
+.carta-frente.bg-7 { background-image: url('/static/images/cartas-aurora/frente-7.svg') !important; }
+.carta-frente.bg-8 { background-image: url('/static/images/cartas-aurora/frente-8.svg') !important; }
+.carta-frente.bg-9 { background-image: url('/static/images/cartas-aurora/frente-9.svg') !important; }
+.carta-frente.bg-10 { background-image: url('/static/images/cartas-aurora/frente-10.svg') !important; }
+
+.cartas-poder-section .carta-frente,
+.cartas-poder-section .carta-reverso {
+    border: none !important;
+    border-radius: 18px !important;
+    box-shadow: 0 10px 26px rgba(86,65,74,0.14) !important;
+}
+.cartas-poder-section .carta-frente { background-size: cover !important; background-position: center !important; }
+.cartas-poder-section .carta-frente::before,
+.cartas-poder-section .carta-frente::after { content: none !important; display: none !important; }
+.cartas-poder-section .carta-numero {
+    top: 15% !important; left: 0 !important; right: 0 !important; text-align: center;
+    font-family: var(--a2-serif) !important; font-weight: 600 !important; font-size: 1.9rem !important;
+    color: var(--c-medio, #F6C9DA) !important; text-shadow: none !important;
+    -webkit-text-stroke: 0.6px var(--c-osc, #B5527F);
+}
+.cartas-poder-section .carta-reverso {
+    background: #FFFFFF !important;
+    padding: 0 !important;
+    justify-content: center !important;
+    outline: 2px solid var(--c-medio, #F6C9DA); outline-offset: -10px;
+}
+.cartas-poder-section .carta-reverso::before {
+    content: ''; position: absolute; inset: 0; border-radius: 18px;
+    background: radial-gradient(circle at 0 0, var(--c-fondo, #FDEEF4) 0 34%, transparent 34.5%),
+                radial-gradient(circle at 100% 100%, var(--c-fondo, #FDEEF4) 0 30%, transparent 30.5%);
+    pointer-events: none;
+}
+.a2-reverso-loto { position: relative; width: 38%; max-width: 64px; margin: 0 auto 0.35rem; display: block; }
+.cartas-poder-section .carta-mensaje,
+.cartas-poder-section .carta-mensaje-premium {
+    position: relative; background: transparent !important; margin: 0 !important;
+    font-family: var(--a2-serif) !important; font-style: italic; font-weight: 500 !important;
+    font-size: 0.86rem !important; line-height: 1.38 !important; color: var(--a2-texto) !important;
+    padding: 0 0.95rem !important; text-align: center;
+}
+.cartas-poder-section .carta-mensaje strong,
+.cartas-poder-section .carta-mensaje-premium strong { font-style: normal; font-weight: 600; color: var(--c-osc, #8B4789); }
+.a2-reverso-pie { position: relative; display: block; margin-top: 0.7rem; font-family: var(--a2-serif); font-size: 0.55rem; font-weight: 600; letter-spacing: 0.28em; color: var(--c-osc, #8B4789); }
+.cartas-poder-section .carta-container.premium .carta-reverso { outline-color: var(--a2-dorado); }
+.cartas-poder-section .carta-mujer-container { display: none !important; }
+@media (max-width: 480px) {
+    .cartas-poder-section .carta-mensaje, .cartas-poder-section .carta-mensaje-premium { font-size: 0.8rem !important; padding: 0 0.75rem !important; }
+    .cartas-poder-section .carta-numero { font-size: 1.6rem !important; }
+}
+
+/* ventana de "tu carta personalizada": loto en lugar de la ilustración anterior */
+.carta-personalizada-mujer { display: none !important; }
+.a2-modal-loto { width: 70px; margin: 0.4rem auto 0.6rem; display: block; }
+#modal-carta-personalizada h3 { font-family: var(--a2-serif); color: var(--a2-ciruela); }
+#modal-carta-personalizada p { font-family: var(--a2-serif); font-style: italic; color: var(--a2-texto); }
+
+/* ---------- ENCABEZADOS DE CADA SECCIÓN: mismo estilo, cada uno con su color ---------- */
+.seccion .bienvenida {
+    --b-fondo: #FDEEF4; --b-medio: #F6C9DA; --b-osc: #B5527F;
+    background:
+        radial-gradient(circle at 0% 0%, var(--b-medio) 0 22%, transparent 22.4%),
+        radial-gradient(circle at 100% 110%, var(--b-medio) 0 26%, transparent 26.4%),
+        var(--b-fondo) !important;
+    background-size: auto !important;
+    border: 1px solid rgba(195,154,59,0.35);
+    box-shadow: 0 10px 28px rgba(139,71,137,0.08) !important;
+    color: var(--a2-texto) !important;
+    padding: 2.3rem 1.5rem 2rem !important;
+}
+.seccion .bienvenida::before, .seccion .bienvenida::after { content: none !important; animation: none !important; background: none !important; }
+.seccion .bienvenida h1 {
+    font-family: var(--a2-serif) !important; font-weight: 600 !important; color: var(--a2-ciruela) !important;
+    text-shadow: none !important; font-size: 1.9rem !important; letter-spacing: 0.01em;
+}
+.seccion .bienvenida p {
+    font-family: var(--a2-serif) !important; font-style: italic; color: var(--a2-texto) !important;
+    text-shadow: none !important; opacity: 1 !important; font-size: 1.02rem !important;
+}
+#seccion-empoderamiento .bienvenida { --b-fondo: #FDF6E3; --b-medio: #F1DCA0; --b-osc: #A9812A; }
+#seccion-cartas-poder .bienvenida  { --b-fondo: #F6EAEF; --b-medio: #DDB8C8; --b-osc: #8B4789; }
+#seccion-afirmaciones .bienvenida  { --b-fondo: #F3EDF8; --b-medio: #D9C7EA; --b-osc: #7E5AA6; }
+#seccion-amor-propio .bienvenida   { --b-fondo: #FBE9EC; --b-medio: #F2B8C6; --b-osc: #A8456B; }
+#seccion-autoestima .bienvenida    { --b-fondo: #FDF1E7; --b-medio: #F6D2B4; --b-osc: #B8733B; }
+#seccion-calma .bienvenida         { --b-fondo: #EAF4F4; --b-medio: #BEDDDD; --b-osc: #4F8A8B; }
+#seccion-crecimiento .bienvenida   { --b-fondo: #F1F5EA; --b-medio: #CFDDBB; --b-osc: #6E8A52; }
+#seccion-progreso .bienvenida      { --b-fondo: #FBF1E4; --b-medio: #EFCFA3; --b-osc: #A8702F; }

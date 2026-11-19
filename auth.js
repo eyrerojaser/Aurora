@@ -63,20 +63,20 @@ function pedirCodigoAcceso(nombre, email) {
         const ventana = document.createElement('div');
         ventana.id = 'ventana-codigo-acceso';
         ventana.innerHTML = `
-            <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.55); z-index: 10001; display: flex; align-items: center; justify-content: center;">
-                <div style="background: linear-gradient(135deg, #ffe9f3 0%, #faf5f0 100%); padding: 2.5rem 2rem; border-radius: 20px; max-width: 400px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.3); text-align: center;">
-                    <div style="font-size: 3rem; margin-bottom: 0.5rem;">💌</div>
-                    <h2 style="color: #d63384; margin-bottom: 0.75rem; font-size: 1.5rem;">Revisa tu email</h2>
-                    <p style="color: #8b7d7d; margin-bottom: 1.25rem;">Te enviamos un código de 6 dígitos a<br><strong id="codigo-email-destino"></strong></p>
-                    <input type="text" id="codigo-acceso-input" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" style="width: 100%; padding: 1rem; border: 2px solid #f4c542; border-radius: 10px; font-size: 1.6rem; letter-spacing: 0.4rem; margin-bottom: 0.75rem; text-align: center; display: block; box-sizing: border-box;">
-                    <p id="codigo-acceso-error" style="color: #c0392b; min-height: 1.2rem; margin: 0 0 0.75rem 0; font-size: 0.95rem;"></p>
-                    <button id="codigo-acceso-entrar" style="background: linear-gradient(135deg, #f4c542 0%, #f4a742 100%); color: white; border: none; padding: 1rem 2rem; font-size: 1.1rem; border-radius: 15px; cursor: pointer; width: 100%; font-weight: bold;">✨ ENTRAR ✨</button>
-                    <p style="margin-top: 1.25rem; font-size: 0.9rem;">
-                        <a href="#" id="codigo-acceso-reenviar" style="color: #8b4789;">Enviar otro código</a>
+            <div class="a2-login-fondo" style="z-index: 10001;">
+                <div class="a2-login-card">
+                    <img src="/static/images/cartas-aurora/loto.svg" alt="" class="a2-loto">
+                    <h2 class="a2-login-titulo" style="font-size: 2rem;">Revisa tu email</h2>
+                    <p class="a2-login-texto">Te enviamos un código de 6 dígitos a<br><strong id="codigo-email-destino"></strong></p>
+                    <input type="text" id="codigo-acceso-input" class="a2-input a2-input-codigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000">
+                    <p id="codigo-acceso-error" class="a2-login-error"></p>
+                    <button id="codigo-acceso-entrar" class="a2-btn">Entrar</button>
+                    <p class="a2-login-enlaces">
+                        <a href="#" id="codigo-acceso-reenviar">Enviar otro código</a>
                         &nbsp;·&nbsp;
-                        <a href="#" id="codigo-acceso-cancelar" style="color: #8b7d7d;">Cancelar</a>
+                        <a href="#" id="codigo-acceso-cancelar" style="color: var(--a2-suave);">Cancelar</a>
                     </p>
-                    <p style="color: #8b7d7d; margin-top: 0.75rem; font-size: 0.8rem;">¿No lo ves? Mira en Spam o Promociones.</p>
+                    <p class="a2-login-nota">¿No lo ves? Mira en Spam o Promociones.</p>
                 </div>
             </div>
         `;
@@ -119,7 +119,7 @@ function pedirCodigoAcceso(nombre, email) {
                 error.textContent = 'Error de conexión. Intenta nuevamente.';
             }
             btn.disabled = false;
-            btn.textContent = '✨ ENTRAR ✨';
+            btn.textContent = 'Entrar';
         };
 
         btn.addEventListener('click', verificar);
@@ -162,24 +162,20 @@ function mostrarRegistro() {
     const formulario = document.createElement('div');
     formulario.id = 'formulario-registro-simple';
     formulario.innerHTML = `
-        <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;">
-            <div style="background: linear-gradient(135deg, #ffe9f3 0%, #faf5f0 100%); padding: 3rem; border-radius: 20px; max-width: 400px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.3); text-align: center;">
-                <div style="font-size: 4rem; margin-bottom: 1rem;">🌸</div>
-                <h2 style="color: #d63384; margin-bottom: 1rem; font-size: 1.8rem;">Bienvenida a Aurora</h2>
-                <p style="color: #8b7d7d; margin-bottom: 1.5rem;">Crea tu cuenta para comenzar tu transformación</p>
-                
-                <input type="text" id="nombre-registro" placeholder="Tu nombre" style="width: 100%; padding: 1rem; border: 2px solid #f4c542; border-radius: 10px; font-size: 1.1rem; margin-bottom: 1rem; text-align: center; display: block; box-sizing: border-box;">
-                
-                <input type="email" id="email-registro" placeholder="Tu email" style="width: 100%; padding: 1rem; border: 2px solid #f4c542; border-radius: 10px; font-size: 1.1rem; margin-bottom: 1rem; text-align: center; display: block; box-sizing: border-box;">
-                
-                <button id="btn-registrar" style="background: linear-gradient(135deg, #f4c542 0%, #f4a742 100%); color: white; border: none; padding: 1rem 2rem; font-size: 1.2rem; border-radius: 15px; cursor: pointer; width: 100%; font-weight: bold; box-shadow: 0 4px 15px rgba(244, 197, 66, 0.4);">
-                    ✨ ENTRAR ✨
-                </button>
-                
-                <p style="color: #8b7d7d; margin-top: 1.5rem; font-size: 0.9rem;">Tus datos están seguros y solo tú puedes acceder a ellos</p>
+        <div class="a2-login-fondo">
+            <div class="a2-login-card">
+                <img src="/static/images/cartas-aurora/loto.svg" alt="" class="a2-loto">
+                <h2 class="a2-login-titulo">Aurora</h2>
+                <p class="a2-login-sub">Tu guía de empoderamiento</p>
+                <p class="a2-login-texto">Un espacio solo para ti,<br>para florecer un día a la vez.</p>
+                <input type="text" id="nombre-registro" class="a2-input" placeholder="Tu nombre" autocomplete="given-name">
+                <input type="email" id="email-registro" class="a2-input" placeholder="Tu email" autocomplete="email">
+                <button id="btn-registrar" class="a2-btn">Entrar</button>
+                <p class="a2-login-nota">Te enviaremos un código a tu email para entrar.<br>Sin contraseñas, y tus datos son solo tuyos.</p>
             </div>
         </div>
     `;
+
     
     document.body.appendChild(formulario);
     
@@ -247,13 +243,13 @@ function mostrarRegistro() {
             } else {
                 alert(data.error || 'Error al registrar');
                 btnRegistrar.disabled = false;
-                btnRegistrar.textContent = '✨ ENTRAR ✨';
+                btnRegistrar.textContent = 'Entrar';
             }
         } catch (error) {
             console.error('Error registro:', error);
             alert('Error de conexión. Intenta nuevamente.');
             btnRegistrar.disabled = false;
-            btnRegistrar.textContent = '✨ ENTRAR ✨';
+            btnRegistrar.textContent = 'Entrar';
         }
     });
     
