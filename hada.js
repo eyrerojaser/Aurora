@@ -4,7 +4,7 @@
 // Se puede ocultar desde "Yo".
 // =====================================================================
 (function () {
-    const SVG_URL = '/static/images/hada/hada.svg?v=1';
+    const IMG = '/static/images/hada/';
     const quieta = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const FRASES = [
@@ -52,19 +52,18 @@
         hada = zona.querySelector('.hada');
         burbuja = zona.querySelector('.hada-burbuja');
         cuerpo = zona.querySelector('.hada-cuerpo');
-        try {
-            const r = await fetch(SVG_URL);
-            cuerpo.innerHTML = await r.text();
-        } catch (e) {
-            cuerpo.innerHTML = `<img src="${SVG_URL}" alt="">`;
-        }
+        cuerpo.innerHTML = `
+            <img class="hd-capa hd-ala-izq" src="${IMG}ala-izq.webp?v=1" alt="" draggable="false">
+            <img class="hd-capa hd-ala-der" src="${IMG}ala-der.webp?v=1" alt="" draggable="false">
+            <img class="hd-capa hd-base" src="${IMG}base.webp?v=1" alt="Hada madrina" draggable="false">
+            <span class="hd-destello"></span>`;
         hada.addEventListener('click', tocar);
     }
 
     // zona segura: debajo del borde de arriba y encima de las pestañas
     function limites() {
         const w = window.innerWidth, h = window.innerHeight;
-        const ancho = hada.offsetWidth || 90, alto = hada.offsetHeight || 108;
+        const ancho = hada.offsetWidth || 110, alto = hada.offsetHeight || 120;
         return { x0: 6, x1: w - ancho - 6, y0: 70, y1: Math.max(120, h - alto - 110) };
     }
 

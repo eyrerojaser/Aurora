@@ -5,40 +5,35 @@
 .hada-zona.escondida { display: none; }
 
 .hada {
-    position: absolute; left: 0; top: 0; width: 92px; pointer-events: auto; cursor: pointer;
+    position: absolute; left: 0; top: 0; width: 112px; pointer-events: auto; cursor: pointer;
     transition-property: transform; transition-timing-function: cubic-bezier(.45, .05, .35, 1);
     -webkit-tap-highlight-color: transparent; will-change: transform;
 }
 .hada-voltea { transition: transform .35s ease; }
 .hada.mira-izq .hada-voltea { transform: scaleX(-1); }
 .hada-flota { animation: hadaFlota 3.2s ease-in-out infinite; }
-.hada-cuerpo svg, .hada-cuerpo img { display: block; width: 100%; height: auto; filter: drop-shadow(0 6px 10px rgba(139, 71, 137, .25)); overflow: visible; }
 
 /* flota suave arriba y abajo; al volar se inclina un poquito */
 @keyframes hadaFlota { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-9px) rotate(2deg); } }
 .hada.volando .hada-flota { animation: hadaVuela .9s ease-in-out infinite; }
 @keyframes hadaVuela { 0%, 100% { transform: translateY(0) rotate(8deg); } 50% { transform: translateY(-6px) rotate(5deg); } }
 
-/* alas que aletean */
-.hada .hd-ala-izq, .hada .hd-ala-der { transform-box: view-box; animation: hadaAla .38s ease-in-out infinite alternate; }
-.hada .hd-ala-izq { transform-origin: 78px 98px; }
-.hada .hd-ala-der { transform-origin: 82px 98px; }
-.hada.volando .hd-ala-izq, .hada.volando .hd-ala-der { animation-duration: .16s; }
-@keyframes hadaAla { from { transform: scaleX(1); } to { transform: scaleX(.62); } }
-
-/* parpadea */
-.hada .hd-ojos { transform-box: view-box; transform-origin: 80px 74px; animation: hadaParpadeo 4.6s infinite; }
-@keyframes hadaParpadeo { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
-
-/* mueve la cabecita y la varita */
-.hada .hd-cabeza { transform-box: view-box; transform-origin: 80px 98px; animation: hadaCabeza 5s ease-in-out infinite; }
-@keyframes hadaCabeza { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-5deg); } 60% { transform: rotate(4deg); } }
-.hada .hd-varita { transform-box: view-box; transform-origin: 94px 108px; animation: hadaVarita 2.4s ease-in-out infinite; }
-@keyframes hadaVarita { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-12deg); } }
-.hada .hd-brazo-izq { transform-box: view-box; transform-origin: 68px 108px; animation: hadaSaluda 3.6s ease-in-out infinite; }
-@keyframes hadaSaluda { 0%, 70%, 100% { transform: rotate(0); } 78% { transform: rotate(18deg); } 86% { transform: rotate(-6deg); } 94% { transform: rotate(14deg); } }
-.hada .hd-luz { transform-box: fill-box; transform-origin: center; animation: hadaLuz 1.6s ease-in-out infinite; }
-@keyframes hadaLuz { 0%, 100% { transform: scale(.8); opacity: .6; } 50% { transform: scale(1.35); opacity: 1; } }
+/* tu hada en capas: las alas de afuera aletean sobre la imagen */
+.hada-cuerpo { position: relative; aspect-ratio: 1200 / 1310; filter: drop-shadow(0 8px 12px rgba(139, 71, 137, .25)); }
+.hd-capa { position: absolute; inset: 0; width: 100%; height: 100%; user-select: none; -webkit-user-drag: none; pointer-events: none; }
+.hd-base { position: relative; display: block; height: auto; }
+.hd-ala-izq { transform-origin: 28% 41%; animation: hadaAlaIzq .42s ease-in-out infinite alternate; }
+.hd-ala-der { transform-origin: 63% 26%; animation: hadaAlaDer .42s ease-in-out infinite alternate; }
+.hada.volando .hd-ala-izq, .hada.volando .hd-ala-der { animation-duration: .17s; }
+@keyframes hadaAlaIzq { from { transform: scaleX(1) skewY(0); } to { transform: scaleX(.78) skewY(-3deg); } }
+@keyframes hadaAlaDer { from { transform: scaleX(1); } to { transform: scaleX(.72); } }
+/* la estrella de la varita titila */
+.hd-destello {
+    position: absolute; left: 79%; top: 31%; width: 26%; aspect-ratio: 1; transform: translate(-50%, -50%);
+    border-radius: 50%; background: radial-gradient(circle, rgba(255, 246, 210, .95) 0%, rgba(255, 228, 150, .45) 35%, rgba(255, 228, 150, 0) 70%);
+    animation: hadaDestello 1.8s ease-in-out infinite; pointer-events: none; mix-blend-mode: screen;
+}
+@keyframes hadaDestello { 0%, 100% { opacity: .35; transform: translate(-50%, -50%) scale(.75); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); } }
 
 /* da una vuelta cuando la tocas */
 .hada.gira .hada-cuerpo { animation: hadaGira .8s cubic-bezier(.5, 0, .3, 1); }

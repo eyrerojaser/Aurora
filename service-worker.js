@@ -1,7 +1,7 @@
 // Las notificaciones push viven en este mismo service worker (antes eran dos y se pisaban)
 importScripts('/sw-push.js');
 
-const CACHE_NAME = 'aurora-pwa-v1.8.0';
+const CACHE_NAME = 'aurora-pwa-v1.8.1';
 const urlsToCache = [
   '/',
   '/index.html',
