@@ -14,7 +14,7 @@ self.addEventListener('push', function(event) {
         icon: data.icon || '/icon-512.png',
         badge: '/icon-512.png',
         vibrate: [200, 100, 200],
-        tag: data.tag || 'aurora-habito',
+        tag: data.tag || ('aurora-' + (data.title || 'habito')),
         data: {
             url: data.url || '/app#habitos-calendario'
         }

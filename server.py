@@ -361,6 +361,13 @@ CREATE TABLE IF NOT EXISTS habitos_calendario (
     horarios_habitos JSONB,
     UNIQUE (usuario_id, fecha)
 );
+CREATE TABLE IF NOT EXISTS habitos_config (
+    usuario_id INTEGER PRIMARY KEY REFERENCES usuarios(id) ON DELETE CASCADE,
+    habitos JSONB NOT NULL DEFAULT '[]'::jsonb,
+    zona VARCHAR(64) DEFAULT 'America/Chicago',
+    enviados JSONB NOT NULL DEFAULT '{}'::jsonb,
+    actualizado TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 CREATE TABLE IF NOT EXISTS push_subscriptions (
     id SERIAL PRIMARY KEY,
     usuario_id INTEGER REFERENCES usuarios(id) ON DELETE CASCADE,
@@ -703,6 +710,7 @@ def eliminar_todos_datos():
         cur.execute('DELETE FROM diario_paginas WHERE usuario_id = %s', (usuario_id,))
         cur.execute('DELETE FROM habitos_calendario WHERE usuario_id = %s', (usuario_id,))
         cur.execute('DELETE FROM push_subscriptions WHERE usuario_id = %s', (usuario_id,))
+        cur.execute('DELETE FROM habitos_config WHERE usuario_id = %s', (usuario_id,))
         cur.execute('DELETE FROM metas WHERE usuario_email = %s', (usuario_email,))
         cur.execute('DELETE FROM vision_board WHERE usuario_id = %s', (usuario_id,))
         cur.execute('DELETE FROM collage_elementos WHERE usuario_id = %s', (usuario_id,))
@@ -1690,6 +1698,158 @@ def guardar_habitos_calendario():
         print(f"Error guardar hábitos calendario: {e}")
         return jsonify({'error': 'Error en el servidor'}), 500
 
+# ============ MIS HÁBITOS: lista propia de cada usuaria y recordatorios ============
+# Cada hábito: {"id", "emoji", "nombre", "hora": "HH:MM" o ""}
+def _limpiar_habitos(lista):
+    limpios, vistos = [], set()
+    for h in (lista or [])[:30]:
+        if not isinstance(h, dict):
+            continue
+        hid = re.sub(r'[^a-z0-9_-]', '', str(h.get('id', '')).lower())[:40]
+        nombre = str(h.get('nombre', '')).strip()[:60]
+        if not hid or not nombre or hid in vistos:
+            continue
+        hora = str(h.get('hora', '') or '')
+        if not re.fullmatch(r'([01]\d|2[0-3]):[0-5]\d', hora):
+            hora = ''
+        vistos.add(hid)
+        limpios.append({'id': hid, 'emoji': str(h.get('emoji', '🌸'))[:8], 'nombre': nombre, 'hora': hora})
+    return limpios
+
+@app.route('/api/habitos/config', methods=['GET'])
+def obtener_config_habitos():
+    usuario_id = session.get('usuario_id')
+    if not usuario_id:
+        return jsonify({'error': 'No autenticado'}), 401
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute('SELECT habitos, zona FROM habitos_config WHERE usuario_id = %s', (usuario_id,))
+        fila = cur.fetchone()
+        cur.close(); conn.close()
+        return jsonify({'habitos': fila['habitos'] if fila else None, 'zona': fila['zona'] if fila else None}), 200
+    except Exception as e:
+        print(f'Error obtener config hábitos: {e}')
+        return jsonify({'error': 'Error en el servidor'}), 500
+
+@app.route('/api/habitos/config', methods=['PUT'])
+def guardar_config_habitos():
+    usuario_id = session.get('usuario_id')
+    if not usuario_id:
+        return jsonify({'error': 'No autenticado'}), 401
+    datos = request.get_json(silent=True) or {}
+    habitos = _limpiar_habitos(datos.get('habitos'))
+    zona = str(datos.get('zona') or 'America/Chicago')[:64]
+    try:
+        from zoneinfo import ZoneInfo
+        ZoneInfo(zona)
+    except Exception:
+        zona = 'America/Chicago'
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute('''
+            INSERT INTO habitos_config (usuario_id, habitos, zona, actualizado)
+            VALUES (%s, %s, %s, CURRENT_TIMESTAMP)
+            ON CONFLICT (usuario_id) DO UPDATE
+            SET habitos = EXCLUDED.habitos, zona = EXCLUDED.zona, actualizado = CURRENT_TIMESTAMP
+        ''', (usuario_id, json.dumps(habitos), zona))
+        conn.commit(); cur.close(); conn.close()
+        return jsonify({'success': True, 'habitos': habitos}), 200
+    except Exception as e:
+        print(f'Error guardar config hábitos: {e}')
+        return jsonify({'error': 'Error en el servidor'}), 500
+
+def _enviar_push(subs, titulo, cuerpo, url='/app'):
+    """Manda una notificación a todas las suscripciones dadas. Devuelve (enviadas, vencidas)."""
+    from pywebpush import webpush, WebPushException
+    privada = os.environ.get('VAPID_PRIVATE_KEY')
+    if not privada:
+        return 0, []
+    email = os.environ.get('VAPID_EMAIL', 'mailto:auroraempowerment26@gmail.com')
+    if not email.startswith('mailto:'):
+        email = 'mailto:' + email
+    mensaje = json.dumps({'title': titulo, 'body': cuerpo, 'icon': '/icon-512.png', 'url': url})
+    enviadas, vencidas = 0, []
+    for s in subs:
+        try:
+            webpush(subscription_info={'endpoint': s['endpoint'], 'keys': {'p256dh': s['p256dh'], 'auth': s['auth']}},
+                    data=mensaje, vapid_private_key=privada, vapid_claims={'sub': email}, ttl=3600)
+            enviadas += 1
+        except WebPushException as e:
+            codigo = getattr(getattr(e, 'response', None), 'status_code', None)
+            if codigo in (404, 410):
+                vencidas.append(s['endpoint'])
+            print(f'Error enviando push: {e}')
+        except Exception as e:
+            print(f'Error enviando push: {e}')
+    return enviadas, vencidas
+
+FRASES_RECORDATORIO = [
+    'Es tu momento. Un pasito hoy también cuenta 🌸',
+    'Tu hada madrina te recuerda: tú puedes ✨',
+    'Cuidarte es tu prioridad hoy 💗',
+    'Pequeños hábitos, grandes cambios 🌷',
+]
+
+@app.route('/api/recordatorios/enviar', methods=['GET', 'POST'])
+@limiter.limit('30 per hour')
+def enviar_recordatorios():
+    """Lo llama un reloj externo cada pocos minutos. Manda los recordatorios cuya hora ya llegó
+    (hasta 60 minutos de atraso), una sola vez al día y solo si el hábito no está hecho."""
+    if not os.environ.get('VAPID_PRIVATE_KEY'):
+        return jsonify({'ok': False, 'motivo': 'faltan las claves VAPID'}), 200
+    from zoneinfo import ZoneInfo
+    enviados_total = 0
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute('''
+            SELECT c.usuario_id, c.habitos, c.zona, c.enviados
+            FROM habitos_config c
+            WHERE EXISTS (SELECT 1 FROM push_subscriptions p WHERE p.usuario_id = c.usuario_id)
+        ''')
+        configs = cur.fetchall()
+        for c in configs:
+            try:
+                zona = ZoneInfo(c['zona'] or 'America/Chicago')
+            except Exception:
+                zona = ZoneInfo('America/Chicago')
+            ahora = datetime.now(zona)
+            hoy = ahora.strftime('%Y-%m-%d')
+            minutos_ahora = ahora.hour * 60 + ahora.minute
+            enviados = dict(c['enviados'] or {})
+            pendientes = []
+            for h in c['habitos'] or []:
+                hora = h.get('hora') or ''
+                if not hora or enviados.get(h['id']) == hoy:
+                    continue
+                hh, mm = int(hora[:2]), int(hora[3:])
+                atraso = minutos_ahora - (hh * 60 + mm)
+                if 0 <= atraso <= 60:
+                    pendientes.append(h)
+            if not pendientes:
+                continue
+            cur.execute('SELECT habitos_completados FROM habitos_calendario WHERE usuario_id = %s AND fecha = %s', (c['usuario_id'], hoy))
+            fila = cur.fetchone()
+            hechos = set((fila or {}).get('habitos_completados') or [])
+            cur.execute('SELECT endpoint, p256dh, auth FROM push_subscriptions WHERE usuario_id = %s', (c['usuario_id'],))
+            subs = cur.fetchall()
+            for h in pendientes:
+                enviados[h['id']] = hoy
+                if h['id'] in hechos:
+                    continue
+                n, vencidas = _enviar_push(subs, f"{h.get('emoji', '🌸')} {h['nombre']}", random.choice(FRASES_RECORDATORIO), '/app')
+                enviados_total += n
+                for ep in vencidas:
+                    cur.execute('DELETE FROM push_subscriptions WHERE usuario_id = %s AND endpoint = %s', (c['usuario_id'], ep))
+            cur.execute('UPDATE habitos_config SET enviados = %s WHERE usuario_id = %s', (json.dumps(enviados), c['usuario_id']))
+        conn.commit(); cur.close(); conn.close()
+        return jsonify({'ok': True, 'enviados': enviados_total}), 200
+    except Exception as e:
+        print(f'Error enviando recordatorios: {e}')
+        return jsonify({'ok': False}), 500
+
 # ===== NOTIFICACIONES PUSH =====
 @app.route('/api/vapid-public-key')
 def get_vapid_public_key():
@@ -1737,58 +1897,23 @@ def subscribe_push():
 
 @app.route('/api/push/test', methods=['POST'])
 def test_push_notification():
-    """Envía una notificación de prueba"""
+    """Envía una notificación de prueba a la usuaria de esta sesión"""
+    usuario_id = session.get('usuario_id')
+    if not usuario_id:
+        return jsonify({'error': 'No hay sesión activa'}), 401
     try:
-        from pywebpush import webpush, WebPushException
-        
-        usuario_id = session.get('usuario_id')
-        if not usuario_id:
-            return jsonify({'error': 'No hay sesión activa'}), 401
-        
         conn = get_db()
         cur = conn.cursor(cursor_factory=RealDictCursor)
-        
-        cur.execute('SELECT * FROM push_subscriptions WHERE usuario_id = %s', (usuario_id,))
+        cur.execute('SELECT endpoint, p256dh, auth FROM push_subscriptions WHERE usuario_id = %s', (usuario_id,))
         subs = cur.fetchall()
-        conn.close()
-        
+        cur.close(); conn.close()
         if not subs:
             return jsonify({'error': 'No hay suscripciones push activas'}), 400
-        
-        vapid_private = os.environ.get('VAPID_PRIVATE_KEY')
-        vapid_email = os.environ.get('VAPID_EMAIL', 'mailto:auroraempowerment26@gmail.com')
-        
-        mensaje = json.dumps({
-            'title': '🌸 Aurora',
-            'body': '¡Las notificaciones funcionan! Te recordaremos tus hábitos.',
-            'icon': '/icon-512.png',
-            'url': '/app#habitos-calendario'
-        })
-        
-        enviados = 0
-        for sub in subs:
-            try:
-                webpush(
-                    subscription_info={
-                        'endpoint': sub['endpoint'],
-                        'keys': {
-                            'p256dh': sub['p256dh'],
-                            'auth': sub['auth']
-                        }
-                    },
-                    data=mensaje,
-                    vapid_private_key=vapid_private,
-                    vapid_claims={'sub': vapid_email}
-                )
-                enviados += 1
-            except WebPushException as e:
-                print(f"Error enviar push: {e}")
-        
-        return jsonify({'success': True, 'enviados': enviados})
-        
+        n, _ = _enviar_push(subs, '🌸 ¡Listo!', 'Así te van a llegar los recordatorios de tus hábitos.', '/app')
+        return jsonify({'success': n > 0, 'enviados': n})
     except Exception as e:
         print(f"Error test push: {e}")
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': 'Error en el servidor'}), 500
 
 @app.after_request
 def add_no_cache_headers(response):

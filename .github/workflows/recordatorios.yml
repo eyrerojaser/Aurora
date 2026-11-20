@@ -1,0 +1,18 @@
+# Reloj de los recordatorios de hábitos.
+# Cada 10 minutos le pide a Aurora que mande los recordatorios cuya hora ya llegó.
+# (También mantiene la app despierta en el plan gratis de Render.)
+name: Recordatorios de hábitos
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+jobs:
+  avisar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Pedir a Aurora que envíe los recordatorios
+        run: |
+          curl -sS -m 90 --retry 2 --retry-delay 20 "${APP_URL:-https://aurora-8qaj.onrender.com}/api/recordatorios/enviar" || true
+        env:
+          APP_URL: ${{ vars.APP_URL }}
