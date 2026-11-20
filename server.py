@@ -1211,7 +1211,7 @@ def verificar_premium():
         cur.close()
         conn.close()
         
-        email_actual = get_user_email_from_session() or email_param
+        email_actual = (get_user_email_from_session() or email_param or '').strip().lower()
         es_premium = premium is not None or bool(email_actual and email_actual in _emails_premium_gratis())
         print(f'✅ Usuario {usuario_id} es Premium: {es_premium}')
         

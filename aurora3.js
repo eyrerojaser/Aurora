@@ -221,6 +221,17 @@ function a3Compartir() {
     }
 }
 
+// Cuando llega la respuesta de Premium del servidor, se actualizan Crecer y Yo al momento
+if (typeof actualizarUIPremium === 'function') {
+    const _a3ActualizarUIPremium = actualizarUIPremium;
+    actualizarUIPremium = function () {
+        const r = _a3ActualizarUIPremium.apply(this, arguments);
+        a3PintarPremium();
+        if (document.getElementById('seccion-hoy')?.classList.contains('activa')) a3PintarHoy();
+        return r;
+    };
+}
+
 // Si ya había sesión guardada, abrir "Hoy" enseguida (sin pasar por la portada)
 document.addEventListener('DOMContentLoaded', () => {
     if (a3Logueada()) mostrarSeccion('hoy');
