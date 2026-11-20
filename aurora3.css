@@ -425,3 +425,21 @@ body.a3-es-premium .a3-premium::after { display: none; }
     .dc-libro-leer .dc-hoja.con-deco { min-height: 440px; }
     .dc-texto-leer { min-height: 160px; }
 }
+
+/* ánimo del diario: solo palabras, cada una en su cajita de color */
+.dc-animos { flex-wrap: wrap; overflow: visible; gap: 6px; }
+.dc-libro .diario-mood-btn {
+    flex: 0 0 auto; display: inline-block; padding: 6px 12px; border-radius: 999px;
+    font: 600 0.8rem system-ui, -apple-system, sans-serif; line-height: 1.2;
+    border: 1.5px solid transparent; color: var(--c-osc, #6E3A6C); background: var(--c-fondo, #FBF1F5);
+}
+.dc-libro .diario-mood-btn.active { border-color: var(--c-osc, #6E3A6C); background: var(--c-medio, #F3D5E2); color: var(--c-osc, #6E3A6C); box-shadow: 0 2px 6px rgba(86, 65, 74, .12); }
+.diario-mood-btn[data-mood="feliz"], .dc-mood-feliz           { --c-fondo: #FFF3D6; --c-medio: #FBE2A6; --c-osc: #8A6212; }
+.diario-mood-btn[data-mood="tranquila"], .dc-mood-tranquila   { --c-fondo: #E7F3EF; --c-medio: #C6E4D9; --c-osc: #2F6B57; }
+.diario-mood-btn[data-mood="agradecida"], .dc-mood-agradecida { --c-fondo: #FCE9F1; --c-medio: #F6CBDD; --c-osc: #93365F; }
+.diario-mood-btn[data-mood="motivada"], .dc-mood-motivada     { --c-fondo: #FDEDE4; --c-medio: #F8D0BB; --c-osc: #95462A; }
+.diario-mood-btn[data-mood="pensativa"], .dc-mood-pensativa   { --c-fondo: #F1ECF8; --c-medio: #DCD0EF; --c-osc: #5E4690; }
+.diario-mood-btn[data-mood="triste"], .dc-mood-triste         { --c-fondo: #E8F0F8; --c-medio: #CADCEE; --c-osc: #335E86; }
+.diario-mood-btn[data-mood="ansiosa"], .dc-mood-ansiosa       { --c-fondo: #F3EEE8; --c-medio: #E2D6C8; --c-osc: #6B5640; }
+.diario-mood-btn[data-mood="cansada"], .dc-mood-cansada       { --c-fondo: #EEEFF3; --c-medio: #D6D9E2; --c-osc: #50566B; }
+.dc-mood-leer { font: 600 0.78rem system-ui, -apple-system, sans-serif; padding: 4px 10px; border-radius: 999px; background: var(--c-fondo, #FBF1F5); color: var(--c-osc, #6E3A6C); }

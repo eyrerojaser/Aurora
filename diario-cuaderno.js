@@ -297,7 +297,7 @@ async function guardarPaginaScrapbook(event) {
         hojasExtra: extras,
         notas: notas,
         mood: moodSeleccionado ? moodSeleccionado.dataset.mood : '',
-        moodEmoji: moodSeleccionado ? moodSeleccionado.childNodes[0].textContent.trim() : '',
+        moodEmoji: '',
         gratitudes: gratitudes,
         deco: dcDeco.map(d => Object.assign({}, d, { hoja: Math.min(d.hoja, totalHojas) })),
         fuente: localStorage.getItem('diarioFuenteSeleccionada') || "'Lora', Georgia, serif",
@@ -368,7 +368,7 @@ function cargarPaginasAnteriores() {
     const fotosNube = p.fotosEnNube ? `<p class="dc-suave">📷 ${p.fotosEnNube} foto(s) guardada(s) en la nube</p>` : '';
 
     const hojas = [
-        `<div class="dc-hoja-cab"><span class="dc-fecha">${fechaTxt} · ${horaTxt}</span>${p.moodEmoji ? `<span class="dc-mood-leer">${p.moodEmoji}</span>` : ''}</div>
+        `<div class="dc-hoja-cab"><span class="dc-fecha">${fechaTxt} · ${horaTxt}</span>${p.mood ? `<span class="dc-mood-leer dc-mood-${dcEscapar(p.mood)}">${dcEscapar(p.mood.charAt(0).toUpperCase() + p.mood.slice(1))}</span>` : ''}</div>
          <div class="dc-texto-leer" style="font-family:${letra}">${dcEscapar(p.texto) || '<span class="dc-suave">Sin texto este día</span>'}</div>`,
         grat + notas + fotosNube
     ];
