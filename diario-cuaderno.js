@@ -373,16 +373,19 @@ function cargarPaginasAnteriores() {
         grat + notas + fotosNube
     ];
     (p.hojasExtra || []).forEach(t => hojas.push(`<div class="dc-hoja-cab"><span class="dc-fecha">Sigo escribiendo…</span></div><div class="dc-texto-leer" style="font-family:${letra}">${dcEscapar(t)}</div>`));
-    // quitar la hoja 2 si quedó vacía y no tiene decoraciones (páginas viejas sin nada a la derecha)
-    const filas = Math.ceil(hojas.length / 2);
-    const html = hojas.map((contenido, k) => {
-        const n = k + 1;
-        const items = deco.filter(d => (d.hoja || 2) === n).map((d, j) => dcHtmlItem(d, j, false)).join('');
-        return `<div class="dc-hoja ${n % 2 ? 'impar' : 'par'}" style="grid-column:${n % 2 ? 1 : 3};grid-row:${Math.ceil(n / 2)}">${contenido}<div class="dc-capa">${items}</div><span class="dc-num">${n}</span></div>`;
+    // solo se muestran las hojas que tienen algo (texto o fotos/stickers)
+    const visibles = hojas.map((contenido, k) => ({ contenido, n: k + 1, items: deco.filter(d => (d.hoja || 2) === k + 1) }))
+        .filter(h => h.n === 1 || h.items.length || h.contenido.replace(/<[^>]*>/g, '').trim());
+    const filas = Math.ceil(visibles.length / 2);
+    const html = visibles.map((h, k) => {
+        const pos = k + 1;
+        const items = h.items.map((d, j) => dcHtmlItem(d, j, false)).join('');
+        return `<div class="dc-hoja ${pos % 2 ? 'impar' : 'par'}${h.items.length ? ' con-deco' : ''}" style="grid-column:${pos % 2 ? 1 : 3};grid-row:${Math.ceil(pos / 2)}">${h.contenido}<div class="dc-capa">${items}</div><span class="dc-num">${h.n}</span></div>`;
     }).join('');
+    const unaSola = visibles.length === 1;
 
     listaDiv.innerHTML = `
-        <div class="dc-libro dc-libro-leer"><div class="dc-lomo" aria-hidden="true" style="grid-row:1 / ${filas + 1}"></div>${html}</div>
+        <div class="dc-libro dc-libro-leer${unaSola ? ' dc-una-hoja' : ''}">${unaSola ? '' : `<div class="dc-lomo" aria-hidden="true" style="grid-row:1 / ${filas + 1}"></div>`}${html}</div>
         <div class="dc-hojear">
             <button type="button" class="dc-flecha${i >= paginas.length - 1 ? ' apagada' : ''}" onclick="dcIrAPagina(${i + 1})" aria-label="Página más vieja">‹</button>
             <span>Página ${paginas.length - i} de ${paginas.length}</span>
