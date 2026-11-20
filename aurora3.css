@@ -231,42 +231,43 @@ body.a3-es-premium .a3-premium::after { display: none; }
 
 /* =====================================================================
    DIARIO · cuaderno abierto
-   En pantalla ancha: dos hojas lado a lado. En el teléfono: una hoja y se pasa deslizando.
+   Pantalla ancha: hojas de dos en dos con argollas. Teléfono: una hoja a la vez.
+   Fotos y stickers en una capa encima de cada hoja (se mueven y cambian de tamaño).
    ===================================================================== */
-#seccion-diario .dc-pagina { max-width: 980px; margin: 0 auto; padding: 0 0.75rem; color: var(--a2-texto); }
+#seccion-diario .dc-pagina { max-width: 1000px; margin: 0 auto; padding: 0 0.75rem; color: var(--a2-texto); }
 .dc-cab { text-align: center; margin: 0.2rem 0 1rem; }
 .dc-cab h1 { margin: 0; font: 500 1.8rem/1.15 var(--a2-serif); color: var(--a2-texto); }
 .dc-cab p { margin: 4px 0 0; font: italic 0.92rem var(--a2-serif); color: var(--a2-suave); }
 
+/* --- el cuaderno --- */
 .dc-libro {
-    position: relative; display: grid; grid-template-columns: 1fr 22px 1fr;
-    background: #FFFFFF; border-radius: 6px 6px 6px 6px;
-    box-shadow: 0 1px 0 #EADBD2, 0 10px 30px rgba(139, 71, 137, 0.12), 0 2px 6px rgba(0,0,0,.05);
+    position: relative; display: grid; grid-template-columns: 1fr 34px 1fr; grid-auto-rows: auto;
+    background: #fff; border-radius: 6px;
+    box-shadow: 0 1px 0 #E6D8DE, 0 10px 30px rgba(139, 71, 137, 0.12), 0 2px 6px rgba(0,0,0,.05);
 }
-.dc-hoja {
-    position: relative; min-width: 0; box-sizing: border-box;
-    padding: 1.3rem 1.4rem 2rem; min-height: 560px;
-    background: #FFFFFF;
-}
-.dc-izq { border-radius: 6px 0 0 6px; background: linear-gradient(90deg, #FFFFFF 92%, #F4ECEF 100%); }
-.dc-der { border-radius: 0 6px 6px 0; background: linear-gradient(270deg, #FFFFFF 92%, #F4ECEF 100%); }
-.dc-lomo {
-    background: linear-gradient(90deg, #EADDE3 0%, #FAF6F8 45%, #FAF6F8 55%, #EADDE3 100%);
-    position: relative;
-}
+.dc-hoja { position: relative; min-width: 0; box-sizing: border-box; padding: 1.3rem 1.4rem 2rem; background: #fff; }
+.dc-libro > .dc-hoja.impar { grid-column: 1; border-radius: 6px 0 0 6px; background: linear-gradient(90deg, #fff 93%, #F4ECEF 100%); }
+.dc-libro > .dc-hoja.par { grid-column: 3; border-radius: 0 6px 6px 0; background: linear-gradient(270deg, #fff 93%, #F4ECEF 100%); }
+.dc-lomo { grid-column: 2; grid-row: 1; position: relative; z-index: 150; background: linear-gradient(90deg, #EFE6EA 0%, #FBF8F9 30%, #FBF8F9 70%, #EFE6EA 100%); }
 .dc-lomo::before {
-    content: ''; position: absolute; top: 18px; bottom: 18px; left: 50%; width: 10px; transform: translateX(-50%);
-    background: radial-gradient(circle, #C9B3BE 0 3px, transparent 3.5px) center top / 10px 26px repeat-y;
+    content: ''; position: absolute; top: 14px; bottom: 14px; left: 50%; width: 56px; transform: translateX(-50%);
+    background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2256%22%20height%3D%2244%22%20viewBox%3D%220%200%2056%2044%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23F6E7C6%22/%3E%3Cstop%20offset%3D%22.45%22%20stop-color%3D%22%23D2AE5E%22/%3E%3Cstop%20offset%3D%22.7%22%20stop-color%3D%22%23B98F36%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23E8D3A2%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle%20cx%3D%229%22%20cy%3D%2223%22%20r%3D%223.6%22%20fill%3D%22%23D9C6CF%22/%3E%3Ccircle%20cx%3D%2247%22%20cy%3D%2223%22%20r%3D%223.6%22%20fill%3D%22%23D9C6CF%22/%3E%3Cpath%20d%3D%22M9%2023%20C9%2012%2C%2047%2012%2C%2047%2023%22%20fill%3D%22none%22%20stroke%3D%22%239C7A3A%22%20stroke-opacity%3D%22.25%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20transform%3D%22translate%280%201.5%29%22/%3E%3Cpath%20d%3D%22M9%2023%20C9%2012%2C%2047%2012%2C%2047%2023%22%20fill%3D%22none%22%20stroke%3D%22url%28%23g%29%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E") center top / 56px 44px repeat-y; pointer-events: none;
 }
 .dc-num { position: absolute; bottom: 0.7rem; font: italic 0.8rem var(--a2-serif); color: #C9B3BE; }
-.dc-izq .dc-num { left: 1.4rem; }
-.dc-der .dc-num { right: 1.4rem; }
+.dc-libro > .dc-hoja.impar .dc-num { left: 1.4rem; }
+.dc-libro > .dc-hoja.par .dc-num { right: 1.4rem; }
+
+/* cuaderno para escribir: hojas de alto fijo, se ven de dos en dos */
+.dc-form .dc-libro > .dc-hoja { grid-row: 1; height: 600px; display: none; }
+.dc-form .dc-libro > .dc-hoja.visible { display: block; animation: dcAparecer .45s ease; }
+@keyframes dcAparecer { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
 
 .dc-hoja-cab { display: flex; justify-content: space-between; align-items: center; gap: 8px; border-bottom: 1px solid #D3B8C5; padding-bottom: 0.45rem; margin-bottom: 0.7rem; }
 .dc-fecha { font: italic 0.95rem var(--a2-serif); color: #A35A80; }
 .dc-fecha::first-letter { text-transform: uppercase; }
+.dc-quitar-hoja { background: none; border: 0; color: #B0909C; font-size: 0.78rem; text-decoration: underline; cursor: pointer; padding: 2px; }
 
-/* ánimo: una sola fila de caritas */
+/* ánimo: una fila de caritas */
 .dc-animo p { margin: 0 0 0.35rem; font-size: 0.82rem; color: var(--a2-suave); }
 .dc-animos { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
 .dc-animos::-webkit-scrollbar { display: none; }
@@ -281,8 +282,9 @@ body.a3-es-premium .a3-premium::after { display: none; }
 .dc-libro .diario-mood-btn.active { background: var(--a2-rosa-claro); border-color: #E5A9C4; }
 .dc-libro .diario-mood-btn.active span { color: #8E3762; font-weight: 700; }
 
-/* letra: un botón que abre la lista */
+/* letra */
 .dc-letra { position: relative; margin: 0.6rem 0 0.2rem; }
+.dc-letra.abierta { z-index: 90; }
 .dc-letra-btn {
     display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
     background: #fff; border: 1px solid var(--a2-linea); border-radius: 999px;
@@ -290,90 +292,94 @@ body.a3-es-premium .a3-premium::after { display: none; }
 }
 .dc-letra-btn i { font-style: normal; font-size: 0.7rem; color: var(--a2-suave); }
 .dc-letra-menu {
-    display: none; position: absolute; z-index: 20; top: calc(100% + 6px); left: 0;
+    display: none; position: absolute; z-index: 70; top: calc(100% + 6px); left: 0;
     background: #fff; border: 1px solid var(--a2-linea); border-radius: 14px; padding: 6px;
     box-shadow: 0 10px 24px rgba(86, 65, 74, 0.15); min-width: 220px;
 }
 .dc-letra.abierta .dc-letra-menu { display: grid; }
-.dc-libro .diario-font-btn {
-    all: unset; box-sizing: border-box; cursor: pointer; display: block;
-    padding: 9px 12px; border-radius: 10px; font-size: 1.05rem; color: var(--a2-texto);
-}
+.dc-libro .diario-font-btn { all: unset; box-sizing: border-box; cursor: pointer; display: block; padding: 9px 12px; border-radius: 10px; font-size: 1.05rem; color: var(--a2-texto); }
 .dc-libro .diario-font-btn:hover { background: #FBF4F7; }
 .dc-libro .diario-font-btn.active { background: var(--a2-rosa-claro); color: #8E3762; }
 
-/* hoja con renglones */
+/* renglones */
 .dc-renglones {
-    display: block; width: 100%; box-sizing: border-box; resize: none;
-    height: 360px; margin-top: 0.4rem; padding: 4px 2px 0;
-    border: 0; outline: none; background: transparent;
-    font-family: 'Lora', Georgia, serif; font-size: 1.05rem; line-height: 32px; color: #4A3740;
-    background-image: linear-gradient(transparent 31px, #D3B8C5 31px);
-    background-size: 100% 32px; background-attachment: local;
+    display: block; width: 100%; box-sizing: border-box; resize: none; height: 380px; margin-top: 0.4rem;
+    font-family: 'Lora', Georgia, serif; color: #4A3740;
+    background-image: linear-gradient(transparent 31px, #D3B8C5 31px); background-size: 100% 32px; background-attachment: local;
 }
+.dc-renglones-extra { height: 500px; }
 .dc-renglones::placeholder { color: #C2AFB8; font-style: italic; }
+#seccion-diario .dc-renglones { font-size: 1.05rem !important; padding: 4px 2px 0 !important; line-height: 32px !important; min-height: 0 !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; background-color: transparent !important; outline: none; }
 
-/* hoja derecha */
-.dc-bloque { margin-bottom: 1.1rem; }
+/* hoja 2 */
+.dc-bloque { margin-bottom: 1rem; }
 .dc-etq { margin: 0 0 0.35rem; font: 500 0.98rem var(--a2-serif); color: var(--a2-texto); }
-.dc-linea {
-    display: block; width: 100%; box-sizing: border-box; border: 0; outline: none; background: transparent;
-    border-bottom: 1px solid #D3B8C5; padding: 7px 2px; font: 0.98rem 'Lora', Georgia, serif; color: #4A3740;
-}
-.dc-linea:focus { border-bottom-color: #D98AAE; }
-.dc-nota {
-    display: block; width: 100%; box-sizing: border-box; resize: vertical; min-height: 96px;
-    background: #FFF6D9; border: 0; outline: none; border-radius: 2px 2px 14px 2px;
-    padding: 10px 12px; font: 0.95rem/1.5 'Lora', Georgia, serif; color: #5C4A2A;
-    box-shadow: 0 2px 6px rgba(150, 120, 40, 0.15); transform: rotate(-0.6deg);
-}
-.dc-nota-leer { white-space: pre-wrap; min-height: 0; }
-.dc-fotos { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-start; padding: 4px 2px; }
-.dc-polaroid {
-    position: relative; margin: 0; background: #fff; padding: 7px 7px 22px;
-    box-shadow: 0 3px 10px rgba(86, 65, 74, 0.18); transform: rotate(var(--giro, -3deg));
-    width: 132px;
-}
-.dc-polaroid img { display: block; width: 100%; height: 118px; object-fit: cover; }
-.dc-polaroid button {
-    position: absolute; top: -9px; right: -9px; width: 26px; height: 26px; border-radius: 50%;
-    border: 0; background: var(--a2-ciruela); color: #fff; font-size: 1rem; line-height: 26px; cursor: pointer; padding: 0;
-}
-.dc-foto-mas {
-    width: 132px; height: 147px; border: 2px dashed #E2C9D4; border-radius: 6px; background: #FFFAFC;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
-    font-size: 0.82rem; color: #A35A80; cursor: pointer;
-}
-.dc-foto-mas span { font-size: 1.8rem; line-height: 1; }
+.dc-linea { display: block; width: 100%; box-sizing: border-box; outline: none; font-family: 'Lora', Georgia, serif; color: #4A3740; }
+#seccion-diario .dc-linea { font-size: 0.98rem !important; padding: 7px 2px !important; line-height: 1.4 !important; border: 0 !important; border-bottom: 1px solid #D3B8C5 !important; border-radius: 0 !important; box-shadow: none !important; background: transparent !important; }
+#seccion-diario .dc-linea:focus { border-bottom-color: #D98AAE !important; }
+.dc-nota { display: block; width: 100%; box-sizing: border-box; resize: none; font-family: 'Lora', Georgia, serif; color: #5C4A2A; transform: rotate(-0.6deg); outline: none; }
+#seccion-diario .dc-nota { font-size: 0.95rem !important; padding: 10px 12px !important; line-height: 1.5 !important; min-height: 92px !important; height: 92px; border: 0 !important; background: #FFF6D9 !important; box-shadow: 0 2px 6px rgba(150, 120, 40, 0.15) !important; border-radius: 2px 2px 14px 2px !important; }
+#seccion-diario .dc-nota-leer { height: auto; white-space: pre-wrap; min-height: 0 !important; }
 
-/* pasar hoja y guardar */
-.dc-pasar { display: none; justify-content: center; align-items: center; gap: 18px; margin: 0.8rem 0 0.2rem; }
-.dc-puntos { display: flex; gap: 6px; }
-.dc-puntos i { width: 7px; height: 7px; border-radius: 50%; background: #E2C9D4; }
-.dc-puntos i.activo { background: var(--a2-ciruela); }
-.dc-flecha {
-    width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--a2-linea); background: #fff;
-    font-size: 1.5rem; line-height: 1; color: var(--a2-ciruela); cursor: pointer; padding: 0 0 3px;
+/* decorar */
+.dc-bloque-deco { position: relative; }
+.dc-bloque-deco.abierta { z-index: 90; }
+.dc-deco-botones { display: flex; gap: 8px; position: relative; z-index: 95; }
+.dc-letra-btn { position: relative; z-index: 95; }
+.dc-deco-btn {
+    all: unset; box-sizing: border-box; cursor: pointer; padding: 8px 14px; border-radius: 999px;
+    border: 1.5px dashed #E2C9D4; background: #FFFAFC; color: #A35A80; font: 600 0.86rem system-ui, -apple-system, sans-serif;
 }
-.dc-flecha.apagada { opacity: .3; pointer-events: none; }
+.dc-pista { margin: 6px 0 0; font-size: 0.74rem; color: var(--a2-suave); line-height: 1.35; }
+.dc-bandeja {
+    display: none; position: absolute; left: 0; right: 0; top: 46px; z-index: 80;
+    padding: 8px 10px 10px; border-radius: 14px; background: #fff; border: 1px solid var(--a2-linea);
+    box-shadow: 0 12px 28px rgba(86, 65, 74, .18);
+}
+.dc-bloque-deco.abierta .dc-bandeja { display: block; }
+.dc-bandeja p { margin: 6px 0 2px; font-size: 0.72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--a2-suave); }
+.dc-bandeja div { display: grid; grid-template-columns: repeat(8, 1fr); }
+.dc-bandeja button { all: unset; cursor: pointer; text-align: center; font-size: 1.5rem; padding: 5px 0; border-radius: 8px; }
+.dc-bandeja button:hover, .dc-bandeja button:active { background: #FBF4F7; }
+
+/* capa de fotos y stickers */
+.dc-capa { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+.dc-item { position: absolute; pointer-events: auto; touch-action: none; transform: rotate(var(--giro, 0deg)); user-select: none; -webkit-user-select: none; }
+.dc-form .dc-item { cursor: grab; }
+.dc-item .dc-polaroid { margin: 0; background: #fff; padding: 6% 6% 18%; box-shadow: 0 3px 10px rgba(86, 65, 74, 0.22); }
+.dc-item .dc-polaroid img { display: block; width: 100%; height: auto; pointer-events: none; }
+.dc-st { display: block; line-height: 1; text-align: center; font-size: 2rem; filter: drop-shadow(0 2px 2px rgba(86, 65, 74, .2)); }
+.dc-x, .dc-tam { display: none; }
+.dc-item.sel { outline: 2px dashed #B5527F; outline-offset: 4px; z-index: 5; }
+.dc-item.sel .dc-x {
+    display: block; position: absolute; top: -14px; right: -14px; width: 26px; height: 26px; border-radius: 50%;
+    border: 0; padding: 0; background: var(--a2-ciruela); color: #fff; font-size: 1rem; line-height: 26px; cursor: pointer;
+}
+.dc-item.sel .dc-tam {
+    display: block; position: absolute; right: -13px; bottom: -13px; width: 24px; height: 24px; border-radius: 50%;
+    background: #fff; border: 2px solid var(--a2-ciruela); cursor: nwse-resize; touch-action: none;
+}
+.dc-item.sel .dc-tam::after { content: ''; position: absolute; inset: 6px; border-right: 2px solid var(--a2-ciruela); border-bottom: 2px solid var(--a2-ciruela); }
+
+/* pasar hojas, otra hoja, guardar */
+.dc-pasar { display: flex; justify-content: center; align-items: center; gap: 16px; margin: 0.9rem 0 0.2rem; }
+.dc-hoja-txt { font-size: 0.86rem; color: var(--a2-suave); min-width: 120px; text-align: center; }
+.dc-flecha { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--a2-linea); background: #fff; font-size: 1.5rem; line-height: 1; color: var(--a2-ciruela); cursor: pointer; padding: 0 0 3px; }
+.dc-flecha.apagada, .dc-otra-hoja.apagada { opacity: .3; pointer-events: none; }
+.dc-otra-hoja { display: block; margin: 0.6rem auto 0; background: none; border: 0; color: var(--a2-ciruela); font: 600 0.9rem system-ui, -apple-system, sans-serif; cursor: pointer; padding: 6px 10px; }
 .dc-guardar {
-    display: block; margin: 1rem auto 0; border: 0; border-radius: 999px; cursor: pointer;
+    display: block; margin: 0.8rem auto 0; border: 0; border-radius: 999px; cursor: pointer;
     padding: 13px 34px; font: 600 1rem system-ui, -apple-system, sans-serif;
     background: var(--a2-ciruela); color: #fff; box-shadow: 0 6px 16px rgba(139, 71, 137, 0.25);
 }
 #seccion-diario .mensaje-diario { text-align: center; margin-top: 0.6rem; font-size: 0.9rem; min-height: 1.2em; }
 #seccion-diario .mensaje-diario.aviso { color: #8E6420; }
 
-/* cuaderno de páginas guardadas */
+/* cuaderno guardado */
 .dc-anteriores { margin-top: 2rem; }
 .dc-anteriores h2 { text-align: center; margin: 0 0 0.8rem; font: 500 1.35rem var(--a2-serif); color: var(--a2-texto); }
-.dc-libro-leer .dc-hoja { min-height: 300px; }
-.dc-libro-leer.dc-una-hoja { grid-template-columns: 1fr; max-width: 560px; margin: 0 auto; }
-.dc-libro-leer.dc-una-hoja .dc-izq { border-radius: 6px; background: #FFFFFF; }
-.dc-texto-leer {
-    white-space: pre-wrap; font-size: 1.02rem; line-height: 32px; color: #4A3740;
-    background-image: linear-gradient(transparent 31px, #D3B8C5 31px); background-size: 100% 32px; min-height: 192px;
-}
+.dc-libro-leer .dc-hoja { min-height: 600px; }
+.dc-texto-leer { white-space: pre-wrap; font-size: 1.02rem; line-height: 32px; color: #4A3740; background-image: linear-gradient(transparent 31px, #D3B8C5 31px); background-size: 100% 32px; min-height: 192px; }
 .dc-mood-leer { font-size: 1.5rem; }
 .dc-lista-grat { margin: 0 0 1rem; padding-left: 1.3rem; font: 0.98rem/1.8 'Lora', Georgia, serif; }
 .dc-suave { color: var(--a2-suave); font-style: italic; }
@@ -384,80 +390,29 @@ body.a3-es-premium .a3-premium::after { display: none; }
 /* ---------- teléfono: una hoja a la vez, se pasa como página ---------- */
 @media (max-width: 760px) {
     #seccion-diario .dc-pagina { padding: 0 0.6rem; }
-    .dc-form .dc-libro { display: block; overflow: hidden; perspective: 1400px; min-height: 590px; }
+    .dc-form .dc-libro { display: block; height: 600px; perspective: 1400px; margin-left: 12px; }
     .dc-form .dc-lomo { display: none; }
-    .dc-form .dc-hoja {
-        position: absolute; inset: 0; min-height: 0; border-radius: 6px;
-        background: #FFFFFF; padding: 1.1rem 1.1rem 2rem;
-        transition: transform .55s cubic-bezier(.4,.1,.3,1), opacity .55s;
-        transform-origin: left center; backface-visibility: hidden;
+    .dc-form .dc-libro::before {
+        content: ''; position: absolute; z-index: 200; top: 12px; bottom: 12px; left: -16px; width: 30px;
+        background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2230%22%20height%3D%2244%22%20viewBox%3D%220%200%2030%2044%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23F6E7C6%22/%3E%3Cstop%20offset%3D%22.45%22%20stop-color%3D%22%23D2AE5E%22/%3E%3Cstop%20offset%3D%22.7%22%20stop-color%3D%22%23B98F36%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23E8D3A2%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle%20cx%3D%2222%22%20cy%3D%2223%22%20r%3D%223.4%22%20fill%3D%22%23D9C6CF%22/%3E%3Cpath%20d%3D%22M22%2023%20C22%2013%2C%203%2013%2C%203%2023%22%20fill%3D%22none%22%20stroke%3D%22url%28%23g%29%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E") left top / 30px 44px repeat-y; pointer-events: none;
     }
-    .dc-form .dc-izq { z-index: 2; box-shadow: inset -10px 0 14px -12px rgba(139,71,137,.25); }
-    .dc-form .dc-der { z-index: 1; }
-    .dc-form .dc-libro.ver-2 .dc-izq { transform: rotateY(-110deg); opacity: 0; pointer-events: none; }
-    .dc-form .dc-libro:not(.ver-2) .dc-der { pointer-events: none; }
-    .dc-form .dc-libro { border-left: 6px solid #EFE2DA; }
-    .dc-renglones { height: 330px; }
-    .dc-pasar { display: flex; }
+    .dc-form .dc-libro > .dc-hoja {
+        display: block; position: absolute; inset: 0; height: auto; border-radius: 6px !important;
+        background: #fff !important; padding: 1.1rem 1.1rem 2rem 1.3rem;
+        transition: transform .55s cubic-bezier(.4,.1,.3,1), opacity .55s;
+        transform-origin: left center; backface-visibility: hidden; animation: none;
+        box-shadow: inset 10px 0 14px -12px rgba(139,71,137,.25);
+    }
+    .dc-form .dc-libro > .dc-hoja.pasada { transform: rotateY(-110deg); opacity: 0; pointer-events: none; }
+    .dc-form .dc-libro > .dc-hoja:not(.visible):not(.pasada) { pointer-events: none; }
+    .dc-form .dc-libro > .dc-hoja .dc-num { left: auto !important; right: 1.1rem; }
+    .dc-renglones { height: 340px; }
+    .dc-renglones-extra { height: 480px; }
 
     .dc-libro-leer { display: block; }
     .dc-libro-leer .dc-lomo { display: none; }
-    .dc-libro-leer .dc-hoja { min-height: 0; border-radius: 6px; background: #FFFFFF; padding: 1rem 1.1rem 1.2rem; }
-    .dc-libro-leer .dc-der { border-top: 1px dashed #EBDCE2; border-radius: 0 0 6px 6px; }
-    .dc-polaroid, .dc-foto-mas { width: 120px; }
-    .dc-polaroid img { height: 106px; }
-    .dc-foto-mas { height: 135px; }
+    .dc-libro-leer .dc-hoja { min-height: 600px; border-radius: 6px !important; background: #fff !important; padding: 1rem 1.1rem 1.2rem; }
+    .dc-libro-leer .dc-hoja + .dc-hoja { border-top: 1px dashed #E2CFD8; }
 }
-
-/* los estilos generales de la app ponen letra y relleno grandes con !important en todos los campos:
-   en el cuaderno se devuelven a su tamaño */
-#seccion-diario .dc-renglones { font-size: 1.05rem !important; padding: 4px 2px 0 !important; line-height: 32px !important; min-height: 0 !important; }
-#seccion-diario .dc-linea { font-size: 0.98rem !important; padding: 7px 2px !important; line-height: 1.4 !important; }
-#seccion-diario .dc-nota { font-size: 0.95rem !important; padding: 10px 12px !important; line-height: 1.5 !important; min-height: 96px !important; }
-#seccion-diario .dc-renglones, #seccion-diario .dc-linea { border: 0 !important; border-radius: 0 !important; box-shadow: none !important; background-color: transparent !important; }
-#seccion-diario .dc-linea { border-bottom: 1px solid #D3B8C5 !important; }
-#seccion-diario .dc-linea:focus { border-bottom-color: #D98AAE !important; }
-#seccion-diario .dc-nota { border: 0 !important; background: #FFF6D9 !important; box-shadow: 0 2px 6px rgba(150, 120, 40, 0.15) !important; border-radius: 2px 2px 14px 2px !important; }
-
-/* stickers del diario */
-.dc-stickers { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; min-height: 44px; }
-.dc-sticker {
-    all: unset; cursor: default; display: inline-block; font-size: 2.1rem; line-height: 1;
-    transform: rotate(var(--giro, 0deg)); filter: drop-shadow(0 2px 2px rgba(86, 65, 74, .18));
-}
-button.dc-sticker { cursor: pointer; }
-button.dc-sticker:active { transform: rotate(var(--giro, 0deg)) scale(.85); }
-.dc-sticker-mas {
-    all: unset; box-sizing: border-box; cursor: pointer; padding: 7px 13px; border-radius: 999px;
-    border: 1.5px dashed #E2C9D4; background: #FFFAFC; color: #A35A80; font: 600 0.82rem system-ui, -apple-system, sans-serif;
-}
-.dc-bandeja {
-    display: none; margin-top: 8px; padding: 8px 10px 10px; border-radius: 14px;
-    background: #fff; border: 1px solid var(--a2-linea); box-shadow: 0 8px 20px rgba(86, 65, 74, .12);
-}
-.dc-bloque-stickers.abierta .dc-bandeja { display: block; }
-.dc-bandeja p { margin: 6px 0 2px; font-size: 0.72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--a2-suave); }
-.dc-bandeja div { display: grid; grid-template-columns: repeat(8, 1fr); }
-.dc-bandeja button { all: unset; cursor: pointer; text-align: center; font-size: 1.5rem; padding: 5px 0; border-radius: 8px; }
-.dc-bandeja button:hover, .dc-bandeja button:active { background: #FBF4F7; }
-.dc-libro-leer .dc-stickers { margin-bottom: 0.8rem; }
-@media (max-width: 760px) {
-    .dc-form .dc-der { overflow-y: auto; }
-}
-
-/* argollas de planner en el centro del cuaderno */
-.dc-libro { grid-template-columns: 1fr 34px 1fr; }
-.dc-lomo { background: linear-gradient(90deg, #EFE6EA 0%, #FBF8F9 30%, #FBF8F9 70%, #EFE6EA 100%); overflow: visible; z-index: 3; }
-.dc-lomo::before {
-    content: ''; position: absolute; top: 14px; bottom: 14px; left: 50%; width: 56px; transform: translateX(-50%);
-    background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2256%22%20height%3D%2244%22%20viewBox%3D%220%200%2056%2044%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23F6E7C6%22/%3E%3Cstop%20offset%3D%22.45%22%20stop-color%3D%22%23D2AE5E%22/%3E%3Cstop%20offset%3D%22.7%22%20stop-color%3D%22%23B98F36%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23E8D3A2%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle%20cx%3D%229%22%20cy%3D%2223%22%20r%3D%223.6%22%20fill%3D%22%23D9C6CF%22/%3E%3Ccircle%20cx%3D%2247%22%20cy%3D%2223%22%20r%3D%223.6%22%20fill%3D%22%23D9C6CF%22/%3E%3Cpath%20d%3D%22M9%2023%20C9%2012%2C%2047%2012%2C%2047%2023%22%20fill%3D%22none%22%20stroke%3D%22%239C7A3A%22%20stroke-opacity%3D%22.25%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20transform%3D%22translate%280%201.5%29%22/%3E%3Cpath%20d%3D%22M9%2023%20C9%2012%2C%2047%2012%2C%2047%2023%22%20fill%3D%22none%22%20stroke%3D%22url%28%23g%29%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E") center top / 56px 44px repeat-y;
-}
-@media (max-width: 760px) {
-    .dc-form .dc-libro { border-left: 0; overflow: visible; margin-left: 12px; }
-    .dc-form .dc-libro::before {
-        content: ''; position: absolute; z-index: 5; top: 12px; bottom: 12px; left: -16px; width: 30px;
-        background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2230%22%20height%3D%2244%22%20viewBox%3D%220%200%2030%2044%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23F6E7C6%22/%3E%3Cstop%20offset%3D%22.45%22%20stop-color%3D%22%23D2AE5E%22/%3E%3Cstop%20offset%3D%22.7%22%20stop-color%3D%22%23B98F36%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23E8D3A2%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle%20cx%3D%2222%22%20cy%3D%2223%22%20r%3D%223.4%22%20fill%3D%22%23D9C6CF%22/%3E%3Cpath%20d%3D%22M22%2023%20C22%2013%2C%203%2013%2C%203%2023%22%20fill%3D%22none%22%20stroke%3D%22url%28%23g%29%22%20stroke-width%3D%224%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E") left top / 30px 44px repeat-y; pointer-events: none;
-    }
-    .dc-form .dc-hoja { overflow: hidden; }
-    .dc-form .dc-der { overflow-y: auto; }
-}
+/* lo que se pega no se sale del papel */
+.dc-libro > .dc-hoja { overflow: hidden; }

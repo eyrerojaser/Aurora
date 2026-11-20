@@ -53,7 +53,7 @@
     }
   </script>
   <link rel="stylesheet" href="/aurora2.css?v=1">
-  <link rel="stylesheet" href="/aurora3.css?v=5">
+  <link rel="stylesheet" href="/aurora3.css?v=7">
 </head>
 <body>
   <header class="oculto">Aurora</header>
@@ -823,8 +823,9 @@
 
         <div id="diario-form" class="dc-form">
           <div class="dc-libro" id="dcLibro">
+            <div class="dc-lomo" aria-hidden="true"></div>
             <!-- hoja izquierda: escribir -->
-            <div class="dc-hoja dc-izq">
+            <div class="dc-hoja" data-n="1">
               <div class="dc-hoja-cab">
                 <span class="dc-fecha" id="diario-fecha-hoy"></span>
               </div>
@@ -837,13 +838,12 @@
                 <div class="dc-letra-menu"><button type="button" class="diario-font-btn active" data-font="'Lora', Georgia, serif" data-nombre="Clásica" onclick="cambiarFuenteDiario(this)" style="font-family: 'Lora', Georgia, serif;">Clásica</button><button type="button" class="diario-font-btn" data-font="'Palatino Linotype', 'Book Antiqua', Palatino, serif" data-nombre="Elegante" onclick="cambiarFuenteDiario(this)" style="font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;">Elegante</button><button type="button" class="diario-font-btn" data-font="'Trebuchet MS', 'Lucida Sans', sans-serif" data-nombre="Sencilla" onclick="cambiarFuenteDiario(this)" style="font-family: 'Trebuchet MS', 'Lucida Sans', sans-serif;">Sencilla</button><button type="button" class="diario-font-btn" data-font="'Comic Sans MS', 'Segoe Print', cursive" data-nombre="Divertida" onclick="cambiarFuenteDiario(this)" style="font-family: 'Comic Sans MS', 'Segoe Print', cursive;">Divertida</button><button type="button" class="diario-font-btn" data-font="'Brush Script MT', 'Segoe Script', cursive" data-nombre="A mano" onclick="cambiarFuenteDiario(this)" style="font-family: 'Brush Script MT', 'Segoe Script', cursive;">A mano</button><button type="button" class="diario-font-btn" data-font="'Courier New', monospace" data-nombre="Máquina de escribir" onclick="cambiarFuenteDiario(this)" style="font-family: 'Courier New', monospace;">Máquina de escribir</button></div>
               </div>
               <textarea id="diario-texto-entrada" class="dc-renglones" placeholder="Querido diario..."></textarea>
+              <div class="dc-capa"></div>
               <span class="dc-num">1</span>
             </div>
 
-            <div class="dc-lomo" aria-hidden="true"></div>
-
             <!-- hoja derecha: agradecer, notas y fotos -->
-            <div class="dc-hoja dc-der">
+            <div class="dc-hoja" data-n="2">
               <div class="dc-bloque">
                 <p class="dc-etq">🌸 Hoy agradezco</p>
                 <input type="text" id="diario-gratitud-1" class="dc-linea" placeholder="1." />
@@ -854,25 +854,27 @@
                 <p class="dc-etq">📝 Notas</p>
                 <textarea id="diario-notas" class="dc-nota" placeholder="Algo que no quiero olvidar..."></textarea>
               </div>
-              <div class="dc-bloque dc-bloque-stickers">
-                <p class="dc-etq">✨ Stickers</p>
-                <div class="dc-stickers" id="dcStickers"></div>
+              <div class="dc-bloque dc-bloque-deco">
+                <p class="dc-etq">✨ Decora tu página</p>
+                <div class="dc-deco-botones">
+                  <button type="button" class="dc-deco-btn" onclick="document.getElementById('dcFotoInput').click()">📷 Foto</button>
+                  <button type="button" class="dc-deco-btn" onclick="event.stopPropagation(); this.closest('.dc-bloque-deco').classList.toggle('abierta')">🌸 Sticker</button>
+                </div>
+                <p class="dc-pista">Arrástralos a donde quieras. Toca uno y usa la esquina para hacerlo más grande o más pequeño.</p>
+                <input type="file" id="dcFotoInput" accept="image/*" hidden onchange="dcAgregarFoto(event)" />
                 <div class="dc-bandeja" id="dcBandeja"><p>Flores</p><div><button type="button" onclick="dcPonerSticker('🌸')">🌸</button><button type="button" onclick="dcPonerSticker('🌺')">🌺</button><button type="button" onclick="dcPonerSticker('🌷')">🌷</button><button type="button" onclick="dcPonerSticker('🪷')">🪷</button><button type="button" onclick="dcPonerSticker('🌻')">🌻</button><button type="button" onclick="dcPonerSticker('🍀')">🍀</button><button type="button" onclick="dcPonerSticker('🌿')">🌿</button><button type="button" onclick="dcPonerSticker('🦋')">🦋</button></div><p>Amor</p><div><button type="button" onclick="dcPonerSticker('💕')">💕</button><button type="button" onclick="dcPonerSticker('💗')">💗</button><button type="button" onclick="dcPonerSticker('💝')">💝</button><button type="button" onclick="dcPonerSticker('🩷')">🩷</button><button type="button" onclick="dcPonerSticker('🩵')">🩵</button><button type="button" onclick="dcPonerSticker('💜')">💜</button><button type="button" onclick="dcPonerSticker('🤍')">🤍</button><button type="button" onclick="dcPonerSticker('🫶')">🫶</button></div><p>Brillos</p><div><button type="button" onclick="dcPonerSticker('✨')">✨</button><button type="button" onclick="dcPonerSticker('💫')">💫</button><button type="button" onclick="dcPonerSticker('🌟')">🌟</button><button type="button" onclick="dcPonerSticker('⭐')">⭐</button><button type="button" onclick="dcPonerSticker('🔮')">🔮</button><button type="button" onclick="dcPonerSticker('💎')">💎</button><button type="button" onclick="dcPonerSticker('🌙')">🌙</button><button type="button" onclick="dcPonerSticker('☀️')">☀️</button></div><p>Dulce</p><div><button type="button" onclick="dcPonerSticker('🎀')">🎀</button><button type="button" onclick="dcPonerSticker('🧸')">🧸</button><button type="button" onclick="dcPonerSticker('🍭')">🍭</button><button type="button" onclick="dcPonerSticker('🍰')">🍰</button><button type="button" onclick="dcPonerSticker('🧁')">🧁</button><button type="button" onclick="dcPonerSticker('🍓')">🍓</button><button type="button" onclick="dcPonerSticker('🍒')">🍒</button><button type="button" onclick="dcPonerSticker('🌈')">🌈</button></div><p>Poder</p><div><button type="button" onclick="dcPonerSticker('👑')">👑</button><button type="button" onclick="dcPonerSticker('🏆')">🏆</button><button type="button" onclick="dcPonerSticker('💪')">💪</button><button type="button" onclick="dcPonerSticker('🎯')">🎯</button><button type="button" onclick="dcPonerSticker('🔥')">🔥</button><button type="button" onclick="dcPonerSticker('⚡')">⚡</button><button type="button" onclick="dcPonerSticker('🚀')">🚀</button><button type="button" onclick="dcPonerSticker('💯')">💯</button></div></div>
               </div>
-              <div class="dc-bloque">
-                <p class="dc-etq">📷 Mis fotos</p>
-                <div class="dc-fotos" id="dcFotos"></div>
-                <input type="file" id="dcFotoInput" accept="image/*" hidden onchange="dcAgregarFoto(event)" />
-              </div>
+              <div class="dc-capa"></div>
               <span class="dc-num">2</span>
             </div>
           </div>
 
           <div class="dc-pasar">
-            <button type="button" class="dc-flecha" id="dcAnterior" onclick="dcVerHoja(1)" aria-label="Hoja anterior">‹</button>
-            <span class="dc-puntos"><i class="activo"></i><i></i></span>
-            <button type="button" class="dc-flecha" id="dcSiguiente" onclick="dcVerHoja(2)" aria-label="Pasar la hoja">›</button>
+            <button type="button" class="dc-flecha" id="dcAnterior" onclick="dcPasar(-1)" aria-label="Hoja anterior">‹</button>
+            <span class="dc-hoja-txt" id="dcHojaTxt">Hoja 1 de 2</span>
+            <button type="button" class="dc-flecha" id="dcSiguiente" onclick="dcPasar(1)" aria-label="Pasar la hoja">›</button>
           </div>
+          <button type="button" class="dc-otra-hoja" id="dcOtraHoja" onclick="dcOtraHoja()">＋ Otra hoja para seguir escribiendo</button>
 
           <button type="button" class="dc-guardar" onclick="guardarPaginaScrapbook(event)">Guardar esta página</button>
           <div id="mensaje-diario" class="mensaje-diario"></div>
@@ -1442,7 +1444,8 @@
   <script src="auth.js?v=1003"></script>
   <script src="sync.js?v=1000"></script>
   <script src="script.js?v=1008"></script>
-  <script src="diario.js?v=1008"></script>
+  <script src="diario.js?v=1009"></script>
+  <script src="diario-cuaderno.js?v=1"></script>
   <script src="metas.js?v=1001"></script>
   <script src="dashboard.js?v=1001"></script>
   <script src="datos.js?v=1000"></script>
