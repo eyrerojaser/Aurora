@@ -42,8 +42,14 @@ function a2Escapar(t) {
 }
 
 // Las palabras en MAYÚSCULAS se resaltan, como en el libro de Cartas de Poder
+// (se escriben en minúscula y en negrita, para que no parezca un error)
 function a2Resaltar(frase) {
-    return a2Escapar(frase).replace(/(^|[\s“"¡¿(])([A-ZÁÉÍÓÚÑÜ]{2,})(?=[\s.,;:!?”")]|$)/g, '$1<strong>$2</strong>');
+    let primera = true;
+    return a2Escapar(frase).replace(/(^|[\s“"¡¿(])([A-ZÁÉÍÓÚÑÜ]{2,})(?=[\s.,;:!?”")]|$)/g, (m, antes, palabra, pos, todo) => {
+        let p = palabra.toLowerCase();
+        if (!/[A-Za-zÁÉÍÓÚÑÜáéíóúñü]/.test(todo.slice(0, pos + antes.length))) p = p.charAt(0).toUpperCase() + p.slice(1);
+        return `${antes}<strong>${p}</strong>`;
+    });
 }
 
 function a2NombreUsuaria() {

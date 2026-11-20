@@ -4,7 +4,7 @@
 
 // Desafíos diarios
 const desafios = [
-    "Hoy, di NO a algo que no quieres hacer sin sentir culpa",
+    "Hoy, di no a algo que no quieres hacer sin sentir culpa",
     "Expresa una opinión diferente en una conversación, aunque sea incómodo",
     "Pide algo que necesitas sin disculparte por pedirlo",
     "Establece un límite claro con alguien que lo necesite",

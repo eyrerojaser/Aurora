@@ -1,0 +1,230 @@
+/* =====================================================================
+   AURORA 3 · pantalla "Hoy", pestañas de abajo, Crecer y Yo.
+   Mismos colores de Aurora 2 (ciruela, rosa, dorado y Lora).
+   ===================================================================== */
+
+/* Dentro de la app: sin la barra de arriba ni el botón flotante viejo, y espacio para las pestañas */
+body.a3-dentro header,
+body.a3-dentro .btn-menu-flotante,
+body.a3-dentro .btn-volver-inicio { display: none !important; }
+body.a3-dentro main { padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
+
+/* ---------- pestañas ---------- */
+.a3-pestanas {
+    display: none;
+    position: fixed; left: 0; right: 0; bottom: 0;
+    z-index: 900;
+    background: rgba(255, 255, 255, 0.97);
+    border-top: 1px solid var(--a2-linea);
+    padding: 6px 4px calc(8px + env(safe-area-inset-bottom));
+    grid-template-columns: repeat(5, 1fr);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+body.a3-dentro .a3-pestanas { display: grid; }
+.a3-pestanas button {
+    background: none; border: 0; padding: 4px 0 2px; margin: 0;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    font: 500 0.72rem/1.2 system-ui, -apple-system, 'Segoe UI', sans-serif;
+    color: var(--a2-suave); cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.a3-pestanas svg {
+    width: 24px; height: 24px; fill: none; stroke: currentColor;
+    stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round;
+}
+.a3-pestanas button.activa { color: var(--a2-ciruela); }
+.a3-pestanas button.activa svg { stroke-width: 2.1; }
+.a3-pestanas button.activa span { font-weight: 700; }
+
+/* ---------- pantallas nuevas ---------- */
+.a3-pantalla {
+    max-width: 560px; margin: 0 auto;
+    padding: 0.25rem 1rem 0;
+    box-sizing: border-box;
+    color: var(--a2-texto);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+.a3-pantalla button { font-family: inherit; -webkit-tap-highlight-color: transparent; }
+
+/* botón "‹ Crecer" */
+.a3-volver {
+    display: inline-block; margin: 0 0 0.6rem 0.25rem;
+    background: none; border: 0; padding: 6px 4px;
+    font: 600 1rem system-ui, -apple-system, sans-serif;
+    color: var(--a2-ciruela); cursor: pointer;
+}
+
+/* ---------- HOY ---------- */
+.a3-hoy-cab { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 0.9rem; }
+.a3-fecha { margin: 0; font-size: 0.85rem; color: var(--a2-suave); }
+.a3-saludo { margin: 2px 0 0; font: 500 1.65rem/1.15 var(--a2-serif); color: var(--a2-texto); }
+.a3-racha {
+    flex-shrink: 0; text-align: center;
+    background: #FBF1E4; color: #8E6420;
+    border-radius: 14px; padding: 6px 12px; min-width: 56px;
+}
+.a3-racha-num { display: block; font: 600 1.35rem/1.1 var(--a2-serif); }
+.a3-racha-num::before { content: '🔥 '; font-size: 0.9rem; }
+.a3-racha-txt { font-size: 0.68rem; }
+
+.a3-animo-caja { margin-bottom: 0.9rem; }
+.a3-pregunta { margin: 0 0 0.45rem; font: 500 1rem var(--a2-serif); color: var(--a2-texto); }
+.a3-animos { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.a3-animos button {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 8px 0 7px; border-radius: 14px;
+    background: #fff; border: 1px solid var(--a2-linea);
+    font-size: 0.7rem; color: var(--a2-suave); cursor: pointer;
+    transition: transform .15s, background .2s, border-color .2s;
+}
+.a3-animos button span { font-size: 1.45rem; line-height: 1; }
+.a3-animos button:active { transform: scale(0.95); }
+.a3-animos button.elegido { background: var(--a2-rosa-claro); border-color: #D98AAE; color: #8E3762; font-weight: 600; }
+.a3-animo-msg {
+    margin: 0; max-height: 0; overflow: hidden; opacity: 0;
+    font-size: 0.86rem; line-height: 1.45; color: var(--a2-texto);
+    transition: max-height .35s, opacity .35s, margin .35s;
+}
+.a3-animo-msg.visible { max-height: 160px; opacity: 1; margin-top: 0.55rem; }
+
+/* carta que se voltea */
+.a3-carta {
+    display: block; width: 100%; height: 150px;
+    padding: 0; margin: 0 0 0.9rem; border: 0; background: none;
+    perspective: 1000px; cursor: pointer;
+}
+.a3-carta-giro {
+    position: relative; display: block; width: 100%; height: 100%;
+    transform-style: preserve-3d; transition: transform .7s cubic-bezier(.3,.7,.3,1);
+}
+.a3-carta.volteada .a3-carta-giro { transform: rotateY(180deg); }
+.a3-carta-cara {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border-radius: 20px; padding: 14px 20px; box-sizing: border-box;
+    -webkit-backface-visibility: hidden; backface-visibility: hidden;
+    text-align: center;
+}
+.a3-carta-dorso {
+    background: linear-gradient(150deg, #8B4789 0%, #A8567F 55%, #C7768F 100%);
+    color: #fff; gap: 8px; font-size: 0.92rem; line-height: 1.35;
+}
+.a3-carta-dorso img { width: 46px; height: 46px; filter: brightness(0) invert(1); opacity: .92; }
+.a3-carta-frente {
+    transform: rotateY(180deg);
+    background: linear-gradient(160deg, #FDEEF4 0%, #F9E1EA 100%);
+    border: 1px solid #F1CBDB;
+}
+.a3-carta-frente small { font-size: 0.68rem; letter-spacing: .12em; text-transform: uppercase; color: #A35A80; margin-bottom: 6px; }
+.a3-carta-frase { font: italic 500 1.22rem/1.35 var(--a2-serif); color: #6E3A6C; }
+.a3-carta-frase strong { font-weight: 600; font-style: italic; color: #8B4789; }
+
+/* reto */
+.a3-reto {
+    display: flex; align-items: center; gap: 12px;
+    background: #fff; border: 1px solid var(--a2-linea); border-radius: 18px;
+    padding: 12px 12px 12px 16px; margin-bottom: 0.9rem;
+    transition: background .3s, border-color .3s;
+}
+.a3-reto-txt { flex: 1; min-width: 0; }
+.a3-reto-txt small { font-size: 0.68rem; letter-spacing: .12em; text-transform: uppercase; color: var(--a2-dorado); font-weight: 700; }
+.a3-reto-txt p { margin: 3px 0 0; font-size: 0.92rem; line-height: 1.4; color: var(--a2-texto); }
+.a3-reto-btn {
+    flex-shrink: 0; border: 0; border-radius: 12px; cursor: pointer;
+    padding: 10px 14px; font-size: 0.85rem; font-weight: 700;
+    background: var(--a2-ciruela); color: #fff;
+}
+.a3-reto.hecho { background: #F1F5EA; border-color: #CFDDBB; }
+.a3-reto.hecho .a3-reto-btn { background: #6E8A52; }
+
+/* accesos rápidos */
+.a3-accesos { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.a3-accesos button {
+    display: flex; align-items: center; gap: 8px; text-align: left;
+    background: #fff; border: 1px solid var(--a2-linea); border-radius: 16px;
+    padding: 12px; font-size: 0.86rem; font-weight: 600; color: var(--a2-texto); cursor: pointer;
+}
+.a3-accesos button span { font-size: 1.25rem; }
+
+/* ---------- títulos de Crecer / Yo ---------- */
+.a3-titulo { margin: 0.2rem 0 1rem; }
+.a3-titulo h1 { margin: 0; font: 500 1.8rem/1.15 var(--a2-serif); color: var(--a2-texto); }
+.a3-titulo p { margin: 4px 0 0; font-size: 0.9rem; color: var(--a2-suave); }
+.a3-subtitulo { margin: 1.3rem 0 0.5rem; font: 500 1.05rem var(--a2-serif); color: var(--a2-texto); }
+
+.a3-ico {
+    display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+    width: 40px; height: 40px; border-radius: 12px; font-size: 1.25rem;
+    background: var(--a2-rosa-claro);
+}
+
+/* tarjetas 2 x 2 */
+.a3-tarjetas { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.a3-tarjeta {
+    position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+    text-align: left; border: 0; border-radius: 18px; padding: 14px; min-height: 118px;
+    cursor: pointer; color: var(--a2-texto);
+}
+.a3-tarjeta .a3-ico { background: rgba(255,255,255,.7); margin-bottom: 8px; }
+.a3-tarjeta b { font-size: 0.98rem; }
+.a3-tarjeta small { font-size: 0.76rem; color: var(--a2-suave); line-height: 1.3; }
+.a3-tarjeta.pal-a { background: #FDEEF4; }
+.a3-tarjeta.pal-b { background: #F3EDF8; }
+.a3-tarjeta.pal-c { background: #FDF1E7; }
+.a3-tarjeta.pal-d { background: #EAF4F4; }
+
+/* etiqueta Premium en lo bloqueado (se quita si ya es Premium) */
+.a3-premium { position: relative; }
+.a3-premium::after {
+    content: 'Premium'; position: absolute; top: 10px; right: 10px;
+    font-size: 0.62rem; font-weight: 700; letter-spacing: .04em;
+    background: var(--a2-dorado); color: #fff; padding: 3px 7px; border-radius: 999px;
+}
+.a3-lista .a3-premium::after { top: 50%; right: 34px; transform: translateY(-50%); }
+body.a3-es-premium .a3-premium::after { display: none; }
+
+/* filas */
+.a3-fila-grande, .a3-lista button {
+    display: flex; align-items: center; gap: 12px; width: 100%;
+    text-align: left; background: #fff; border: 1px solid var(--a2-linea);
+    cursor: pointer; color: var(--a2-texto);
+}
+.a3-fila-grande { margin-top: 10px; border-radius: 18px; padding: 12px 14px; }
+.a3-fila-grande > span:not(.a3-ico), .a3-lista button > span:not(.a3-ico) { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.a3-fila-grande b, .a3-lista b { font-size: 0.95rem; }
+.a3-fila-grande small, .a3-lista small { font-size: 0.78rem; color: var(--a2-suave); }
+.a3-fila-grande i, .a3-lista i { font-style: normal; font-size: 1.4rem; color: #C9B3BE; }
+.a3-lista { background: #fff; border: 1px solid var(--a2-linea); border-radius: 18px; overflow: hidden; }
+.a3-lista button { border: 0; border-bottom: 1px solid #F3E7EC; border-radius: 0; padding: 11px 14px; }
+.a3-lista button:last-child { border-bottom: 0; }
+
+/* ---------- YO ---------- */
+.a3-yo-cab { display: flex; align-items: center; gap: 14px; margin: 0.3rem 0 1.1rem; }
+.a3-avatar {
+    width: 58px; height: 58px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(150deg, #8B4789, #C7768F); color: #fff;
+    font: 500 1.6rem var(--a2-serif);
+}
+.a3-yo-cab h1 { margin: 0; font: 500 1.45rem/1.2 var(--a2-serif); color: var(--a2-texto); }
+.a3-yo-cab p { margin: 2px 0 0; font-size: 0.85rem; color: var(--a2-suave); word-break: break-all; }
+.a3-premium-caja {
+    display: flex; flex-direction: column; gap: 3px; width: 100%; text-align: left;
+    border: 0; border-radius: 18px; padding: 16px; margin-bottom: 1rem; cursor: pointer;
+    background: linear-gradient(140deg, #FBF1E4 0%, #F6E2C2 100%); color: #7A5418;
+}
+.a3-premium-caja b { font: 500 1.08rem var(--a2-serif); }
+.a3-premium-caja small { font-size: 0.8rem; color: #8E6B45; }
+
+/* chips de Calma */
+.a3-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 0.9rem; }
+.a3-chips button {
+    border: 1px solid var(--a2-linea); background: #fff; color: var(--a2-texto);
+    border-radius: 999px; padding: 8px 14px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+}
+
+/* pantallas bajitas (iPhone SE): la carta un poco más chica */
+@media (max-height: 700px) {
+    .a3-carta { height: 128px; }
+    .a3-saludo { font-size: 1.45rem; }
+    .a3-hoy-cab, .a3-animo-caja, .a3-carta, .a3-reto { margin-bottom: 0.7rem; }
+}

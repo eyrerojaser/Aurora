@@ -614,7 +614,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.body.appendChild(modal);
     }
 
-    generateCalendar(2026, 0);
+    generateCalendar(new Date().getFullYear(), new Date().getMonth());
     cargarHabitosPersonalizados();
 });
 
@@ -744,7 +744,7 @@ function generarMiniCalendario() {
     if (!miniCalendarioDias || !miniCalendarioMes) return;
     
     const ahora = new Date();
-    const año = 2026;
+    const año = ahora.getFullYear();
     const mes = ahora.getMonth(); // 0-11
     const daysInMonth = new Date(año, mes + 1, 0).getDate();
     

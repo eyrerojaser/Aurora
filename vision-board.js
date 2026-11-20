@@ -194,7 +194,7 @@ function agregarTextoAlVision() {
   const textoEditable = document.createElement('div');
   textoEditable.className = 'texto-element';
   textoEditable.contentEditable = true;
-  textoEditable.textContent = 'Mi meta 2026';
+  textoEditable.textContent = 'Mi meta 2027';
   textoEditable.style.outline = 'none';
   textoEditable.style.padding = '10px';
   textoEditable.style.minHeight = '40px';
@@ -450,7 +450,7 @@ function guardarVisionBoard() {
   
   localStorage.setItem('visionBoard2026', JSON.stringify(visionData));
   
-  alert('✨ Tu Vision Board 2026 ha sido guardado!');
+  alert('✨ Tu Vision Board 2027 ha sido guardado!');
 }
 
 // Agregar meta del año
@@ -541,7 +541,7 @@ function mostrarPalabraAño() {
     display.innerHTML = `
       <div class="palabra-año-card">
         <h2>${palabra}</h2>
-        <p>Mi palabra para 2026</p>
+        <p>Mi palabra para 2027</p>
       </div>
     `;
     display.style.display = 'block';
