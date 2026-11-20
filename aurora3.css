@@ -443,3 +443,23 @@ body.a3-es-premium .a3-premium::after { display: none; }
 .diario-mood-btn[data-mood="ansiosa"], .dc-mood-ansiosa       { --c-fondo: #F3EEE8; --c-medio: #E2D6C8; --c-osc: #6B5640; }
 .diario-mood-btn[data-mood="cansada"], .dc-mood-cansada       { --c-fondo: #EEEFF3; --c-medio: #D6D9E2; --c-osc: #50566B; }
 .dc-mood-leer { font: 600 0.78rem system-ui, -apple-system, sans-serif; padding: 4px 10px; border-radius: 999px; background: var(--c-fondo, #FBF1F5); color: var(--c-osc, #6E3A6C); }
+
+/* fila de herramientas en la hoja del diario: letra, foto y sticker */
+.dc-herramientas { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0.6rem 0 0.2rem; }
+.dc-herramientas .dc-letra { margin: 0; }
+.dc-herramientas .dc-deco-btn { position: relative; z-index: 95; padding: 5px 13px; font-size: 0.82rem; border-style: solid; border-width: 1px; border-color: var(--a2-linea); background: #fff; color: var(--a2-texto); }
+.dc-herramientas .dc-bandeja { top: calc(100% + 6px); max-width: 360px; }
+.dc-herramientas.abierta { z-index: 90; }
+.dc-libro > .dc-hoja:first-of-type .dc-renglones, #diario-texto-entrada { height: 330px; }
+
+/* girar / enderezar */
+.dc-girar { display: none; }
+.dc-item.sel .dc-girar {
+    display: flex; align-items: center; justify-content: center;
+    position: absolute; left: -13px; bottom: -13px; width: 26px; height: 26px; border-radius: 50%;
+    background: #fff; border: 2px solid var(--a2-ciruela); color: var(--a2-ciruela);
+    font: 700 15px/1 system-ui, sans-serif; cursor: grab; touch-action: none;
+}
+@media (max-width: 760px) {
+    #diario-texto-entrada { height: 300px; }
+}

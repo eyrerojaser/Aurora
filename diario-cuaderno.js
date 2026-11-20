@@ -1,6 +1,6 @@
 // =====================================================================
 // DIARIO · cuaderno abierto (se carga después de diario.js)
-// - Hojas: 1 escribir · 2 agradezco, notas y decorar · 3, 4… hojas extra para seguir escribiendo
+// - Todas las hojas son para escribir; cuando una se llena, el texto pasa solo a la siguiente
 // - En pantalla ancha se ven de dos en dos con argollas en el medio; en el teléfono, una a la vez
 // - Fotos y stickers se pegan encima de cualquier hoja: se arrastran y se agrandan o achican
 // =====================================================================
@@ -12,7 +12,7 @@ let dcHoja = 1;                // hoja que se ve (en pantalla ancha: la de la iz
 let dcSeleccion = -1;
 const DC_MAX_FOTOS = 3;
 const DC_MAX_STICKERS = 12;
-const DC_MAX_HOJAS_EXTRA = 6;
+const DC_MAX_HOJAS_EXTRA = 12;
 const DC_GIROS = [-8, 6, -4, 10, -10, 4, -6, 8];
 
 function dcAncho() { return window.matchMedia('(min-width: 761px)').matches; }
@@ -66,7 +66,7 @@ function dcMostrarHojas() {
     const paso = ancho ? 2 : 1;
     document.getElementById('dcAnterior')?.classList.toggle('apagada', dcHoja <= 1);
     document.getElementById('dcSiguiente')?.classList.toggle('apagada', dcHoja + paso > total);
-    const extras = hojas.length - 2;
+    const extras = hojas.length - 1;
     document.getElementById('dcOtraHoja')?.classList.toggle('apagada', extras >= DC_MAX_HOJAS_EXTRA);
     requestAnimationFrame(dcAjustarStickers);
 }
@@ -87,18 +87,19 @@ function dcCrearHojaExtra(texto) {
     hoja.dataset.n = n;
     hoja.innerHTML = `
         <div class="dc-hoja-cab"><span class="dc-fecha">Sigo escribiendo…</span>
-            <button type="button" class="dc-quitar-hoja" onclick="dcQuitarHoja(this)" aria-label="Quitar esta hoja">Quitar hoja</button></div>
+            ${n > 2 ? '<button type="button" class="dc-quitar-hoja" onclick="dcQuitarHoja(this)" aria-label="Quitar esta hoja">Quitar hoja</button>' : ''}</div>
         <textarea class="dc-renglones dc-renglones-extra" placeholder="Sigue aquí…"></textarea>
         <div class="dc-capa"></div>
         <span class="dc-num">${n}</span>`;
     hoja.querySelector('textarea').value = texto || '';
+    hoja.querySelector('textarea').addEventListener('input', e => dcFluir(e.target));
     hoja.querySelector('textarea').style.fontFamily = document.getElementById('diario-texto-entrada')?.style.fontFamily || '';
     libro.appendChild(hoja);
     return n;
 }
 
 function dcOtraHoja() {
-    if (dcHojas().length - 2 >= DC_MAX_HOJAS_EXTRA) return;
+    if (dcHojas().length - 1 >= DC_MAX_HOJAS_EXTRA) return;
     const n = dcCrearHojaExtra('');
     dcHoja = n;
     dcMostrarHojas();
@@ -121,15 +122,59 @@ function dcQuitarHoja(btn) {
 }
 
 function dcTextosExtra() {
-    return dcHojas().slice(2).map(h => h.querySelector('textarea').value);
+    return dcHojas().slice(1).map(h => h.querySelector('textarea').value);
+}
+
+// ---------------- el texto pasa solo a la hoja siguiente ----------------
+function dcCabe(ta) { return ta.scrollHeight <= ta.clientHeight + 2; }
+
+function dcFluir(ta) {
+    if (!ta || !ta.clientHeight || dcCabe(ta)) return;
+    const hojas = dcHojas();
+    const idx = hojas.indexOf(ta.closest('.dc-hoja'));
+    if (idx < 0) return;
+    const completo = ta.value;
+    const cursor = ta.selectionStart;
+    const alFinal = cursor >= completo.length - 1;
+    // cuánto texto cabe en esta hoja
+    let lo = 0, hi = completo.length;
+    while (lo < hi) {
+        const mid = Math.ceil((lo + hi) / 2);
+        ta.value = completo.slice(0, mid);
+        if (dcCabe(ta)) lo = mid; else hi = mid - 1;
+    }
+    let corte = lo;
+    const espacio = Math.max(completo.lastIndexOf(' ', corte - 1), completo.lastIndexOf('\n', corte - 1));
+    if (espacio > corte - 40 && espacio > 0) corte = espacio + 1;   // no cortar palabras
+    let siguiente = hojas[idx + 1];
+    if (!siguiente) {
+        if (hojas.length - 1 >= DC_MAX_HOJAS_EXTRA) { ta.value = completo; return; }
+        dcCrearHojaExtra('');
+        siguiente = dcHojas()[idx + 1];
+        dcMostrarHojas();
+    }
+    const resto = completo.slice(corte);
+    ta.value = completo.slice(0, corte);
+    const tsig = siguiente.querySelector('textarea');
+    tsig.value = resto + tsig.value;
+    if (alFinal || cursor > corte) {
+        dcHoja = idx + 2;
+        dcMostrarHojas();
+        const pos = alFinal ? resto.length : cursor - corte;
+        // el cursor salta enseguida a la hoja nueva (aunque la hoja todavía se esté dando vuelta)
+        tsig.focus({ preventScroll: true });
+        tsig.setSelectionRange(pos, pos);
+        dcFluir(tsig);
+    } else {
+        ta.setSelectionRange(cursor, cursor);
+        dcFluir(tsig);
+    }
 }
 
 // ---------------- fotos y stickers que se mueven ----------------
 // cada uno: { tipo: 'foto'|'sticker', src, hoja, x, y, w, giro }  (x, y, w en % de la hoja)
 function dcHojaParaNuevo() {
-    const total = dcHojas().length;
-    if (dcAncho()) return Math.min(dcHoja + 1, total);   // la hoja derecha que se ve
-    return dcHoja;
+    return Math.max(1, Math.min(dcHoja, dcHojas().length));
 }
 
 function dcAgregarFoto(event) {
@@ -142,7 +187,7 @@ function dcAgregarFoto(event) {
     }
     dcReducirFoto(archivo, (dataUrl) => {
         const n = dcDeco.filter(d => d.tipo === 'foto').length;
-        dcDeco.push({ tipo: 'foto', src: dataUrl, hoja: dcHojaParaNuevo(), x: 8 + n * 16, y: 64 + n * 4, w: 40, giro: DC_GIROS[n % 8] / 2 });
+        dcDeco.push({ tipo: 'foto', src: dataUrl, hoja: dcHojaParaNuevo(), x: 30 + n * 12, y: 40 + n * 8, w: 40, giro: DC_GIROS[n % 8] / 2 });
         dcSeleccion = dcDeco.length - 1;
         dcPintarDeco();
     });
@@ -175,7 +220,7 @@ function dcPonerSticker(emoji) {
         return;
     }
     const n = dcDeco.length;
-    dcDeco.push({ tipo: 'sticker', src: emoji, hoja: dcHojaParaNuevo(), x: 58 + (n * 13) % 30, y: 64 + (n * 9) % 24, w: 13, giro: DC_GIROS[n % 8] });
+    dcDeco.push({ tipo: 'sticker', src: emoji, hoja: dcHojaParaNuevo(), x: 62 + (n * 13) % 26, y: 30 + (n * 9) % 50, w: 13, giro: DC_GIROS[n % 8] });
     dcSeleccion = dcDeco.length - 1;
     dcPintarDeco();
 }
@@ -184,7 +229,7 @@ function dcHtmlItem(d, i, editable) {
     const dentro = d.tipo === 'foto'
         ? `<figure class="dc-polaroid"><img src="${d.src}" alt="Foto" draggable="false"></figure>`
         : `<span class="dc-st">${dcEscapar(d.src)}</span>`;
-    const controles = editable ? `<button type="button" class="dc-x" data-accion="quitar" aria-label="Quitar">×</button><span class="dc-tam" data-accion="tamano" aria-label="Cambiar tamaño"></span>` : '';
+    const controles = editable ? `<button type="button" class="dc-x" data-accion="quitar" aria-label="Quitar">×</button><span class="dc-tam" data-accion="tamano" aria-label="Cambiar tamaño" title="Más grande o más pequeño"></span><span class="dc-girar" data-accion="girar" aria-label="Girar o enderezar" title="Toca para enderezar, arrastra para girar">↻</span>` : '';
     return `<div class="dc-item dc-item-${d.tipo}${editable && i === dcSeleccion ? ' sel' : ''}" data-i="${i}" style="left:${d.x}%;top:${d.y}%;width:${d.w}%;--giro:${d.giro || 0}deg">${dentro}${controles}</div>`;
 }
 
@@ -226,11 +271,27 @@ function dcActivarArrastre() {
             item.classList.add('sel');
         }
         const capa = item.parentElement.getBoundingClientRect();
-        acc = { item, d, capa, modo: e.target.dataset.accion === 'tamano' ? 'tamano' : 'mover', x0: e.clientX, y0: e.clientY, dx: d.x, dy: d.y, dw: d.w, id: e.pointerId };
+        const accion = e.target.dataset.accion;
+        acc = { item, d, capa, modo: accion === 'tamano' ? 'tamano' : (accion === 'girar' ? 'girar' : 'mover'), x0: e.clientX, y0: e.clientY, dx: d.x, dy: d.y, dw: d.w, id: e.pointerId, movio: false };
+        if (acc.modo === 'girar') {
+            const r = item.getBoundingClientRect();
+            acc.cx = r.left + r.width / 2; acc.cy = r.top + r.height / 2;
+            acc.a0 = Math.atan2(e.clientY - acc.cy, e.clientX - acc.cx);
+            acc.g0 = d.giro || 0;
+        }
         item.setPointerCapture(e.pointerId);
     });
     libro.addEventListener('pointermove', e => {
         if (!acc || e.pointerId !== acc.id) return;
+        if (Math.abs(e.clientX - acc.x0) + Math.abs(e.clientY - acc.y0) > 4) acc.movio = true;
+        if (acc.modo === 'girar') {
+            let g = acc.g0 + (Math.atan2(e.clientY - acc.cy, e.clientX - acc.cx) - acc.a0) * 180 / Math.PI;
+            g = ((g + 180) % 360 + 360) % 360 - 180;
+            if (Math.abs(g) < 4) g = 0;          // se queda derecho si está casi derecho
+            acc.d.giro = Math.round(g);
+            acc.item.style.setProperty('--giro', acc.d.giro + 'deg');
+            return;
+        }
         const px = (e.clientX - acc.x0) / acc.capa.width * 100;
         const py = (e.clientY - acc.y0) / acc.capa.height * 100;
         if (acc.modo === 'mover') {
@@ -245,7 +306,14 @@ function dcActivarArrastre() {
             if (acc.d.tipo === 'sticker') dcAjustarStickers(acc.item.parentElement);
         }
     });
-    const soltar = e => { if (acc && e.pointerId === acc.id) acc = null; };
+    const soltar = e => {
+        if (!acc || e.pointerId !== acc.id) return;
+        if (acc.modo === 'girar' && !acc.movio) {      // un toque endereza
+            acc.d.giro = 0;
+            acc.item.style.setProperty('--giro', '0deg');
+        }
+        acc = null;
+    };
     libro.addEventListener('pointerup', soltar);
     libro.addEventListener('pointercancel', soltar);
     // tocar fuera deselecciona
@@ -275,13 +343,13 @@ function dcActivarDeslizar(el, izquierda, derecha) {
 async function guardarPaginaScrapbook(event) {
     if (event && event.preventDefault) event.preventDefault();
     const texto = document.getElementById('diario-texto-entrada').value;
-    const notas = document.getElementById('diario-notas')?.value || '';
+    const notas = '';
     const mensajeDiv = document.getElementById('mensaje-diario');
     const gratitudes = [1, 2, 3].map(n => document.getElementById('diario-gratitud-' + n)?.value || '').filter(g => g.trim());
     let extras = dcTextosExtra();
     while (extras.length && !extras[extras.length - 1].trim()) extras.pop();
 
-    if (!texto.trim() && !notas.trim() && !gratitudes.length && !dcDeco.length && !extras.some(t => t.trim())) {
+    if (!texto.trim() && !dcDeco.length && !extras.some(t => t.trim())) {
         mensajeDiv.className = 'mensaje-diario aviso';
         mensajeDiv.textContent = '✍️ Escribe algo o agrega una foto antes de guardar';
         setTimeout(() => { mensajeDiv.className = 'mensaje-diario'; }, 3000);
@@ -289,9 +357,10 @@ async function guardarPaginaScrapbook(event) {
     }
 
     const moodSeleccionado = document.querySelector('.diario-mood-btn.active');
-    const totalHojas = Math.max(2, 2 + extras.length);
+    const totalHojas = 1 + extras.length;
     const pagina = {
         id: Date.now().toString(),
+        v: 2,
         fecha: new Date().toISOString(),
         texto: texto,
         hojasExtra: extras,
@@ -311,14 +380,15 @@ async function guardarPaginaScrapbook(event) {
     const subida = subirPaginaDiario(pagina);
 
     mensajeDiv.className = 'mensaje-diario exito';
-    mensajeDiv.textContent = '📔 Tu página quedó guardada en tu cuaderno ✨';
+    mensajeDiv.textContent = 'Tu diario de hoy quedó guardado ✨';
 
     // hoja en blanco para la próxima vez
     document.getElementById('diario-texto-entrada').value = '';
     if (document.getElementById('diario-notas')) document.getElementById('diario-notas').value = '';
     [1, 2, 3].forEach(n => { const el = document.getElementById('diario-gratitud-' + n); if (el) el.value = ''; });
     document.querySelectorAll('.diario-mood-btn').forEach(b => b.classList.remove('active'));
-    dcHojas().slice(2).forEach(h => h.remove());
+    dcHojas().slice(1).forEach(h => h.remove());
+    dcCrearHojaExtra('');
     dcDeco = []; dcSeleccion = -1;
     dcPintarDeco();
     dcVerHoja(1);
@@ -330,7 +400,7 @@ async function guardarPaginaScrapbook(event) {
 
     if (!(await subida) && pagina.deco.some(d => d.tipo === 'foto')) {
         mensajeDiv.className = 'mensaje-diario aviso';
-        mensajeDiv.textContent = 'La página se guardó en este teléfono. Se subirá a la nube cuando haya conexión.';
+        mensajeDiv.textContent = 'Tu diario se guardó en este teléfono. Se subirá a la nube cuando haya conexión.';
         setTimeout(() => { mensajeDiv.className = 'mensaje-diario'; }, 4000);
     }
 }
@@ -338,7 +408,7 @@ async function guardarPaginaScrapbook(event) {
 // ---------------- Mi cuaderno: hojear lo guardado ----------------
 // Las páginas de antes (fotos y stickers en fila) se muestran también, colocados en la hoja 2
 function dcDecoDePagina(p) {
-    if (Array.isArray(p.deco)) return p.deco;
+    if (Array.isArray(p.deco)) return p.deco.map(d => Object.assign({ hoja: p.v === 2 ? 1 : 2 }, d));
     const deco = [];
     (p.stickers || []).forEach((s, k) => deco.push({ tipo: 'sticker', src: s, hoja: 2, x: 4 + (k % 6) * 15, y: 2, w: 12, giro: DC_GIROS[k % 8] }));
     (p.fotos || []).forEach((f, k) => deco.push({ tipo: 'foto', src: f, hoja: 2, x: 6 + k * 46, y: 58, w: 40, giro: k % 2 ? 3 : -3 }));
@@ -370,16 +440,16 @@ function cargarPaginasAnteriores() {
     const hojas = [
         `<div class="dc-hoja-cab"><span class="dc-fecha">${fechaTxt} · ${horaTxt}</span>${p.mood ? `<span class="dc-mood-leer dc-mood-${dcEscapar(p.mood)}">${dcEscapar(p.mood.charAt(0).toUpperCase() + p.mood.slice(1))}</span>` : ''}</div>
          <div class="dc-texto-leer" style="font-family:${letra}">${dcEscapar(p.texto) || '<span class="dc-suave">Sin texto este día</span>'}</div>`,
-        grat + notas + fotosNube
     ];
+    if (p.v !== 2) hojas.push(grat + notas + fotosNube);   // páginas de antes: hoja de agradecer y notas
     (p.hojasExtra || []).forEach(t => hojas.push(`<div class="dc-hoja-cab"><span class="dc-fecha">Sigo escribiendo…</span></div><div class="dc-texto-leer" style="font-family:${letra}">${dcEscapar(t)}</div>`));
     // solo se muestran las hojas que tienen algo (texto o fotos/stickers)
-    const visibles = hojas.map((contenido, k) => ({ contenido, n: k + 1, items: deco.filter(d => (d.hoja || 2) === k + 1) }))
-        .filter(h => h.n === 1 || h.items.length || h.contenido.replace(/<[^>]*>/g, '').trim());
+    const visibles = hojas.map((contenido, k) => ({ contenido, n: k + 1, items: deco.filter(d => d.hoja === k + 1) }))
+        .filter(h => h.n === 1 || h.items.length || h.contenido.replace(/<[^>]*>/g, '').replace('Sigo escribiendo…', '').trim());
     const filas = Math.ceil(visibles.length / 2);
     const html = visibles.map((h, k) => {
         const pos = k + 1;
-        const items = h.items.map((d, j) => dcHtmlItem(d, j, false)).join('');
+        const items = h.items.map((d, k2) => dcHtmlItem(d, k2, false)).join('');
         return `<div class="dc-hoja ${pos % 2 ? 'impar' : 'par'}${h.items.length ? ' con-deco' : ''}" style="grid-column:${pos % 2 ? 1 : 3};grid-row:${Math.ceil(pos / 2)}">${h.contenido}<div class="dc-capa">${items}</div><span class="dc-num">${h.n}</span></div>`;
     }).join('');
     const unaSola = visibles.length === 1;
@@ -404,6 +474,8 @@ function dcIrAPagina(n) {
 
 // ---------------- arranque ----------------
 document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('dcLibro') && dcHojas().length < 2) dcCrearHojaExtra('');
+    document.getElementById('diario-texto-entrada')?.addEventListener('input', e => dcFluir(e.target));
     dcMostrarHojas();
     dcPintarDeco();
     dcActivarArrastre();

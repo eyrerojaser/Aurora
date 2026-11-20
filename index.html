@@ -53,7 +53,7 @@
     }
   </script>
   <link rel="stylesheet" href="/aurora2.css?v=1">
-  <link rel="stylesheet" href="/aurora3.css?v=10">
+  <link rel="stylesheet" href="/aurora3.css?v=11">
 </head>
 <body>
   <header class="oculto">Aurora</header>
@@ -833,34 +833,22 @@
                 <p>¿Cómo me siento hoy?</p>
                 <div class="dc-animos" id="diario-mood-opciones"><button type="button" class="diario-mood-btn" data-mood="feliz" onclick="seleccionarMood(this)">Feliz</button><button type="button" class="diario-mood-btn" data-mood="tranquila" onclick="seleccionarMood(this)">Tranquila</button><button type="button" class="diario-mood-btn" data-mood="agradecida" onclick="seleccionarMood(this)">Agradecida</button><button type="button" class="diario-mood-btn" data-mood="motivada" onclick="seleccionarMood(this)">Motivada</button><button type="button" class="diario-mood-btn" data-mood="pensativa" onclick="seleccionarMood(this)">Pensativa</button><button type="button" class="diario-mood-btn" data-mood="triste" onclick="seleccionarMood(this)">Triste</button><button type="button" class="diario-mood-btn" data-mood="ansiosa" onclick="seleccionarMood(this)">Ansiosa</button><button type="button" class="diario-mood-btn" data-mood="cansada" onclick="seleccionarMood(this)">Cansada</button></div>
               </div>
+              <div class="dc-herramientas dc-bloque-deco">
               <div class="dc-letra">
                 <button type="button" class="dc-letra-btn" onclick="this.parentElement.classList.toggle('abierta')" aria-label="Elegir letra">Aa <span id="dcLetraNombre">Clásica</span> <i>▾</i></button>
                 <div class="dc-letra-menu"><button type="button" class="diario-font-btn active" data-font="'Lora', Georgia, serif" data-nombre="Clásica" onclick="cambiarFuenteDiario(this)" style="font-family: 'Lora', Georgia, serif;">Clásica</button><button type="button" class="diario-font-btn" data-font="'Palatino Linotype', 'Book Antiqua', Palatino, serif" data-nombre="Elegante" onclick="cambiarFuenteDiario(this)" style="font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;">Elegante</button><button type="button" class="diario-font-btn" data-font="'Trebuchet MS', 'Lucida Sans', sans-serif" data-nombre="Sencilla" onclick="cambiarFuenteDiario(this)" style="font-family: 'Trebuchet MS', 'Lucida Sans', sans-serif;">Sencilla</button><button type="button" class="diario-font-btn" data-font="'Comic Sans MS', 'Segoe Print', cursive" data-nombre="Divertida" onclick="cambiarFuenteDiario(this)" style="font-family: 'Comic Sans MS', 'Segoe Print', cursive;">Divertida</button><button type="button" class="diario-font-btn" data-font="'Brush Script MT', 'Segoe Script', cursive" data-nombre="A mano" onclick="cambiarFuenteDiario(this)" style="font-family: 'Brush Script MT', 'Segoe Script', cursive;">A mano</button><button type="button" class="diario-font-btn" data-font="'Courier New', monospace" data-nombre="Máquina de escribir" onclick="cambiarFuenteDiario(this)" style="font-family: 'Courier New', monospace;">Máquina de escribir</button></div>
+              </div>
+                <button type="button" class="dc-deco-btn" onclick="document.getElementById('dcFotoInput').click()">Foto</button>
+                <button type="button" class="dc-deco-btn" onclick="event.stopPropagation(); this.closest('.dc-bloque-deco').classList.toggle('abierta')">Sticker</button>
+                <input type="file" id="dcFotoInput" accept="image/*" hidden onchange="dcAgregarFoto(event)" />
+                <div class="dc-bandeja" id="dcBandeja"><p>Flores</p><div><button type="button" onclick="dcPonerSticker('🌸')">🌸</button><button type="button" onclick="dcPonerSticker('🌺')">🌺</button><button type="button" onclick="dcPonerSticker('🌷')">🌷</button><button type="button" onclick="dcPonerSticker('🪷')">🪷</button><button type="button" onclick="dcPonerSticker('🌻')">🌻</button><button type="button" onclick="dcPonerSticker('🍀')">🍀</button><button type="button" onclick="dcPonerSticker('🌿')">🌿</button><button type="button" onclick="dcPonerSticker('🦋')">🦋</button></div><p>Amor</p><div><button type="button" onclick="dcPonerSticker('💕')">💕</button><button type="button" onclick="dcPonerSticker('💗')">💗</button><button type="button" onclick="dcPonerSticker('💝')">💝</button><button type="button" onclick="dcPonerSticker('🩷')">🩷</button><button type="button" onclick="dcPonerSticker('🩵')">🩵</button><button type="button" onclick="dcPonerSticker('💜')">💜</button><button type="button" onclick="dcPonerSticker('🤍')">🤍</button><button type="button" onclick="dcPonerSticker('🫶')">🫶</button></div><p>Brillos</p><div><button type="button" onclick="dcPonerSticker('✨')">✨</button><button type="button" onclick="dcPonerSticker('💫')">💫</button><button type="button" onclick="dcPonerSticker('🌟')">🌟</button><button type="button" onclick="dcPonerSticker('⭐')">⭐</button><button type="button" onclick="dcPonerSticker('🔮')">🔮</button><button type="button" onclick="dcPonerSticker('💎')">💎</button><button type="button" onclick="dcPonerSticker('🌙')">🌙</button><button type="button" onclick="dcPonerSticker('☀️')">☀️</button></div><p>Dulce</p><div><button type="button" onclick="dcPonerSticker('🎀')">🎀</button><button type="button" onclick="dcPonerSticker('🧸')">🧸</button><button type="button" onclick="dcPonerSticker('🍭')">🍭</button><button type="button" onclick="dcPonerSticker('🍰')">🍰</button><button type="button" onclick="dcPonerSticker('🧁')">🧁</button><button type="button" onclick="dcPonerSticker('🍓')">🍓</button><button type="button" onclick="dcPonerSticker('🍒')">🍒</button><button type="button" onclick="dcPonerSticker('🌈')">🌈</button></div><p>Poder</p><div><button type="button" onclick="dcPonerSticker('👑')">👑</button><button type="button" onclick="dcPonerSticker('🏆')">🏆</button><button type="button" onclick="dcPonerSticker('💪')">💪</button><button type="button" onclick="dcPonerSticker('🎯')">🎯</button><button type="button" onclick="dcPonerSticker('🔥')">🔥</button><button type="button" onclick="dcPonerSticker('⚡')">⚡</button><button type="button" onclick="dcPonerSticker('🚀')">🚀</button><button type="button" onclick="dcPonerSticker('💯')">💯</button></div></div>
               </div>
               <textarea id="diario-texto-entrada" class="dc-renglones" placeholder="Querido diario..."></textarea>
               <div class="dc-capa"></div>
               <span class="dc-num">1</span>
             </div>
 
-            <!-- hoja derecha: notas y decorar -->
-            <div class="dc-hoja" data-n="2">
-              <div class="dc-bloque">
-                <p class="dc-etq">📝 Notas</p>
-                <textarea id="diario-notas" class="dc-nota" placeholder="Algo que no quiero olvidar..."></textarea>
-              </div>
-              <div class="dc-bloque dc-bloque-deco">
-                <p class="dc-etq">✨ Decora tu página</p>
-                <div class="dc-deco-botones">
-                  <button type="button" class="dc-deco-btn" onclick="document.getElementById('dcFotoInput').click()">📷 Foto</button>
-                  <button type="button" class="dc-deco-btn" onclick="event.stopPropagation(); this.closest('.dc-bloque-deco').classList.toggle('abierta')">🌸 Sticker</button>
-                </div>
-                <p class="dc-pista">Arrástralos a donde quieras. Toca uno y usa la esquina para hacerlo más grande o más pequeño.</p>
-                <input type="file" id="dcFotoInput" accept="image/*" hidden onchange="dcAgregarFoto(event)" />
-                <div class="dc-bandeja" id="dcBandeja"><p>Flores</p><div><button type="button" onclick="dcPonerSticker('🌸')">🌸</button><button type="button" onclick="dcPonerSticker('🌺')">🌺</button><button type="button" onclick="dcPonerSticker('🌷')">🌷</button><button type="button" onclick="dcPonerSticker('🪷')">🪷</button><button type="button" onclick="dcPonerSticker('🌻')">🌻</button><button type="button" onclick="dcPonerSticker('🍀')">🍀</button><button type="button" onclick="dcPonerSticker('🌿')">🌿</button><button type="button" onclick="dcPonerSticker('🦋')">🦋</button></div><p>Amor</p><div><button type="button" onclick="dcPonerSticker('💕')">💕</button><button type="button" onclick="dcPonerSticker('💗')">💗</button><button type="button" onclick="dcPonerSticker('💝')">💝</button><button type="button" onclick="dcPonerSticker('🩷')">🩷</button><button type="button" onclick="dcPonerSticker('🩵')">🩵</button><button type="button" onclick="dcPonerSticker('💜')">💜</button><button type="button" onclick="dcPonerSticker('🤍')">🤍</button><button type="button" onclick="dcPonerSticker('🫶')">🫶</button></div><p>Brillos</p><div><button type="button" onclick="dcPonerSticker('✨')">✨</button><button type="button" onclick="dcPonerSticker('💫')">💫</button><button type="button" onclick="dcPonerSticker('🌟')">🌟</button><button type="button" onclick="dcPonerSticker('⭐')">⭐</button><button type="button" onclick="dcPonerSticker('🔮')">🔮</button><button type="button" onclick="dcPonerSticker('💎')">💎</button><button type="button" onclick="dcPonerSticker('🌙')">🌙</button><button type="button" onclick="dcPonerSticker('☀️')">☀️</button></div><p>Dulce</p><div><button type="button" onclick="dcPonerSticker('🎀')">🎀</button><button type="button" onclick="dcPonerSticker('🧸')">🧸</button><button type="button" onclick="dcPonerSticker('🍭')">🍭</button><button type="button" onclick="dcPonerSticker('🍰')">🍰</button><button type="button" onclick="dcPonerSticker('🧁')">🧁</button><button type="button" onclick="dcPonerSticker('🍓')">🍓</button><button type="button" onclick="dcPonerSticker('🍒')">🍒</button><button type="button" onclick="dcPonerSticker('🌈')">🌈</button></div><p>Poder</p><div><button type="button" onclick="dcPonerSticker('👑')">👑</button><button type="button" onclick="dcPonerSticker('🏆')">🏆</button><button type="button" onclick="dcPonerSticker('💪')">💪</button><button type="button" onclick="dcPonerSticker('🎯')">🎯</button><button type="button" onclick="dcPonerSticker('🔥')">🔥</button><button type="button" onclick="dcPonerSticker('⚡')">⚡</button><button type="button" onclick="dcPonerSticker('🚀')">🚀</button><button type="button" onclick="dcPonerSticker('💯')">💯</button></div></div>
-              </div>
-              <div class="dc-capa"></div>
-              <span class="dc-num">2</span>
-            </div>
+            <!-- las hojas 2, 3, 4… para seguir escribiendo las crea diario-cuaderno.js -->
           </div>
 
           <div class="dc-pasar">
@@ -868,14 +856,14 @@
             <span class="dc-hoja-txt" id="dcHojaTxt">Hoja 1 de 2</span>
             <button type="button" class="dc-flecha" id="dcSiguiente" onclick="dcPasar(1)" aria-label="Pasar la hoja">›</button>
           </div>
-          <button type="button" class="dc-otra-hoja" id="dcOtraHoja" onclick="dcOtraHoja()">＋ Otra hoja para seguir escribiendo</button>
+          <button type="button" class="dc-otra-hoja" id="dcOtraHoja" onclick="dcOtraHoja()">＋ Hoja nueva</button>
 
-          <button type="button" class="dc-guardar" onclick="guardarPaginaScrapbook(event)">Guardar esta página</button>
+          <button type="button" class="dc-guardar" onclick="guardarPaginaScrapbook(event)">Guardar diario</button>
           <div id="mensaje-diario" class="mensaje-diario"></div>
         </div>
 
         <div class="dc-anteriores">
-          <h2>Mi cuaderno</h2>
+          <h2>Lo que he escrito</h2>
           <div id="lista-entradas-diario"></div>
         </div>
       </div>
@@ -1439,7 +1427,7 @@
   <script src="sync.js?v=1000"></script>
   <script src="script.js?v=1008"></script>
   <script src="diario.js?v=1009"></script>
-  <script src="diario-cuaderno.js?v=4"></script>
+  <script src="diario-cuaderno.js?v=6"></script>
   <script src="metas.js?v=1001"></script>
   <script src="dashboard.js?v=1001"></script>
   <script src="datos.js?v=1000"></script>
