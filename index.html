@@ -54,6 +54,7 @@
   </script>
   <link rel="stylesheet" href="/aurora2.css?v=1">
   <link rel="stylesheet" href="/aurora3.css?v=11">
+  <link rel="stylesheet" href="/hada.css?v=1">
 </head>
 <body>
   <header class="oculto">Aurora</header>
@@ -194,6 +195,7 @@
         <button type="button" onclick="mostrarSeccion('progreso')"><span class="a3-ico">📊</span><span><b>Mi progreso</b><small>Todo lo que has avanzado</small></span><i>›</i></button>
         <button type="button" onclick="a3Compartir()"><span class="a3-ico">💌</span><span><b>Compartir Aurora</b><small>Invita a tus amigas</small></span><i>›</i></button>
         <button type="button" onclick="window.open('https://auroraempowerment.store/', '_blank')"><span class="a3-ico">🛍️</span><span><b>Tienda Aurora</b><small>Planners y más</small></span><i>›</i></button>
+        <button type="button" onclick="hadaCambiarVisible()"><span class="a3-ico">🧚</span><span><b id="hadaYoTexto">Ocultar a mi hada madrina</b><small>La que te saluda en Hoy</small></span><i>›</i></button>
         <button type="button" onclick="cerrarSesion()"><span class="a3-ico">🚪</span><span><b>Cerrar sesión</b><small>Puedes volver cuando quieras</small></span><i>›</i></button>
       </div>
     </section>
@@ -1438,6 +1440,7 @@
   <script src="habitos-calendario.js?v=10"></script>
   <script src="aurora2.js?v=2"></script>
   <script src="aurora3.js?v=2"></script>
+  <script src="hada.js?v=1"></script>
   <!-- Funciones de limpieza (inline para evitar caché) -->
   <script>
     function limpiarBotonesCollage() {

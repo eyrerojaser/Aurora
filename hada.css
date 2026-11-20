@@ -1,0 +1,68 @@
+/* =====================================================================
+   HADA MADRINA
+   ===================================================================== */
+.hada-zona { position: fixed; inset: 0; pointer-events: none; z-index: 850; overflow: hidden; }
+.hada-zona.escondida { display: none; }
+
+.hada {
+    position: absolute; left: 0; top: 0; width: 92px; pointer-events: auto; cursor: pointer;
+    transition-property: transform; transition-timing-function: cubic-bezier(.45, .05, .35, 1);
+    -webkit-tap-highlight-color: transparent; will-change: transform;
+}
+.hada-voltea { transition: transform .35s ease; }
+.hada.mira-izq .hada-voltea { transform: scaleX(-1); }
+.hada-flota { animation: hadaFlota 3.2s ease-in-out infinite; }
+.hada-cuerpo svg, .hada-cuerpo img { display: block; width: 100%; height: auto; filter: drop-shadow(0 6px 10px rgba(139, 71, 137, .25)); overflow: visible; }
+
+/* flota suave arriba y abajo; al volar se inclina un poquito */
+@keyframes hadaFlota { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-9px) rotate(2deg); } }
+.hada.volando .hada-flota { animation: hadaVuela .9s ease-in-out infinite; }
+@keyframes hadaVuela { 0%, 100% { transform: translateY(0) rotate(8deg); } 50% { transform: translateY(-6px) rotate(5deg); } }
+
+/* alas que aletean */
+.hada .hd-ala-izq, .hada .hd-ala-der { transform-box: view-box; animation: hadaAla .38s ease-in-out infinite alternate; }
+.hada .hd-ala-izq { transform-origin: 78px 98px; }
+.hada .hd-ala-der { transform-origin: 82px 98px; }
+.hada.volando .hd-ala-izq, .hada.volando .hd-ala-der { animation-duration: .16s; }
+@keyframes hadaAla { from { transform: scaleX(1); } to { transform: scaleX(.62); } }
+
+/* parpadea */
+.hada .hd-ojos { transform-box: view-box; transform-origin: 80px 74px; animation: hadaParpadeo 4.6s infinite; }
+@keyframes hadaParpadeo { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
+
+/* mueve la cabecita y la varita */
+.hada .hd-cabeza { transform-box: view-box; transform-origin: 80px 98px; animation: hadaCabeza 5s ease-in-out infinite; }
+@keyframes hadaCabeza { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-5deg); } 60% { transform: rotate(4deg); } }
+.hada .hd-varita { transform-box: view-box; transform-origin: 94px 108px; animation: hadaVarita 2.4s ease-in-out infinite; }
+@keyframes hadaVarita { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-12deg); } }
+.hada .hd-brazo-izq { transform-box: view-box; transform-origin: 68px 108px; animation: hadaSaluda 3.6s ease-in-out infinite; }
+@keyframes hadaSaluda { 0%, 70%, 100% { transform: rotate(0); } 78% { transform: rotate(18deg); } 86% { transform: rotate(-6deg); } 94% { transform: rotate(14deg); } }
+.hada .hd-luz { transform-box: fill-box; transform-origin: center; animation: hadaLuz 1.6s ease-in-out infinite; }
+@keyframes hadaLuz { 0%, 100% { transform: scale(.8); opacity: .6; } 50% { transform: scale(1.35); opacity: 1; } }
+
+/* da una vuelta cuando la tocas */
+.hada.gira .hada-cuerpo { animation: hadaGira .8s cubic-bezier(.5, 0, .3, 1); }
+@keyframes hadaGira { 0% { transform: rotate(0) scale(1); } 50% { transform: rotate(200deg) scale(1.12); } 100% { transform: rotate(360deg) scale(1); } }
+
+/* burbuja de lo que dice */
+.hada-burbuja {
+    position: absolute; bottom: calc(100% - 6px); left: 40%; width: max-content; max-width: 210px;
+    background: #fff; color: #5A3D52; border: 1px solid #F0D6E2; border-radius: 16px 16px 16px 4px;
+    padding: 9px 12px; font: 500 0.86rem/1.4 'Lora', Georgia, serif;
+    box-shadow: 0 8px 20px rgba(139, 71, 137, .16);
+    opacity: 0; transform: translateY(6px) scale(.92); transform-origin: bottom left;
+    transition: opacity .35s, transform .35s; pointer-events: none;
+}
+.hada-burbuja.a-la-izq { left: auto; right: 40%; border-radius: 16px 16px 4px 16px; transform-origin: bottom right; }
+.hada-burbuja.visible { opacity: 1; transform: none; }
+
+/* brillitos de la estela */
+.hada-brillo {
+    position: fixed; pointer-events: none; font-size: 15px; line-height: 1;
+    animation: hadaBrillo 1.2s ease-out forwards; text-shadow: 0 0 6px rgba(255, 236, 180, .9);
+}
+@keyframes hadaBrillo { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(18px) scale(.3); } }
+
+@media (prefers-reduced-motion: reduce) {
+    .hada, .hada * { animation: none !important; transition: none !important; }
+}
