@@ -53,7 +53,7 @@
     }
   </script>
   <link rel="stylesheet" href="/aurora2.css?v=1">
-  <link rel="stylesheet" href="/aurora3.css?v=3">
+  <link rel="stylesheet" href="/aurora3.css?v=4">
 </head>
 <body>
   <header class="oculto">Aurora</header>
@@ -854,6 +854,11 @@
                 <p class="dc-etq">📝 Notas</p>
                 <textarea id="diario-notas" class="dc-nota" placeholder="Algo que no quiero olvidar..."></textarea>
               </div>
+              <div class="dc-bloque dc-bloque-stickers">
+                <p class="dc-etq">✨ Stickers</p>
+                <div class="dc-stickers" id="dcStickers"></div>
+                <div class="dc-bandeja" id="dcBandeja"><p>Flores</p><div><button type="button" onclick="dcPonerSticker('🌸')">🌸</button><button type="button" onclick="dcPonerSticker('🌺')">🌺</button><button type="button" onclick="dcPonerSticker('🌷')">🌷</button><button type="button" onclick="dcPonerSticker('🪷')">🪷</button><button type="button" onclick="dcPonerSticker('🌻')">🌻</button><button type="button" onclick="dcPonerSticker('🍀')">🍀</button><button type="button" onclick="dcPonerSticker('🌿')">🌿</button><button type="button" onclick="dcPonerSticker('🦋')">🦋</button></div><p>Amor</p><div><button type="button" onclick="dcPonerSticker('💕')">💕</button><button type="button" onclick="dcPonerSticker('💗')">💗</button><button type="button" onclick="dcPonerSticker('💝')">💝</button><button type="button" onclick="dcPonerSticker('🩷')">🩷</button><button type="button" onclick="dcPonerSticker('🩵')">🩵</button><button type="button" onclick="dcPonerSticker('💜')">💜</button><button type="button" onclick="dcPonerSticker('🤍')">🤍</button><button type="button" onclick="dcPonerSticker('🫶')">🫶</button></div><p>Brillos</p><div><button type="button" onclick="dcPonerSticker('✨')">✨</button><button type="button" onclick="dcPonerSticker('💫')">💫</button><button type="button" onclick="dcPonerSticker('🌟')">🌟</button><button type="button" onclick="dcPonerSticker('⭐')">⭐</button><button type="button" onclick="dcPonerSticker('🔮')">🔮</button><button type="button" onclick="dcPonerSticker('💎')">💎</button><button type="button" onclick="dcPonerSticker('🌙')">🌙</button><button type="button" onclick="dcPonerSticker('☀️')">☀️</button></div><p>Dulce</p><div><button type="button" onclick="dcPonerSticker('🎀')">🎀</button><button type="button" onclick="dcPonerSticker('🧸')">🧸</button><button type="button" onclick="dcPonerSticker('🍭')">🍭</button><button type="button" onclick="dcPonerSticker('🍰')">🍰</button><button type="button" onclick="dcPonerSticker('🧁')">🧁</button><button type="button" onclick="dcPonerSticker('🍓')">🍓</button><button type="button" onclick="dcPonerSticker('🍒')">🍒</button><button type="button" onclick="dcPonerSticker('🌈')">🌈</button></div><p>Poder</p><div><button type="button" onclick="dcPonerSticker('👑')">👑</button><button type="button" onclick="dcPonerSticker('🏆')">🏆</button><button type="button" onclick="dcPonerSticker('💪')">💪</button><button type="button" onclick="dcPonerSticker('🎯')">🎯</button><button type="button" onclick="dcPonerSticker('🔥')">🔥</button><button type="button" onclick="dcPonerSticker('⚡')">⚡</button><button type="button" onclick="dcPonerSticker('🚀')">🚀</button><button type="button" onclick="dcPonerSticker('💯')">💯</button></div></div>
+              </div>
               <div class="dc-bloque">
                 <p class="dc-etq">📷 Mis fotos</p>
                 <div class="dc-fotos" id="dcFotos"></div>
@@ -1437,7 +1442,7 @@
   <script src="auth.js?v=1003"></script>
   <script src="sync.js?v=1000"></script>
   <script src="script.js?v=1008"></script>
-  <script src="diario.js?v=1007"></script>
+  <script src="diario.js?v=1008"></script>
   <script src="metas.js?v=1001"></script>
   <script src="dashboard.js?v=1001"></script>
   <script src="datos.js?v=1000"></script>

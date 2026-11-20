@@ -418,3 +418,29 @@ body.a3-es-premium .a3-premium::after { display: none; }
 #seccion-diario .dc-linea { border-bottom: 1px solid #E9D9E0 !important; }
 #seccion-diario .dc-linea:focus { border-bottom-color: #D98AAE !important; }
 #seccion-diario .dc-nota { border: 0 !important; background: #FFF6D9 !important; box-shadow: 0 2px 6px rgba(150, 120, 40, 0.15) !important; border-radius: 2px 2px 14px 2px !important; }
+
+/* stickers del diario */
+.dc-stickers { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; min-height: 44px; }
+.dc-sticker {
+    all: unset; cursor: default; display: inline-block; font-size: 2.1rem; line-height: 1;
+    transform: rotate(var(--giro, 0deg)); filter: drop-shadow(0 2px 2px rgba(86, 65, 74, .18));
+}
+button.dc-sticker { cursor: pointer; }
+button.dc-sticker:active { transform: rotate(var(--giro, 0deg)) scale(.85); }
+.dc-sticker-mas {
+    all: unset; box-sizing: border-box; cursor: pointer; padding: 7px 13px; border-radius: 999px;
+    border: 1.5px dashed #E2C9D4; background: #FFFAFC; color: #A35A80; font: 600 0.82rem system-ui, -apple-system, sans-serif;
+}
+.dc-bandeja {
+    display: none; margin-top: 8px; padding: 8px 10px 10px; border-radius: 14px;
+    background: #fff; border: 1px solid var(--a2-linea); box-shadow: 0 8px 20px rgba(86, 65, 74, .12);
+}
+.dc-bloque-stickers.abierta .dc-bandeja { display: block; }
+.dc-bandeja p { margin: 6px 0 2px; font-size: 0.72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--a2-suave); }
+.dc-bandeja div { display: grid; grid-template-columns: repeat(8, 1fr); }
+.dc-bandeja button { all: unset; cursor: pointer; text-align: center; font-size: 1.5rem; padding: 5px 0; border-radius: 8px; }
+.dc-bandeja button:hover, .dc-bandeja button:active { background: #FBF4F7; }
+.dc-libro-leer .dc-stickers { margin-bottom: 0.8rem; }
+@media (max-width: 760px) {
+    .dc-form .dc-der { overflow-y: auto; }
+}

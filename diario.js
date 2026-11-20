@@ -674,7 +674,7 @@ async function guardarPaginaScrapbook(event) {
     const mensajeDiv = document.getElementById('mensaje-diario');
     const gratitudes = [1, 2, 3].map(n => document.getElementById('diario-gratitud-' + n)?.value || '').filter(g => g.trim());
 
-    if (!texto.trim() && !notas.trim() && !gratitudes.length && !dcFotosNuevas.length) {
+    if (!texto.trim() && !notas.trim() && !gratitudes.length && !dcFotosNuevas.length && !dcStickersNuevos.length) {
         mensajeDiv.className = 'mensaje-diario aviso';
         mensajeDiv.textContent = '✍️ Escribe algo o agrega una foto antes de guardar';
         setTimeout(() => { mensajeDiv.className = 'mensaje-diario'; }, 3000);
@@ -695,6 +695,7 @@ async function guardarPaginaScrapbook(event) {
         moodEmoji: moodEmoji,
         gratitudes: gratitudes,
         fotos: dcFotosNuevas.slice(),
+        stickers: dcStickersNuevos.slice(),
         fuente: fuenteGuardada,
         elementos: [],
         fondo: ''
@@ -714,6 +715,8 @@ async function guardarPaginaScrapbook(event) {
     document.querySelectorAll('.diario-mood-btn').forEach(b => b.classList.remove('active'));
     dcFotosNuevas = [];
     dcPintarFotosNuevas();
+    dcStickersNuevos = [];
+    dcPintarStickers();
     dcVerHoja(1);
 
     dcPaginaVista = 0;
@@ -731,6 +734,9 @@ async function guardarPaginaScrapbook(event) {
 // Páginas completas (con fotos) en memoria; en el teléfono se guardan aunque no quepan las fotos
 let dcMemoria = null;
 let dcFotosNuevas = [];
+let dcStickersNuevos = [];
+const DC_MAX_STICKERS = 8;
+const DC_GIROS = [-8, 6, -4, 10, -10, 4, -6, 8];
 let dcPaginaVista = 0;
 const DC_MAX_FOTOS = 2;
 
@@ -803,6 +809,34 @@ function dcPintarFotosNuevas() {
     caja.innerHTML = html;
 }
 
+
+// --- stickers de la página nueva ---
+function dcPonerSticker(emoji) {
+    if (dcStickersNuevos.length >= DC_MAX_STICKERS) return;
+    dcStickersNuevos.push(emoji);
+    dcPintarStickers();
+    if (dcStickersNuevos.length >= DC_MAX_STICKERS) document.querySelector('.dc-bloque-stickers')?.classList.remove('abierta');
+}
+
+function dcQuitarSticker(i) {
+    dcStickersNuevos.splice(i, 1);
+    dcPintarStickers();
+}
+
+function dcHtmlStickers(lista, editable) {
+    return lista.map((e, i) => editable
+        ? `<button type="button" class="dc-sticker" style="--giro:${DC_GIROS[i % 8]}deg" onclick="dcQuitarSticker(${i})" aria-label="Quitar sticker">${e}</button>`
+        : `<span class="dc-sticker" style="--giro:${DC_GIROS[i % 8]}deg">${e}</span>`).join('');
+}
+
+function dcPintarStickers() {
+    const caja = document.getElementById('dcStickers');
+    if (!caja) return;
+    let html = dcHtmlStickers(dcStickersNuevos, true);
+    if (dcStickersNuevos.length < DC_MAX_STICKERS) html += `<button type="button" class="dc-sticker-mas" onclick="this.closest('.dc-bloque-stickers').classList.toggle('abierta')">+ Sticker</button>`;
+    caja.innerHTML = html;
+}
+
 // --- pasar la hoja (en el teléfono se ve una hoja a la vez) ---
 function dcVerHoja(n) {
     const libro = document.getElementById('dcLibro');
@@ -833,6 +867,7 @@ function dcIrAPagina(n) {
 
 document.addEventListener('DOMContentLoaded', () => {
     dcPintarFotosNuevas();
+    dcPintarStickers();
     dcVerHoja(1);
     document.addEventListener('click', e => {
         document.querySelectorAll('.dc-letra.abierta').forEach(m => { if (!m.contains(e.target)) m.classList.remove('abierta'); });
@@ -1012,7 +1047,8 @@ function cargarPaginasAnteriores() {
     const fotosNube = !fotos && p.fotosEnNube ? `<p class="dc-suave">📷 ${p.fotosEnNube} foto(s) guardada(s) en la nube</p>` : '';
     const grat = (p.gratitudes || []).length ? `<p class="dc-etq">🌸 Agradecí</p><ol class="dc-lista-grat">${p.gratitudes.map(g => `<li>${dcEscapar(g)}</li>`).join('')}</ol>` : '';
     const notas = p.notas ? `<p class="dc-etq">📝 Notas</p><div class="dc-nota dc-nota-leer">${dcEscapar(p.notas)}</div>` : '';
-    const derecha = grat + notas + (fotos ? `<p class="dc-etq">📷 Fotos</p><div class="dc-fotos">${fotos}</div>` : fotosNube);
+    const stickers = (p.stickers || []).length ? `<div class="dc-stickers">${dcHtmlStickers(p.stickers, false)}</div>` : '';
+    const derecha = stickers + grat + notas + (fotos ? `<p class="dc-etq">📷 Fotos</p><div class="dc-fotos">${fotos}</div>` : fotosNube);
 
     listaDiv.innerHTML = `
         <div class="dc-libro dc-libro-leer${derecha ? '' : ' dc-una-hoja'}">
