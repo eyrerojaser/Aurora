@@ -28,6 +28,7 @@ async function verificarEstadoPremium() {
         const data = await response.json();
         console.log('📦 Respuesta Premium:', data);
         estadoPremium = data.premium;
+        window.premiumAbierto = !!data.abierto;   // app en preparación: todo abierto
         console.log('🔐 Estado Premium:', estadoPremium);
         
         actualizarUIPremium();

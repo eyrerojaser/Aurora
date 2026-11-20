@@ -1151,7 +1151,13 @@ def _emails_premium_gratis():
     """Emails con Premium sin pagar (la dueña, pruebas). Variable PREMIUM_EMAILS, separados por coma."""
     return {e.strip().lower() for e in os.environ.get('PREMIUM_EMAILS', '').split(',') if e.strip()}
 
+# Mientras la app se prepara, todo está abierto para todas (sin candados ni pagos).
+# Para activar las suscripciones al lanzar: en Render poner PREMIUM_ACTIVO = 1
+TODO_ABIERTO = os.environ.get('PREMIUM_ACTIVO', '0').strip() != '1'
+
 def usuario_es_premium(usuario_id, email=None):
+    if TODO_ABIERTO:
+        return True
     if email and email.strip().lower() in _emails_premium_gratis():
         return True
     if not usuario_id:
@@ -1176,6 +1182,8 @@ def respuesta_si_no_es_premium():
 
 @app.route('/api/premium/status', methods=['GET'])
 def verificar_premium():
+    if TODO_ABIERTO:
+        return jsonify({'premium': True, 'abierto': True}), 200
     try:
         usuario_id = None
         email_param = request.args.get('email', '').strip().lower()
@@ -1233,6 +1241,8 @@ DIAS_PRUEBA_GRATIS = 7   # solo la primera vez que alguien se suscribe
 
 @app.route('/api/premium/checkout', methods=['POST'])
 def crear_checkout():
+    if TODO_ABIERTO:
+        return jsonify({'error': 'Las suscripciones todavía no están disponibles'}), 400
     try:
         if 'usuario_id' not in session:
             return jsonify({'error': 'No autenticado'}), 401

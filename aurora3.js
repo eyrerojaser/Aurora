@@ -37,6 +37,8 @@ const _a3MostrarSeccion = mostrarSeccion;
 mostrarSeccion = function (id) {
     // el menú viejo de tarjetas y la portada ya no se usan por dentro: se va a "Hoy"
     if ((id === 'menu' || id === 'dashboard') && a3Logueada()) id = 'hoy';
+    // mientras la app está en preparación no se muestran los planes de pago
+    if (id === 'premium' && window.premiumAbierto) id = 'hoy';
     _a3MostrarSeccion(id);
     a3DespuesDeMostrar(id);
 };
@@ -197,6 +199,8 @@ function a3PintarPremium() {
     document.body.classList.toggle('a3-es-premium', premium);
     const titulo = document.getElementById('a3PremiumTitulo');
     const sub = document.getElementById('a3PremiumSub');
+    const caja = document.getElementById('a3PremiumCaja');
+    if (caja) caja.style.display = window.premiumAbierto ? 'none' : '';
     if (titulo) titulo.textContent = premium ? 'Eres Premium ✨' : 'Prueba Premium 7 días gratis';
     if (sub) sub.textContent = premium ? 'Gracias por apoyar a Aurora. Toca para ver tu plan.' : 'Hábitos, tu año 2027, collage y las 40 cartas';
 }
