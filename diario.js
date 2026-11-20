@@ -668,62 +668,180 @@ function moverElemento(e) {
 // Guardar página del diario personal
 async function guardarPaginaScrapbook(event) {
     event.preventDefault();
-    
+
     const texto = document.getElementById('diario-texto-entrada').value;
+    const notas = (document.getElementById('diario-notas')?.value || '');
     const mensajeDiv = document.getElementById('mensaje-diario');
-    
-    if (!texto.trim()) {
-        mensajeDiv.className = 'mensaje-diario exito';
-        mensajeDiv.style.background = '#fff3cd';
-        mensajeDiv.style.color = '#856404';
-        mensajeDiv.textContent = '✍️ Escribe algo en tu diario antes de guardar';
-        setTimeout(() => { mensajeDiv.className = 'mensaje-diario'; mensajeDiv.style = ''; }, 3000);
+    const gratitudes = [1, 2, 3].map(n => document.getElementById('diario-gratitud-' + n)?.value || '').filter(g => g.trim());
+
+    if (!texto.trim() && !notas.trim() && !gratitudes.length && !dcFotosNuevas.length) {
+        mensajeDiv.className = 'mensaje-diario aviso';
+        mensajeDiv.textContent = '✍️ Escribe algo o agrega una foto antes de guardar';
+        setTimeout(() => { mensajeDiv.className = 'mensaje-diario'; }, 3000);
         return;
     }
 
     const moodSeleccionado = document.querySelector('.diario-mood-btn.active');
     const mood = moodSeleccionado ? moodSeleccionado.dataset.mood : '';
     const moodEmoji = moodSeleccionado ? moodSeleccionado.childNodes[0].textContent.trim() : '';
-
-    const gratitud1 = document.getElementById('diario-gratitud-1')?.value || '';
-    const gratitud2 = document.getElementById('diario-gratitud-2')?.value || '';
-    const gratitud3 = document.getElementById('diario-gratitud-3')?.value || '';
-    const gratitudes = [gratitud1, gratitud2, gratitud3].filter(g => g.trim());
-
-    const fuenteGuardada = localStorage.getItem('diarioFuenteSeleccionada') || "'Georgia', serif";
+    const fuenteGuardada = localStorage.getItem('diarioFuenteSeleccionada') || "'Lora', Georgia, serif";
 
     const pagina = {
         id: Date.now().toString(),
         fecha: new Date().toISOString(),
         texto: texto,
+        notas: notas,
         mood: mood,
         moodEmoji: moodEmoji,
         gratitudes: gratitudes,
+        fotos: dcFotosNuevas.slice(),
         fuente: fuenteGuardada,
         elementos: [],
         fondo: ''
     };
-    
-    let paginas = JSON.parse(localStorage.getItem('scrapbook_paginas') || '[]');
-    paginas.unshift(pagina);
-    localStorage.setItem('scrapbook_paginas', JSON.stringify(paginas));
-    subirPaginaDiario(pagina);
-    
-    mensajeDiv.className = 'mensaje-diario exito';
-    mensajeDiv.textContent = '📔 Tu página ha sido guardada en el diario ✨';
-    
-    document.getElementById('diario-texto-entrada').value = '';
-    if (document.getElementById('diario-gratitud-1')) document.getElementById('diario-gratitud-1').value = '';
-    if (document.getElementById('diario-gratitud-2')) document.getElementById('diario-gratitud-2').value = '';
-    if (document.getElementById('diario-gratitud-3')) document.getElementById('diario-gratitud-3').value = '';
-    document.querySelectorAll('.diario-mood-btn').forEach(b => b.classList.remove('active'));
 
+    const paginas = dcPaginas();
+    paginas.unshift(pagina);
+    dcGuardarLocal(paginas);
+    const subida = subirPaginaDiario(pagina);
+
+    mensajeDiv.className = 'mensaje-diario exito';
+    mensajeDiv.textContent = '📔 Tu página quedó guardada en tu cuaderno ✨';
+
+    document.getElementById('diario-texto-entrada').value = '';
+    if (document.getElementById('diario-notas')) document.getElementById('diario-notas').value = '';
+    [1, 2, 3].forEach(n => { const el = document.getElementById('diario-gratitud-' + n); if (el) el.value = ''; });
+    document.querySelectorAll('.diario-mood-btn').forEach(b => b.classList.remove('active'));
+    dcFotosNuevas = [];
+    dcPintarFotosNuevas();
+    dcVerHoja(1);
+
+    dcPaginaVista = 0;
     cargarPaginasAnteriores();
-    
-    setTimeout(() => {
-        mensajeDiv.className = 'mensaje-diario';
-    }, 3000);
+    setTimeout(() => { mensajeDiv.className = 'mensaje-diario'; }, 3500);
+
+    if (!(await subida) && pagina.fotos.length) {
+        mensajeDiv.className = 'mensaje-diario aviso';
+        mensajeDiv.textContent = 'La página se guardó en este teléfono. Se subirá a la nube cuando haya conexión.';
+        setTimeout(() => { mensajeDiv.className = 'mensaje-diario'; }, 4000);
+    }
 }
+
+// ===================== CUADERNO ABIERTO =====================
+// Páginas completas (con fotos) en memoria; en el teléfono se guardan aunque no quepan las fotos
+let dcMemoria = null;
+let dcFotosNuevas = [];
+let dcPaginaVista = 0;
+const DC_MAX_FOTOS = 2;
+
+function dcPaginas() {
+    if (dcMemoria) return dcMemoria.slice();
+    try { return JSON.parse(localStorage.getItem('scrapbook_paginas') || '[]'); } catch (e) { return []; }
+}
+
+// Guarda en el teléfono. Si las fotos no caben, se guardan sin fotos las páginas más viejas
+// (las fotos siguen en la nube y en memoria).
+function dcGuardarLocal(paginas) {
+    dcMemoria = paginas.slice();
+    const intentar = (lista) => { localStorage.setItem('scrapbook_paginas', JSON.stringify(lista)); };
+    try { intentar(paginas); return; } catch (e) { /* no cabe */ }
+    for (const conFotos of [10, 3, 0]) {
+        try {
+            intentar(paginas.map((p, i) => (i < conFotos || !p.fotos || !p.fotos.length) ? p : Object.assign({}, p, { fotos: [], fotosEnNube: p.fotos.length })));
+            return;
+        } catch (e) { /* seguir quitando */ }
+    }
+}
+
+function dcEscapar(t) {
+    return String(t || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// --- fotos de la página nueva ---
+function dcAgregarFoto(event) {
+    const archivo = event.target.files && event.target.files[0];
+    event.target.value = '';
+    if (!archivo) return;
+    if (dcFotosNuevas.length >= DC_MAX_FOTOS) return;
+    dcReducirFoto(archivo, (dataUrl) => {
+        dcFotosNuevas.push(dataUrl);
+        dcPintarFotosNuevas();
+    });
+}
+
+// Fotos más pequeñas que en el collage: caben varias por página y suben rápido
+function dcReducirFoto(archivo, listo) {
+    const lector = new FileReader();
+    lector.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+            const escala = Math.min(1, 760 / Math.max(img.width, img.height));
+            const c = document.createElement('canvas');
+            c.width = Math.max(1, Math.round(img.width * escala));
+            c.height = Math.max(1, Math.round(img.height * escala));
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+            ctx.drawImage(img, 0, 0, c.width, c.height);
+            listo(c.toDataURL('image/jpeg', 0.72));
+        };
+        img.onerror = () => alert('No se pudo leer esa foto. Prueba con otra.');
+        img.src = e.target.result;
+    };
+    lector.readAsDataURL(archivo);
+}
+
+function dcQuitarFoto(i) {
+    dcFotosNuevas.splice(i, 1);
+    dcPintarFotosNuevas();
+}
+
+function dcPintarFotosNuevas() {
+    const caja = document.getElementById('dcFotos');
+    if (!caja) return;
+    let html = dcFotosNuevas.map((f, i) => `<figure class="dc-polaroid" style="--giro:${i % 2 ? 3 : -3}deg"><img src="${f}" alt="Foto ${i + 1}"><button type="button" onclick="dcQuitarFoto(${i})" aria-label="Quitar foto">×</button></figure>`).join('');
+    if (dcFotosNuevas.length < DC_MAX_FOTOS) html += `<button type="button" class="dc-foto-mas" onclick="document.getElementById('dcFotoInput').click()"><span>+</span>Añadir foto</button>`;
+    caja.innerHTML = html;
+}
+
+// --- pasar la hoja (en el teléfono se ve una hoja a la vez) ---
+function dcVerHoja(n) {
+    const libro = document.getElementById('dcLibro');
+    if (!libro) return;
+    libro.classList.toggle('ver-2', n === 2);
+    document.querySelectorAll('.dc-pasar .dc-puntos i').forEach((p, i) => p.classList.toggle('activo', i === n - 1));
+    document.getElementById('dcAnterior')?.classList.toggle('apagada', n === 1);
+    document.getElementById('dcSiguiente')?.classList.toggle('apagada', n === 2);
+}
+
+function dcActivarDeslizar(el, izquierda, derecha) {
+    let x0 = null, y0 = null;
+    el.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    el.addEventListener('touchend', e => {
+        if (x0 === null) return;
+        const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+        x0 = null;
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) (dx < 0 ? izquierda : derecha)();
+    }, { passive: true });
+}
+
+function dcIrAPagina(n) {
+    const total = dcPaginas().length;
+    if (!total) return;
+    dcPaginaVista = Math.max(0, Math.min(total - 1, n));
+    cargarPaginasAnteriores();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    dcPintarFotosNuevas();
+    dcVerHoja(1);
+    document.addEventListener('click', e => {
+        document.querySelectorAll('.dc-letra.abierta').forEach(m => { if (!m.contains(e.target)) m.classList.remove('abierta'); });
+    });
+    const libro = document.getElementById('dcLibro');
+    if (libro) dcActivarDeslizar(libro, () => dcVerHoja(2), () => dcVerHoja(1));
+    const lista = document.getElementById('lista-entradas-diario');
+    if (lista) dcActivarDeslizar(lista, () => dcIrAPagina(dcPaginaVista + 1), () => dcIrAPagina(dcPaginaVista - 1));
+});
 
 // Descargar página como imagen
 async function descargarPagina(index) {
@@ -877,52 +995,47 @@ async function descargarPagina(index) {
 // Cargar páginas anteriores
 function cargarPaginasAnteriores() {
     const listaDiv = document.getElementById('lista-entradas-diario');
-    let paginas = JSON.parse(localStorage.getItem('scrapbook_paginas') || '[]');
-    
+    if (!listaDiv) return;
+    const paginas = dcPaginas();
+
     if (paginas.length === 0) {
-        listaDiv.innerHTML = '<p style="text-align: center; color: #b5909a; font-style: italic; font-family: Georgia, serif;">Aún no tienes páginas. Escribe tu primera entrada hoy.</p>';
+        listaDiv.innerHTML = '<p class="dc-vacio">Aquí se irán guardando tus páginas, como en un cuaderno. Escribe la primera hoy.</p>';
         return;
     }
-    
-    listaDiv.innerHTML = paginas.slice(0, 20).map((pagina, index) => {
-        const fecha = new Date(pagina.fecha);
-        const fechaFormateada = fecha.toLocaleDateString('es-ES', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-        const horaFormateada = fecha.toLocaleTimeString('es-ES', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+    if (dcPaginaVista >= paginas.length) dcPaginaVista = paginas.length - 1;
+    const i = dcPaginaVista;
+    const p = paginas[i];
+    const fecha = new Date(p.fecha);
+    const fechaTxt = fecha.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    const horaTxt = fecha.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    const fotos = (p.fotos || []).map((f, k) => `<figure class="dc-polaroid" style="--giro:${k % 2 ? 3 : -3}deg"><img src="${f}" alt="Foto"></figure>`).join('');
+    const fotosNube = !fotos && p.fotosEnNube ? `<p class="dc-suave">📷 ${p.fotosEnNube} foto(s) guardada(s) en la nube</p>` : '';
+    const grat = (p.gratitudes || []).length ? `<p class="dc-etq">🌸 Agradecí</p><ol class="dc-lista-grat">${p.gratitudes.map(g => `<li>${dcEscapar(g)}</li>`).join('')}</ol>` : '';
+    const notas = p.notas ? `<p class="dc-etq">📝 Notas</p><div class="dc-nota dc-nota-leer">${dcEscapar(p.notas)}</div>` : '';
+    const derecha = grat + notas + (fotos ? `<p class="dc-etq">📷 Fotos</p><div class="dc-fotos">${fotos}</div>` : fotosNube);
 
-        const moodHTML = pagina.moodEmoji ? `<div class="diario-entrada-mood">${pagina.moodEmoji}</div>` : '';
-        
-        const textoCorto = pagina.texto.length > 300 ? pagina.texto.substring(0, 300) + '...' : pagina.texto;
-        
-        let gratitudHTML = '';
-        if (pagina.gratitudes && pagina.gratitudes.length > 0) {
-            gratitudHTML = `<div class="diario-entrada-gratitud">🌸 Agradezco: ${pagina.gratitudes.join(' | ')}</div>`;
-        }
-        
-        return `
-            <div class="diario-entrada-card">
-                <button class="diario-entrada-eliminar" onclick="eliminarPaginaDiario(${index})" title="Eliminar">🗑️</button>
-                <div class="diario-entrada-fecha">${fechaFormateada} - ${horaFormateada}</div>
-                ${moodHTML}
-                <div class="diario-entrada-texto" style="font-family: ${pagina.fuente || "'Georgia', serif"}">${textoCorto}</div>
-                ${gratitudHTML}
+    listaDiv.innerHTML = `
+        <div class="dc-libro dc-libro-leer${derecha ? '' : ' dc-una-hoja'}">
+            <div class="dc-hoja dc-izq">
+                <div class="dc-hoja-cab"><span class="dc-fecha">${fechaTxt} · ${horaTxt}</span>${p.moodEmoji ? `<span class="dc-mood-leer">${p.moodEmoji}</span>` : ''}</div>
+                <div class="dc-texto-leer" style="font-family:${dcEscapar(p.fuente || "'Lora', Georgia, serif")}">${dcEscapar(p.texto) || '<span class="dc-suave">Sin texto este día</span>'}</div>
             </div>
-        `;
-    }).join('');
+            ${derecha ? `<div class="dc-lomo" aria-hidden="true"></div><div class="dc-hoja dc-der">${derecha}</div>` : ''}
+        </div>
+        <div class="dc-hojear">
+            <button type="button" class="dc-flecha${i >= paginas.length - 1 ? ' apagada' : ''}" onclick="dcIrAPagina(${i + 1})" aria-label="Página más vieja">‹</button>
+            <span>Página ${paginas.length - i} de ${paginas.length}</span>
+            <button type="button" class="dc-flecha${i === 0 ? ' apagada' : ''}" onclick="dcIrAPagina(${i - 1})" aria-label="Página más nueva">›</button>
+        </div>
+        <button type="button" class="dc-borrar" onclick="eliminarPaginaDiario(${i})">Borrar esta página</button>
+    `;
 }
 
 function eliminarPaginaDiario(index) {
     if (!confirm('¿Segura que quieres eliminar esta página de tu diario?')) return;
-    let paginas = JSON.parse(localStorage.getItem('scrapbook_paginas') || '[]');
+    const paginas = dcPaginas();
     const quitada = paginas.splice(index, 1)[0];
-    localStorage.setItem('scrapbook_paginas', JSON.stringify(paginas));
+    dcGuardarLocal(paginas);
     if (quitada && quitada.id) borrarPaginaDiarioEnNube(String(quitada.id));
     cargarPaginasAnteriores();
 }
@@ -944,6 +1057,14 @@ function cambiarFuenteDiario(btn) {
         textarea.style.fontFamily = fuente;
     }
     localStorage.setItem('diarioFuenteSeleccionada', fuente);
+    dcNombreLetra();
+    btn.closest('.dc-letra')?.classList.remove('abierta');
+}
+
+function dcNombreLetra() {
+    const activo = document.querySelector('.diario-font-btn.active');
+    const nombre = document.getElementById('dcLetraNombre');
+    if (nombre) nombre.textContent = activo ? (activo.dataset.nombre || 'Clásica') : 'Clásica';
 }
 
 function restaurarFuenteDiario() {
@@ -951,10 +1072,12 @@ function restaurarFuenteDiario() {
     if (fuente) {
         const textarea = document.getElementById('diario-texto-entrada');
         if (textarea) textarea.style.fontFamily = fuente;
-        document.querySelectorAll('.diario-font-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.font === fuente);
+        const hay = [...document.querySelectorAll('.diario-font-btn')].some(b => b.dataset.font === fuente);
+        document.querySelectorAll('.diario-font-btn').forEach((btn, i) => {
+            btn.classList.toggle('active', hay ? btn.dataset.font === fuente : i === 0);
         });
     }
+    dcNombreLetra();
 }
 
 function actualizarFechaDiario() {
@@ -1105,7 +1228,7 @@ async function sincronizarDiario() {
             }
         }
         const todas = [...porId.values()].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-        localStorage.setItem('scrapbook_paginas', JSON.stringify(todas));
+        dcGuardarLocal(todas);
         if (document.getElementById('lista-entradas-diario')) cargarPaginasAnteriores();
     } catch (e) {
         console.log('Diario: se usa lo guardado en el teléfono');

@@ -53,7 +53,7 @@
     }
   </script>
   <link rel="stylesheet" href="/aurora2.css?v=1">
-  <link rel="stylesheet" href="/aurora3.css?v=1">
+  <link rel="stylesheet" href="/aurora3.css?v=3">
 </head>
 <body>
   <header class="oculto">Aurora</header>
@@ -815,69 +815,67 @@
 
     <!-- SECCIÓN MI DIARIO PERSONAL -->
     <section id="seccion-diario" class="seccion">
-      <div class="diario-personal-page">
-        <div class="diario-personal-header">
-          <div class="diario-libreta-icon">📔</div>
-          <h1 class="diario-personal-titulo">Mi Diario Personal</h1>
-          <p class="diario-personal-subtitulo">Tu espacio seguro para escribir, reflexionar y crecer</p>
+      <div class="dc-pagina">
+        <div class="dc-cab">
+          <h1>Mi diario</h1>
+          <p>Tu espacio seguro para escribir, recordar y crecer</p>
         </div>
 
-        <div class="diario-libreta">
-          <div class="diario-libreta-espiral"></div>
-          <div class="diario-libreta-contenido">
-            <form id="diario-form">
-              <div class="diario-fecha-hoy" id="diario-fecha-hoy"></div>
-
-              <div class="diario-mood-section">
-                <p class="diario-mood-label">Como me siento hoy:</p>
-                <div class="diario-mood-opciones" id="diario-mood-opciones">
-                  <button type="button" class="diario-mood-btn" data-mood="feliz" onclick="seleccionarMood(this)">😊<span>Feliz</span></button>
-                  <button type="button" class="diario-mood-btn" data-mood="tranquila" onclick="seleccionarMood(this)">😌<span>Tranquila</span></button>
-                  <button type="button" class="diario-mood-btn" data-mood="agradecida" onclick="seleccionarMood(this)">🥰<span>Agradecida</span></button>
-                  <button type="button" class="diario-mood-btn" data-mood="motivada" onclick="seleccionarMood(this)">💪<span>Motivada</span></button>
-                  <button type="button" class="diario-mood-btn" data-mood="pensativa" onclick="seleccionarMood(this)">🤔<span>Pensativa</span></button>
-                  <button type="button" class="diario-mood-btn" data-mood="triste" onclick="seleccionarMood(this)">😢<span>Triste</span></button>
-                  <button type="button" class="diario-mood-btn" data-mood="ansiosa" onclick="seleccionarMood(this)">😰<span>Ansiosa</span></button>
-                  <button type="button" class="diario-mood-btn" data-mood="cansada" onclick="seleccionarMood(this)">😴<span>Cansada</span></button>
-                </div>
+        <div id="diario-form" class="dc-form">
+          <div class="dc-libro" id="dcLibro">
+            <!-- hoja izquierda: escribir -->
+            <div class="dc-hoja dc-izq">
+              <div class="dc-hoja-cab">
+                <span class="dc-fecha" id="diario-fecha-hoy"></span>
               </div>
-
-              <div class="diario-escritura-section">
-                <div class="diario-font-toolbar">
-                  <button type="button" class="diario-font-btn active" data-font="'Georgia', serif" onclick="cambiarFuenteDiario(this)" style="font-family: 'Georgia', serif;">Aa</button>
-                  <button type="button" class="diario-font-btn" data-font="'Courier New', monospace" onclick="cambiarFuenteDiario(this)" style="font-family: 'Courier New', monospace;">Aa</button>
-                  <button type="button" class="diario-font-btn" data-font="'Comic Sans MS', 'Segoe Print', cursive" onclick="cambiarFuenteDiario(this)" style="font-family: 'Comic Sans MS', cursive;">Aa</button>
-                  <button type="button" class="diario-font-btn" data-font="'Palatino Linotype', 'Book Antiqua', Palatino, serif" onclick="cambiarFuenteDiario(this)" style="font-family: 'Palatino Linotype', serif;">Aa</button>
-                  <button type="button" class="diario-font-btn" data-font="'Trebuchet MS', 'Lucida Sans', sans-serif" onclick="cambiarFuenteDiario(this)" style="font-family: 'Trebuchet MS', sans-serif;">Aa</button>
-                  <button type="button" class="diario-font-btn" data-font="'Brush Script MT', 'Segoe Script', cursive" onclick="cambiarFuenteDiario(this)" style="font-family: 'Brush Script MT', cursive;">Aa</button>
-                </div>
-                <textarea 
-                  id="diario-texto-entrada" 
-                  class="diario-textarea-rayada"
-                  placeholder="Querido diario...&#10;&#10;Hoy quiero contarte que...&#10;&#10;Lo que más me marcó fue...&#10;&#10;Mañana espero..."
-                  rows="12"
-                ></textarea>
+              <div class="dc-animo">
+                <p>¿Cómo me siento hoy?</p>
+                <div class="dc-animos" id="diario-mood-opciones"><button type="button" class="diario-mood-btn" data-mood="feliz" onclick="seleccionarMood(this)">😊<span>Feliz</span></button><button type="button" class="diario-mood-btn" data-mood="tranquila" onclick="seleccionarMood(this)">😌<span>Tranquila</span></button><button type="button" class="diario-mood-btn" data-mood="agradecida" onclick="seleccionarMood(this)">🥰<span>Agradecida</span></button><button type="button" class="diario-mood-btn" data-mood="motivada" onclick="seleccionarMood(this)">💪<span>Motivada</span></button><button type="button" class="diario-mood-btn" data-mood="pensativa" onclick="seleccionarMood(this)">🤔<span>Pensativa</span></button><button type="button" class="diario-mood-btn" data-mood="triste" onclick="seleccionarMood(this)">😢<span>Triste</span></button><button type="button" class="diario-mood-btn" data-mood="ansiosa" onclick="seleccionarMood(this)">😰<span>Ansiosa</span></button><button type="button" class="diario-mood-btn" data-mood="cansada" onclick="seleccionarMood(this)">😴<span>Cansada</span></button></div>
               </div>
-
-              <div class="diario-gratitud-section">
-                <p class="diario-gratitud-label">🌸 Hoy agradezco:</p>
-                <input type="text" id="diario-gratitud-1" class="diario-gratitud-input" placeholder="1. " />
-                <input type="text" id="diario-gratitud-2" class="diario-gratitud-input" placeholder="2. " />
-                <input type="text" id="diario-gratitud-3" class="diario-gratitud-input" placeholder="3. " />
+              <div class="dc-letra">
+                <button type="button" class="dc-letra-btn" onclick="this.parentElement.classList.toggle('abierta')" aria-label="Elegir letra">Aa <span id="dcLetraNombre">Clásica</span> <i>▾</i></button>
+                <div class="dc-letra-menu"><button type="button" class="diario-font-btn active" data-font="'Lora', Georgia, serif" data-nombre="Clásica" onclick="cambiarFuenteDiario(this)" style="font-family: 'Lora', Georgia, serif;">Clásica</button><button type="button" class="diario-font-btn" data-font="'Palatino Linotype', 'Book Antiqua', Palatino, serif" data-nombre="Elegante" onclick="cambiarFuenteDiario(this)" style="font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;">Elegante</button><button type="button" class="diario-font-btn" data-font="'Trebuchet MS', 'Lucida Sans', sans-serif" data-nombre="Sencilla" onclick="cambiarFuenteDiario(this)" style="font-family: 'Trebuchet MS', 'Lucida Sans', sans-serif;">Sencilla</button><button type="button" class="diario-font-btn" data-font="'Comic Sans MS', 'Segoe Print', cursive" data-nombre="Divertida" onclick="cambiarFuenteDiario(this)" style="font-family: 'Comic Sans MS', 'Segoe Print', cursive;">Divertida</button><button type="button" class="diario-font-btn" data-font="'Brush Script MT', 'Segoe Script', cursive" data-nombre="A mano" onclick="cambiarFuenteDiario(this)" style="font-family: 'Brush Script MT', 'Segoe Script', cursive;">A mano</button><button type="button" class="diario-font-btn" data-font="'Courier New', monospace" data-nombre="Máquina de escribir" onclick="cambiarFuenteDiario(this)" style="font-family: 'Courier New', monospace;">Máquina de escribir</button></div>
               </div>
+              <textarea id="diario-texto-entrada" class="dc-renglones" placeholder="Querido diario..."></textarea>
+              <span class="dc-num">1</span>
+            </div>
 
-              <button type="submit" class="diario-btn-guardar">
-                💾 Guardar en mi Diario
-              </button>
-            </form>
+            <div class="dc-lomo" aria-hidden="true"></div>
 
-            <div id="mensaje-diario" class="mensaje-diario"></div>
+            <!-- hoja derecha: agradecer, notas y fotos -->
+            <div class="dc-hoja dc-der">
+              <div class="dc-bloque">
+                <p class="dc-etq">🌸 Hoy agradezco</p>
+                <input type="text" id="diario-gratitud-1" class="dc-linea" placeholder="1." />
+                <input type="text" id="diario-gratitud-2" class="dc-linea" placeholder="2." />
+                <input type="text" id="diario-gratitud-3" class="dc-linea" placeholder="3." />
+              </div>
+              <div class="dc-bloque">
+                <p class="dc-etq">📝 Notas</p>
+                <textarea id="diario-notas" class="dc-nota" placeholder="Algo que no quiero olvidar..."></textarea>
+              </div>
+              <div class="dc-bloque">
+                <p class="dc-etq">📷 Mis fotos</p>
+                <div class="dc-fotos" id="dcFotos"></div>
+                <input type="file" id="dcFotoInput" accept="image/*" hidden onchange="dcAgregarFoto(event)" />
+              </div>
+              <span class="dc-num">2</span>
+            </div>
           </div>
+
+          <div class="dc-pasar">
+            <button type="button" class="dc-flecha" id="dcAnterior" onclick="dcVerHoja(1)" aria-label="Hoja anterior">‹</button>
+            <span class="dc-puntos"><i class="activo"></i><i></i></span>
+            <button type="button" class="dc-flecha" id="dcSiguiente" onclick="dcVerHoja(2)" aria-label="Pasar la hoja">›</button>
+          </div>
+
+          <button type="button" class="dc-guardar" onclick="guardarPaginaScrapbook(event)">Guardar esta página</button>
+          <div id="mensaje-diario" class="mensaje-diario"></div>
         </div>
 
-        <div class="diario-entradas-section">
-          <h3 class="diario-entradas-titulo">📖 Mis Páginas Anteriores</h3>
-          <div id="lista-entradas-diario" class="diario-entradas-lista"></div>
+        <div class="dc-anteriores">
+          <h2>Mi cuaderno</h2>
+          <div id="lista-entradas-diario"></div>
         </div>
       </div>
     </section>
@@ -1439,7 +1437,7 @@
   <script src="auth.js?v=1003"></script>
   <script src="sync.js?v=1000"></script>
   <script src="script.js?v=1008"></script>
-  <script src="diario.js?v=1006"></script>
+  <script src="diario.js?v=1007"></script>
   <script src="metas.js?v=1001"></script>
   <script src="dashboard.js?v=1001"></script>
   <script src="datos.js?v=1000"></script>

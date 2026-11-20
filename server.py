@@ -723,7 +723,7 @@ def eliminar_todos_datos():
 # Cada página del diario se guarda tal como la arma la app (texto, ánimo, gratitudes...).
 # Al borrar una página se vacía su contenido y queda marcada, para que también
 # desaparezca de los otros dispositivos de la usuaria.
-DIARIO_MAX_PAGINA = 200 * 1024   # tamaño máximo de una página (bytes)
+DIARIO_MAX_PAGINA = 600 * 1024   # tamaño máximo de una página (bytes, con hasta 2 fotos)
 DIARIO_MAX_PAGINAS = 5000        # páginas por usuaria
 
 def _id_pagina_valido(pid):
