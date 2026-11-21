@@ -1792,25 +1792,27 @@ FRASES_RECORDATORIO = [
     'Pequeños hábitos, grandes cambios 🌷',
 ]
 
-@app.route('/api/recordatorios/enviar', methods=['GET', 'POST'])
-@limiter.limit('30 per hour')
-def enviar_recordatorios():
-    """Lo llama un reloj externo cada pocos minutos. Manda los recordatorios cuya hora ya llegó
-    (hasta 60 minutos de atraso), una sola vez al día y solo si el hábito no está hecho."""
+def _enviar_recordatorios_ahora():
+    """Manda los recordatorios cuya hora ya llegó (hasta 60 minutos de atraso),
+    una sola vez al día y solo si el hábito no está hecho. Devuelve cuántos mandó, o None si no pudo."""
     if not os.environ.get('VAPID_PRIVATE_KEY'):
-        return jsonify({'ok': False, 'motivo': 'faltan las claves VAPID'}), 200
+        return None
     from zoneinfo import ZoneInfo
     enviados_total = 0
+    conn = get_db()
     try:
-        conn = get_db()
         cur = conn.cursor(cursor_factory=RealDictCursor)
+        # un solo envío a la vez aunque haya varios procesos del servidor
+        cur.execute('SELECT pg_try_advisory_xact_lock(424242) AS libre')
+        if not cur.fetchone()['libre']:
+            conn.rollback()
+            return 0
         cur.execute('''
             SELECT c.usuario_id, c.habitos, c.zona, c.enviados
             FROM habitos_config c
             WHERE EXISTS (SELECT 1 FROM push_subscriptions p WHERE p.usuario_id = c.usuario_id)
         ''')
-        configs = cur.fetchall()
-        for c in configs:
+        for c in cur.fetchall():
             try:
                 zona = ZoneInfo(c['zona'] or 'America/Chicago')
             except Exception:
@@ -1824,8 +1826,7 @@ def enviar_recordatorios():
                 hora = h.get('hora') or ''
                 if not hora or enviados.get(h['id']) == hoy:
                     continue
-                hh, mm = int(hora[:2]), int(hora[3:])
-                atraso = minutos_ahora - (hh * 60 + mm)
+                atraso = minutos_ahora - (int(hora[:2]) * 60 + int(hora[3:]))
                 if 0 <= atraso <= 60:
                     pendientes.append(h)
             if not pendientes:
@@ -1844,11 +1845,48 @@ def enviar_recordatorios():
                 for ep in vencidas:
                     cur.execute('DELETE FROM push_subscriptions WHERE usuario_id = %s AND endpoint = %s', (c['usuario_id'], ep))
             cur.execute('UPDATE habitos_config SET enviados = %s WHERE usuario_id = %s', (json.dumps(enviados), c['usuario_id']))
-        conn.commit(); cur.close(); conn.close()
-        return jsonify({'ok': True, 'enviados': enviados_total}), 200
+        conn.commit()
+        return enviados_total
+    finally:
+        conn.close()
+
+@app.route('/api/recordatorios/enviar', methods=['GET', 'POST'])
+@limiter.limit('30 per hour')
+def enviar_recordatorios():
+    try:
+        n = _enviar_recordatorios_ahora()
+        if n is None:
+            return jsonify({'ok': False, 'motivo': 'faltan las claves VAPID'}), 200
+        return jsonify({'ok': True, 'enviados': n}), 200
     except Exception as e:
         print(f'Error enviando recordatorios: {e}')
         return jsonify({'ok': False}), 500
+
+# Reloj de los recordatorios dentro del servidor: cada minuto revisa si hay recordatorios
+# que mandar. Cada 10 minutos se visita a sí mismo por su dirección pública, para que
+# Render (plan gratis) no lo duerma y el reloj siga andando.
+def _reloj_recordatorios():
+    import threading, urllib.request
+    def ciclo():
+        time.sleep(20)
+        vueltas = 0
+        while True:
+            try:
+                _enviar_recordatorios_ahora()
+            except Exception as e:
+                print(f'Reloj de recordatorios: {e}')
+            url = os.environ.get('RENDER_EXTERNAL_URL') or os.environ.get('APP_URL')
+            if url and vueltas % 10 == 0:
+                try:
+                    urllib.request.urlopen(url.rstrip('/') + '/manifest.json', timeout=20).read(64)
+                except Exception:
+                    pass
+            vueltas += 1
+            time.sleep(60)
+    threading.Thread(target=ciclo, daemon=True, name='reloj-recordatorios').start()
+
+if os.environ.get('RELOJ_RECORDATORIOS', '1') == '1' and os.environ.get('DATABASE_URL'):
+    _reloj_recordatorios()
 
 # ===== NOTIFICACIONES PUSH =====
 @app.route('/api/vapid-public-key')
