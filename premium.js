@@ -197,7 +197,7 @@ function mostrarCelebracionPremium() {
                 <div class="corona-celebracion">👑</div>
                 <h1>¡FELICIDADES!</h1>
                 <h2>¡Ya eres Premium!</h2>
-                <p>Ahora tienes acceso completo a todas las funciones de Aurora</p>
+                <p>Ahora tienes acceso completo a todas las funciones de Ella Florece</p>
                 <div class="premium-features-celebracion">
                     <span>🎴 40 Cartas</span>
                     <span>💫 Afirmaciones</span>

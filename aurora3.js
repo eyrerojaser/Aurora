@@ -202,7 +202,7 @@ function a3PintarPremium() {
     const caja = document.getElementById('a3PremiumCaja');
     if (caja) caja.style.display = window.premiumAbierto ? 'none' : '';
     if (titulo) titulo.textContent = premium ? 'Eres Premium ✨' : 'Prueba Premium 7 días gratis';
-    if (sub) sub.textContent = premium ? 'Gracias por apoyar a Aurora. Toca para ver tu plan.' : 'Hábitos, tu año 2027, collage y las 40 cartas';
+    if (sub) sub.textContent = premium ? 'Gracias por apoyar a Ella Florece. Toca para ver tu plan.' : 'Hábitos, tu año 2027, collage y las 40 cartas';
 }
 
 function a3PintarYo() {
@@ -215,9 +215,9 @@ function a3PintarYo() {
 }
 
 function a3Compartir() {
-    const texto = 'Te recomiendo Aurora, una app para cuidarte y creer más en ti 💗 ' + location.origin;
+    const texto = 'Te recomiendo Ella Florece, una app para cuidarte y creer más en ti 💗 ' + location.origin;
     if (navigator.share) {
-        navigator.share({ title: 'Aurora', text: texto }).catch(() => {});
+        navigator.share({ title: 'Ella Florece', text: texto }).catch(() => {});
     } else if (typeof compartirWhatsApp === 'function') {
         compartirWhatsApp();
     } else {

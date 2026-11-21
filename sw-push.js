@@ -1,5 +1,5 @@
 self.addEventListener('push', function(event) {
-    let data = { title: 'Aurora', body: 'Es hora de tu hábito!', icon: '/icon-512.png' };
+    let data = { title: 'Ella Florece', body: 'Es hora de tu hábito!', icon: '/icon-512.png' };
     
     if (event.data) {
         try {
@@ -10,7 +10,7 @@ self.addEventListener('push', function(event) {
     }
     
     const options = {
-        body: data.body || 'Recordatorio de Aurora',
+        body: data.body || 'Recordatorio de Ella Florece',
         icon: data.icon || '/icon-512.png',
         badge: '/icon-512.png',
         vibrate: [200, 100, 200],
@@ -21,7 +21,7 @@ self.addEventListener('push', function(event) {
     };
     
     event.waitUntil(
-        self.registration.showNotification(data.title || 'Aurora', options)
+        self.registration.showNotification(data.title || 'Ella Florece', options)
     );
 });
 

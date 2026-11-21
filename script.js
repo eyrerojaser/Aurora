@@ -80,7 +80,7 @@ function activarModoAdmin() {
 
 // Función para mostrar alerta Premium
 function mostrarPremiumAlert() {
-    alert('🔒 Los Mensajes de Apoyo son una función Premium 💎\n\n✨ Aurora te comparte palabras de ánimo según cómo te sientes.\n\n¡Próximamente disponible!');
+    alert('🔒 Los Mensajes de Apoyo son una función Premium 💎\n\n✨ Tu hada madrina te comparte palabras de ánimo según cómo te sientes.\n\n¡Próximamente disponible!');
 }
 
 // Función para RESET TOTAL (borrar TODO: localStorage + cachés + service worker)
@@ -140,12 +140,12 @@ function actualizarHeaderPersonalizado() {
         if (userName) {
             try {
                 const user = JSON.parse(userName);
-                header.textContent = user.nombre || 'Aurora';
+                header.textContent = user.nombre || 'Ella Florece';
             } catch {
-                header.textContent = 'Aurora';
+                header.textContent = 'Ella Florece';
             }
         } else {
-            header.textContent = 'Aurora';
+            header.textContent = 'Ella Florece';
         }
     }
 }
@@ -723,7 +723,7 @@ function cerrarModal() {
 function compartirWhatsApp() {
     const urlApp = window.location.href.split("?")[0];
     const mensaje = encodeURIComponent(
-        "✨ ¡Descubre Aurora! 🪷\n\n" +
+        "✨ ¡Descubre Ella Florece! 🪷\n\n" +
         "Tu guía de empoderamiento personal donde puedes:\n" +
         "💜 Llevar un diario emocional\n" +
         "🎯 Alcanzar tus metas\n" +

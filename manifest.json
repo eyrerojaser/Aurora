@@ -1,7 +1,7 @@
 {
   "id": "com.aurora.empowerment",
-  "name": "Aurora – Tu Guía de Empoderamiento",
-  "short_name": "Aurora",
+  "name": "Ella Florece – Tu Guía de Empoderamiento",
+  "short_name": "Ella Florece",
   "version": "1.2.3",
   "start_url": "/?v=123",
   "scope": "/",
@@ -34,14 +34,14 @@
       "sizes": "768x1408",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Pantalla de inicio Aurora - Móvil"
+      "label": "Pantalla de inicio Ella Florece - Móvil"
     },
     {
       "src": "/static/screenshots/desktop-1.png",
       "sizes": "1408x768",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Dashboard Aurora - Escritorio"
+      "label": "Dashboard Ella Florece - Escritorio"
     }
   ],
   "icons": [

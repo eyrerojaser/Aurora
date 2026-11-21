@@ -353,7 +353,7 @@ async function habPintarRecordar() {
     if (activos) {
         caja.innerHTML = `<p>🔔 Recordatorios activados${conHora ? ` · ${conHora} con hora` : ''}. <button type="button" onclick="probarNotificacionPush()">Probar</button></p>`;
     } else if (habEsIphoneSinInstalar()) {
-        caja.innerHTML = '<p>🔔 Para recibir recordatorios en el iPhone, primero agrega Aurora a tu pantalla de inicio (Compartir → Agregar a pantalla de inicio) y ábrela desde ahí.</p>';
+        caja.innerHTML = '<p>🔔 Para recibir recordatorios en el iPhone, primero agrega Ella Florece a tu pantalla de inicio (Compartir → Agregar a pantalla de inicio) y ábrela desde ahí.</p>';
     } else {
         caja.innerHTML = '<button type="button" class="hb-activar" onclick="activarNotificacionesHabitos()">🔔 Activar recordatorios</button>';
     }
@@ -378,7 +378,7 @@ function habAviso(texto) {
 async function suscribirNotificacionesPush() {
     try {
         if (habEsIphoneSinInstalar()) {
-            habAviso('En el iPhone, los recordatorios funcionan cuando Aurora está agregada a la pantalla de inicio. Agrégala y ábrela desde ahí.');
+            habAviso('En el iPhone, los recordatorios funcionan cuando Ella Florece está agregada a la pantalla de inicio. Agrégala y ábrela desde ahí.');
             return false;
         }
         if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {
@@ -393,7 +393,7 @@ async function suscribirNotificacionesPush() {
         }
         const permiso = await Notification.requestPermission();
         if (permiso !== 'granted') {
-            habAviso('Para recibir recordatorios, permite las notificaciones de Aurora en los ajustes del teléfono.');
+            habAviso('Para recibir recordatorios, permite las notificaciones de Ella Florece en los ajustes del teléfono.');
             return false;
         }
         const registration = await registrarServiceWorkerPush();

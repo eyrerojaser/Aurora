@@ -75,7 +75,7 @@ function actualizarSaludoPortada() {
         if (sub) sub.textContent = 'Bienvenida a tu espacio';
     } else {
         saludo.textContent = momento;
-        nombre.textContent = 'Aurora';
+        nombre.textContent = 'Ella Florece';
         if (sub) sub.textContent = 'Tu guía de empoderamiento';
     }
 }

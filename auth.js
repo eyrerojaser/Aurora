@@ -165,7 +165,7 @@ function mostrarRegistro() {
         <div class="a2-login-fondo">
             <div class="a2-login-card">
                 <img src="/static/images/cartas-aurora/loto.svg" alt="" class="a2-loto">
-                <h2 class="a2-login-titulo">Aurora</h2>
+                <h2 class="a2-login-titulo">Ella Florece</h2>
                 <p class="a2-login-sub">Tu guía de empoderamiento</p>
                 <p class="a2-login-texto">Un espacio solo para ti,<br>para florecer un día a la vez.</p>
                 <input type="text" id="nombre-registro" class="a2-input" placeholder="Tu nombre" autocomplete="given-name">

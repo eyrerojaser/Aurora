@@ -140,7 +140,7 @@ def enviar_email_bienvenida_journal(nombre, email):
             return False
         
         params = {
-            "from": "Aurora <onboarding@resend.dev>",
+            "from": "Ella Florece <onboarding@resend.dev>",
             "reply_to": [ADMIN_EMAIL],
             "to": [email],
             "subject": f"🎁 {nombre}, aquí está tu Journal de Empoderamiento",
@@ -155,7 +155,7 @@ def enviar_email_bienvenida_journal(nombre, email):
                     <h2 style="color: #8b4789; margin-top: 0; text-align: center;">¡Hola {nombre}! 💖</h2>
                     
                     <p style="color: #6b3f3f; line-height: 1.6; font-size: 16px;">
-                        ¡Bienvenida a la familia Aurora! Estamos tan emocionadas de tenerte aquí.
+                        ¡Bienvenida a la familia Ella Florece! Estamos tan emocionadas de tenerte aquí.
                     </p>
                     
                     <p style="color: #6b3f3f; line-height: 1.6; font-size: 16px;">
@@ -174,7 +174,7 @@ def enviar_email_bienvenida_journal(nombre, email):
                     </div>
                     
                     <p style="color: #6b3f3f; line-height: 1.6; font-size: 16px;">
-                        Aurora estará lista para ti en <strong>Enero 2026</strong>. Serás de las primeras en saberlo.
+                        Ella Florece estará lista para ti en <strong>Enero 2026</strong>. Serás de las primeras en saberlo.
                     </p>
                     
                     <p style="color: #6b3f3f; line-height: 1.6; font-size: 16px;">
@@ -215,9 +215,9 @@ def enviar_notificacion_lista_espera(nombre, email, telefono):
         fecha_actual = datetime.now().strftime('%d/%m/%Y %H:%M')
         
         params = {
-            "from": f"Aurora Lista de Espera <{EMAIL_REMITENTE}>",
+            "from": f"Ella Florece Lista de Espera <{EMAIL_REMITENTE}>",
             "to": [ADMIN_EMAIL],
-            "subject": f"🌸 Nueva inscripción en Aurora: {nombre}",
+            "subject": f"🌸 Nueva inscripción en Ella Florece: {nombre}",
             "html": f"""
             <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #fff5f8 0%, #fffaf5 100%); border-radius: 20px; padding: 30px;">
                 <div style="text-align: center; margin-bottom: 30px;">
@@ -507,10 +507,10 @@ def enviar_codigo_acceso(email, codigo):
             print("⚠️ RESEND_API_KEY no configurada: no se puede enviar el código de acceso")
             return False
         resend.Emails.send({
-            "from": f"Aurora <{EMAIL_REMITENTE}>",
+            "from": f"Ella Florece <{EMAIL_REMITENTE}>",
             "reply_to": [ADMIN_EMAIL],
             "to": [email],
-            "subject": f"🌸 Tu código para entrar a Aurora: {codigo}",
+            "subject": f"🌸 Tu código para entrar a Ella Florece: {codigo}",
             "html": f"""
             <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 480px; margin: 0 auto; background: linear-gradient(135deg, #fff5f8 0%, #fffaf5 100%); border-radius: 20px; padding: 30px; text-align: center;">
                 <h1 style="color: #8b4789; font-size: 28px; margin: 0;">🌸 Aurora</h1>
@@ -1186,7 +1186,7 @@ def respuesta_si_no_es_premium():
     """Devuelve la respuesta 403 si la usuaria de esta sesión no es Premium; None si lo es."""
     if usuario_es_premium(session.get('usuario_id'), get_user_email_from_session()):
         return None
-    return jsonify({'error': 'Esta función es parte de Aurora Premium', 'premium_requerido': True}), 403
+    return jsonify({'error': 'Esta función es parte de Ella Florece Premium', 'premium_requerido': True}), 403
 
 @app.route('/api/premium/status', methods=['GET'])
 def verificar_premium():
@@ -1242,8 +1242,8 @@ def verificar_premium():
 
 # Planes de Aurora Premium. Los precios los fija el servidor (en centavos de dólar).
 PLANES_PREMIUM = {
-    'mensual': {'monto': 699, 'intervalo': 'month', 'descripcion': 'Suscripción mensual a Aurora Premium - Tu Guía de Empoderamiento'},
-    'anual': {'monto': 6999, 'intervalo': 'year', 'descripcion': 'Suscripción anual a Aurora Premium - Tu Guía de Empoderamiento'},
+    'mensual': {'monto': 699, 'intervalo': 'month', 'descripcion': 'Suscripción mensual a Ella Florece Premium - Tu Guía de Empoderamiento'},
+    'anual': {'monto': 6999, 'intervalo': 'year', 'descripcion': 'Suscripción anual a Ella Florece Premium - Tu Guía de Empoderamiento'},
 }
 DIAS_PRUEBA_GRATIS = 7   # solo la primera vez que alguien se suscribe
 
@@ -1277,7 +1277,7 @@ def crear_checkout():
         conn.close()
         
         if existing and existing['estado'] == 'activo':
-            return jsonify({'error': 'Ya tienes Aurora Premium activo'}), 400
+            return jsonify({'error': 'Ya tienes Ella Florece Premium activo'}), 400
         
         customer_id = existing['stripe_customer_id'] if existing else None
         # La prueba gratis es solo para quien nunca ha tenido una suscripción
@@ -1299,7 +1299,7 @@ def crear_checkout():
                 'price_data': {
                     'currency': 'usd',
                     'product_data': {
-                        'name': 'Aurora Premium',
+                        'name': 'Ella Florece Premium',
                         'description': info['descripcion']
                     },
                     'unit_amount': info['monto'],
@@ -1493,7 +1493,7 @@ def ai_coach():
         
         if not premium:
             return jsonify({
-                'respuesta': 'Los mensajes de apoyo de Aurora son una función Premium. 💜'
+                'respuesta': 'Los mensajes de apoyo de Ella Florece son una función Premium. 💜'
             }), 200
         
         data = request.get_json()
