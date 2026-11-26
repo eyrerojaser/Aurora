@@ -8,12 +8,12 @@
 (function () {
     const GOTAS_POR_FLOR = 30;
     const COLORES = [
-        { petalo: '#F28DB2', oscuro: '#D9628F' },   // rosa
-        { petalo: '#C9A0DC', oscuro: '#A274BE' },   // lila
-        { petalo: '#F6B48F', oscuro: '#E08D63' },   // durazno
-        { petalo: '#F4C95D', oscuro: '#D9A838' },   // dorado
-        { petalo: '#E86A92', oscuro: '#C44874' },   // frambuesa
-        { petalo: '#A9C7EC', oscuro: '#7FA6D6' }    // celeste
+        { centro: '#FFF3F6', medio: '#F2A7C0', borde: '#D96A93', oscuro: '#A8456D' },   // rosa
+        { centro: '#FFF5EE', medio: '#F7B79A', borde: '#E58A6A', oscuro: '#B5603F' },   // coral durazno
+        { centro: '#FFFDF6', medio: '#F8E6C8', borde: '#E9C98E', oscuro: '#B89150' },   // crema
+        { centro: '#FBF4FF', medio: '#D9B8EA', borde: '#B07FCF', oscuro: '#7E519D' },   // lila
+        { centro: '#FFF0F2', medio: '#E5707F', borde: '#B83A52', oscuro: '#7E1F33' },   // roja
+        { centro: '#FFF7FA', medio: '#F7C9D8', borde: '#EBA0BA', oscuro: '#C26E8D' }    // rosa pálido
     ];
     const ETAPAS = ['Semillita', 'Brotando', 'Tallito', 'Hojitas', 'Botón', 'Abriéndose', '¡Florecida!'];
     const COMO_REGAR = [
@@ -36,63 +36,89 @@
     const tramo = (p, a, b) => suave((p - a) / (b - a));
 
     // ---------- el dibujo de la flor según cuánto ha crecido (p de 0 a 1) ----------
-    function svgFlor(p, color, dormida, extra) {
+    // ---------- la rosa: crece de semilla a rosa abierta (p de 0 a 1) ----------
+    function rosaSVG(p, c, dormida, mini, uid) {
+        uid = uid || 'r';
+        const s3 = t => t < 0 ? 0 : t > 1 ? 1 : t * t * (3 - 2 * t);
+        const tr = (a, b) => s3((p - a) / (b - a));
         const base = 196;
-        const alto = 14 + 116 * tramo(p, 0.04, 0.55);
+        const alto = 14 + 112 * tr(0.04, 0.55);
         const topY = base - alto;
-        const curva = dormida ? 26 : 6;
-        const tallo = `M100 ${base} C ${100 - curva * 0.3} ${base - alto * 0.4}, ${100 + curva} ${base - alto * 0.75}, ${100 + (dormida ? 18 : 0)} ${topY + (dormida ? 10 : 0)}`;
-        const cabX = 100 + (dormida ? 18 : 0), cabY = topY + (dormida ? 10 : 0);
-        let s = '';
-        // tierra
-        if (extra !== 'mini') s += `<ellipse cx="100" cy="${base + 4}" rx="62" ry="12" fill="#C79B82"/><ellipse cx="100" cy="${base + 1}" rx="54" ry="8" fill="#B58468"/>`;
-        // semilla
-        if (p < 0.12) {
-            const v = 1 - tramo(p, 0.06, 0.12);
-            s += `<ellipse cx="100" cy="${base - 2}" rx="${7 * v + 1}" ry="${4.5 * v + 1}" fill="#8A5A3C" transform="rotate(-18 100 ${base - 2})"/>`;
+        const doblar = dormida ? 1 : 0;
+        const hx = 100 + 16 * doblar, hy = topY + 12 * doblar;
+        let s = `<defs>
+          <linearGradient id="${uid}p" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.centro}"/><stop offset=".45" stop-color="${c.medio}"/><stop offset="1" stop-color="${c.borde}"/></linearGradient>
+          <linearGradient id="${uid}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.medio}"/><stop offset="1" stop-color="${c.borde}"/></linearGradient>
+          <linearGradient id="${uid}q" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c.centro}"/><stop offset=".3" stop-color="${c.medio}"/><stop offset="1" stop-color="${c.borde}"/></linearGradient>
+          <linearGradient id="${uid}h" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A8CFA2"/><stop offset="1" stop-color="#4F8A5C"/></linearGradient>
+          <radialGradient id="${uid}l"><stop offset="0" stop-color="#FFF4D6" stop-opacity=".85"/><stop offset="1" stop-color="#FFF4D6" stop-opacity="0"/></radialGradient>
+        </defs>`;
+        if (!mini) s += `<ellipse cx="100" cy="${base + 4}" rx="60" ry="11" fill="#CFA78E"/><ellipse cx="100" cy="${base + 1}" rx="52" ry="7.5" fill="#B88B70"/>`;
+        if (p < 0.12 && !mini) {
+            const v = 1 - tr(0.06, 0.12);
+            s += `<ellipse cx="100" cy="${base - 2}" rx="${6 * v + 1}" ry="${4 * v + 1}" fill="#8A5A3C" transform="rotate(-18 100 ${base - 2})"/>`;
         }
         if (p >= 0.03) {
-            s += `<path d="${tallo}" stroke="#6FAE6A" stroke-width="${3 + 2 * tramo(p, 0.1, 0.5)}" fill="none" stroke-linecap="round"/>`;
-            // hojas
+            const tallo = `M100 ${base} C 98 ${base - alto * 0.35}, ${103 + 8 * doblar} ${base - alto * 0.7}, ${hx} ${hy + 8}`;
+            s += `<path d="${tallo}" stroke="#5E9468" stroke-width="${2.6 + 1.4 * tr(0.1, 0.5)}" fill="none" stroke-linecap="round"/>`;
+            // espinitas
+            if (p > 0.2) s += `<path d="M99 ${base - alto * 0.22} l-5 -3 l5 -1 Z M101.5 ${base - alto * 0.5} l5 -3 l-4.6 -1.4 Z" fill="#5E9468"/>`;
+            // hojas de rosa (ovaladas, con borde aserrado y nervio)
             const hoja = (y, lado, esc) => {
-                if (esc <= 0.01) return '';
-                const x = 100 + (y - base) * -0.02;
-                const rot = lado * (dormida ? 70 : 40);
-                return `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${esc})"><path d="M0 0 C 8 -10, 28 -10, 34 0 C 28 8, 8 8, 0 0 Z" fill="#7FC07A"/><path d="M2 0 L30 0" stroke="#5E9E5A" stroke-width="1.2"/></g>`;
+                if (esc <= 0.02) return '';
+                return `<g transform="translate(${100 + lado * 1} ${y}) rotate(${lado * (dormida ? 62 : 34)}) scale(${lado * esc} ${esc})">
+                  <path d="M0 0 C 6 -11, 20 -14, 32 -6 L29 -4 L33 -1 L28 1 L31 4 C 20 11, 6 9, 0 0 Z" fill="url(#${uid}h)"/>
+                  <path d="M2 0 C 12 -2, 22 -2, 31 -1" stroke="#3F7A4D" stroke-width="1" fill="none" opacity=".7"/></g>`;
             };
-            s += hoja(base - alto * 0.3, -1, tramo(p, 0.08, 0.2) * 1.0) + hoja(base - alto * 0.3, 1, 0);
-            s += `<g transform="scale(-1 1) translate(-200 0)">${hoja(base - alto * 0.48, -1, tramo(p, 0.18, 0.32) * 0.95)}</g>`;
-            s += hoja(base - alto * 0.66, -1, tramo(p, 0.3, 0.45) * 0.75);
+            s += hoja(base - alto * 0.3, -1, tr(0.08, 0.22));
+            s += hoja(base - alto * 0.46, 1, tr(0.18, 0.34) * 0.9);
+            s += hoja(base - alto * 0.62, -1, tr(0.3, 0.46) * 0.72);
         }
-        // botón y flor
-        const boton = tramo(p, 0.45, 0.6);
-        const abre = dormida ? 0.15 : tramo(p, 0.6, 1);
+        if (p >= 1 && !dormida && !mini) s += `<circle cx="${hx}" cy="${hy - 14}" r="52" fill="url(#${uid}l)" class="jd-aura"/>`;
+        const boton = tr(0.45, 0.6);
+        const o = dormida ? 0.1 : tr(0.6, 1);
         if (boton > 0) {
-            const n = 8;
-            const radio = 4 + 9 * abre;
-            const largo = (12 + 9 * abre) * boton;
-            const ancho = (6 + 4.5 * abre) * boton;
-            let petalos = '';
-            for (let i = 0; i < n; i++) {
-                const ang = (360 / n) * i + (abre < 0.3 ? 0 : 0);
-                const cierre = (1 - abre) * 70 * (i % 2 ? 1 : -1) * 0.25;
-                petalos += `<ellipse cx="0" cy="${-radio - largo * 0.55}" rx="${ancho}" ry="${largo * 0.62}" fill="${i % 2 ? color.oscuro : color.petalo}" transform="rotate(${ang + cierre})" opacity=".97"/>`;
-            }
-            const giro = dormida ? 70 : 0;
-            const sepalos = `<path d="M-9 4 Q0 -10 9 4 Q0 0 -9 4 Z" fill="#6FAE6A" transform="scale(${boton})"/>`;
-            s += `<g transform="translate(${cabX} ${cabY}) rotate(${giro})">`;
-            if (abre < 0.08) {
-                s += `<ellipse cx="0" cy="-8" rx="${7 * boton}" ry="${11 * boton}" fill="${color.oscuro}"/>${sepalos}`;
-            } else {
-                s += `<g transform="scale(${0.55 + 0.45 * abre})">${petalos}</g>`;
-                s += `<circle r="${(5 + 7 * abre)}" fill="#F7D774"/><circle r="${(3 + 4 * abre)}" fill="#E9B949"/>`;
-            }
-            s += '</g>';
-        }
-        if (p >= 1 && !dormida && extra !== 'mini') {
-            s += `<circle cx="${cabX}" cy="${cabY}" r="46" fill="url(#jdLuz)" class="jd-aura"/>`;
+            const esc = (0.42 + 0.58 * boton) * (0.78 + 0.22 * o);
+            s += `<g transform="translate(${hx} ${hy + 6}) rotate(${dormida ? 58 : 0}) scale(${esc.toFixed(3)})">`;
+            // sépalos
+            s += `<path d="M0 -4 C -8 2, -20 2, -27 -6 C -18 -3, -10 -5, -4 -8 Z M0 -4 C 8 2, 20 2, 27 -6 C 18 -3, 10 -5, 4 -8 Z M0 -4 C -3 4, 3 4, 0 -4 Z" fill="#5E9468"/>`;
+            const ab = o;               // apertura
+            // pétalos traseros (se abren hacia los lados)
+            const atras = (lado) => `<g transform="rotate(${lado * (4 + 22 * ab)} ${lado * 4} -6)">
+                <path d="M${lado * 2} -6 C ${lado * 20} -6, ${lado * 30} -24, ${lado * 26} -44 C ${lado * 22} -48, ${lado * 14} -47, ${lado * 10} -44 C ${lado * 6} -46, ${lado * 2} -45, 0 -42 Z" fill="url(#${uid}f)"/>
+                <path d="M${lado * 26} -44 C ${lado * 22} -48, ${lado * 14} -47, ${lado * 10} -44" stroke="${c.centro}" stroke-width="1.4" fill="none" opacity=".7"/></g>`;
+            if (ab > 0.05) s += atras(-1) + atras(1);
+            // copa interior: boca abierta vista desde un poco arriba
+            s += `<ellipse cx="0" cy="-37" rx="${11 + 5 * ab}" ry="${5 + 3 * ab}" fill="${c.oscuro}"/>`;
+            // capullo central en espiral
+            s += `<path d="M-11 -37 C -12 -48, 12 -48, 11 -37 C 9 -30, -9 -30, -11 -37 Z" fill="${c.borde}"/>`;
+            s += `<path d="M-1 -38 C -1 -41.5, 5 -41.5, 5 -38 C 5 -34.5, -6 -34.5, -6 -39 C -6 -44.5, 9 -45.5, 9.5 -38.5" stroke="${c.oscuro}" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".85"/>`;
+            s += `<path d="M-10 -40 C -8 -46, 8 -47, 10 -41" stroke="${c.medio}" stroke-width="1.3" fill="none" opacity=".9"/>`;
+            // fondo del centro para que no quede hueco entre pétalos
+            s += `<path d="M-9 -37 C -10 -22, -6 -8, 0 -6 C 6 -8, 10 -22, 9 -37 C 5 -33, -5 -33, -9 -37 Z" fill="url(#${uid}f)"/>`;
+            s += `<path d="M-4 -32 C -4 -22, -2 -12, 0 -9 C 2 -12, 4 -22, 4 -32" stroke="${c.oscuro}" stroke-width="1" fill="none" opacity=".35"/>`;
+            // pétalos que envuelven (izquierda y derecha)
+            const envuelve = (lado) => `<g transform="rotate(${lado * 10 * ab} ${lado * 2} -8)">
+                <path d="M${lado * 17} -38 C ${lado * 22} -24, ${lado * 14} -9, ${lado * -2} -7 C ${lado * 4} -18, ${lado * 4} -32, ${lado * -1} -41 C ${lado * 6} -44, ${lado * 13} -43, ${lado * 17} -38 Z" fill="url(#${uid}q)"/>
+                <path d="M${lado * -1} -41 C ${lado * 6} -44, ${lado * 13} -43, ${lado * 17} -38" stroke="${c.centro}" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"/></g>`;
+            s += envuelve(-1) + envuelve(1);
+            // pétalos laterales con la punta doblada hacia afuera
+            const lateral = (lado) => `<g transform="rotate(${lado * (2 + 14 * ab)} ${lado * 3} -6)">
+                <path d="M${lado * 23} -30 C ${lado * 31} -24, ${lado * 30} -10, ${lado * 20} -5 C ${lado * 12} -1, ${lado * 4} -2, 0 -6 C ${lado * 10} -9, ${lado * 18} -16, ${lado * 23} -30 Z" fill="url(#${uid}q)"/>
+                <path d="M${lado * 23} -30 C ${lado * 28} -33, ${lado * 33} -31, ${lado * 33} -26 C ${lado * 30} -28, ${lado * 26} -28, ${lado * 23} -30 Z" fill="${c.centro}"/></g>`;
+            if (ab > 0.02) s += lateral(-1) + lateral(1);
+            // pétalo frontal grande (la copa)
+            const fy = -27 + 3 * (1 - ab);
+            s += `<path d="M-21 ${fy} C -21 -8, -9 -3, 0 -3 C 9 -3, 21 -8, 21 ${fy} C 15 ${fy + 4}, 7 ${fy + 1}, 0 ${fy + 4} C -7 ${fy + 1}, -15 ${fy + 4}, -21 ${fy} Z" fill="url(#${uid}q)" transform="scale(${0.7 + 0.3 * ab} 1)"/>`;
+            s += `<path d="M-21 ${fy} C -15 ${fy + 4}, -7 ${fy + 1}, 0 ${fy + 4} C 7 ${fy + 1}, 15 ${fy + 4}, 21 ${fy}" stroke="${c.centro}" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".85" transform="scale(${0.7 + 0.3 * ab} 1)"/>`;
+            s += `<path d="M-8 ${fy + 9} C -6 -10, 4 -8, 9 ${fy + 11}" stroke="${c.borde}" stroke-width="1" fill="none" opacity=".35"/>`;
+            s += `</g>`;
         }
         return s;
+    }
+    let _uid = 0;
+    function svgFlor(p, color, dormida, extra) {
+        return rosaSVG(p, color, dormida, extra === 'mini', 'jr' + (++_uid));
     }
 
     function svgEscena(puntos, dormida) {
