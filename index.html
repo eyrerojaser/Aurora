@@ -53,7 +53,7 @@
     }
   </script>
   <link rel="stylesheet" href="/aurora2.css?v=1">
-  <link rel="stylesheet" href="/aurora3.css?v=11">
+  <link rel="stylesheet" href="/aurora3.css?v=12">
   <link rel="stylesheet" href="/hada.css?v=2">
   <link rel="stylesheet" href="/habitos.css?v=1">
 </head>
@@ -528,17 +528,28 @@
 
     <!-- SECCIÓN CARTAS DE PODER -->
     <section id="seccion-cartas-poder" class="seccion">
-      <div class="bienvenida">
-        <h1>🎴 Cartas de Poder</h1>
-        <p>✨ Voltea una carta y recibe el mensaje que necesitas para brillar hoy</p>
+      <div class="cp-cab">
+        <div class="cp-abanico" aria-hidden="true">
+          <span class="cp-brillo b1">✦</span><span class="cp-brillo b2">✦</span><span class="cp-brillo b3">·</span><span class="cp-brillo b4">✦</span>
+          <div class="cp-mini cp-izq"><img src="/static/images/cartas-aurora/loto.svg" alt=""></div>
+          <div class="cp-mini cp-der"><img src="/static/images/cartas-aurora/loto.svg" alt=""></div>
+          <button type="button" class="cp-mini cp-centro" id="cpCentro" onclick="cpVoltear(true)" aria-label="Voltear la carta">
+            <span class="cp-giro">
+              <span class="cp-cara cp-dorso"><img src="/static/images/cartas-aurora/loto.svg" alt=""></span>
+              <span class="cp-cara cp-frente"><span id="cpFrase"></span></span>
+            </span>
+          </button>
+        </div>
+        <h1>Cartas de Poder</h1>
+        <p>Voltea una carta y recibe el mensaje que necesitas hoy</p>
       </div>
 
       <!-- Test de Estado de Ánimo (Premium) -->
       <div id="test-animo-premium" class="test-animo-container" style="display: none;">
         <div class="test-animo-card">
-          <h3>💭 ¿Cómo te sientes hoy?</h3>
+          <h3>¿Cómo te sientes hoy?</h3>
           <p>Cuéntame tu estado de ánimo y recibirás una carta especial</p>
-          <textarea id="input-animo" placeholder="Ejemplo: Me siento cansada y triste, necesito motivación..." rows="4"></textarea>
+          <textarea id="input-animo" placeholder="Escribe aquí, con tus palabras…" rows="4"></textarea>
           <button onclick="analizarEstadoAnimo()" class="btn-analizar-animo">✨ Recibir mi Carta de Poder</button>
         </div>
       </div>
@@ -1440,7 +1451,7 @@
   <script src="premium.js?v=6"></script>
   <script src="habitos-calendario.js?v=12"></script>
   <script src="aurora2.js?v=3"></script>
-  <script src="aurora3.js?v=4"></script>
+  <script src="aurora3.js?v=5"></script>
   <script src="hada.js?v=2"></script>
   <!-- Funciones de limpieza (inline para evitar caché) -->
   <script>

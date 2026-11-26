@@ -463,3 +463,54 @@ body.a3-es-premium .a3-premium::after { display: none; }
 @media (max-width: 760px) {
     #diario-texto-entrada { height: 300px; }
 }
+
+/* =====================================================================
+   CARTAS DE PODER · encabezado con un abanico de cartas vivo
+   ===================================================================== */
+#seccion-cartas-poder .cp-cab { text-align: center; padding: 0.4rem 1rem 1.2rem; }
+#seccion-cartas-poder .cp-cab h1 { margin: 0.4rem 0 0; font: 500 1.9rem/1.15 var(--a2-serif); color: #6E3A6C; }
+#seccion-cartas-poder .cp-cab p { margin: 6px auto 0; max-width: 320px; font: italic 0.95rem/1.4 var(--a2-serif); color: var(--a2-suave); }
+.cp-abanico { position: relative; height: 190px; max-width: 320px; margin: 0 auto; }
+.cp-mini {
+    position: absolute; left: 50%; top: 18px; width: 104px; height: 150px; margin-left: -52px;
+    border-radius: 14px; border: 0; padding: 0;
+    background: linear-gradient(150deg, #8B4789 0%, #A8567F 55%, #C7768F 100%);
+    box-shadow: 0 10px 24px rgba(110, 58, 108, .28), inset 0 0 0 4px rgba(255,255,255,.18), inset 0 0 0 5px rgba(217,174,82,.55);
+    display: flex; align-items: center; justify-content: center;
+}
+.cp-mini img { width: 50px; height: 50px; filter: brightness(0) invert(1); opacity: .9; }
+.cp-izq { transform: translateX(-62px) rotate(-14deg); animation: cpFlotaIzq 5s ease-in-out infinite; }
+.cp-der { transform: translateX(62px) rotate(14deg); animation: cpFlotaDer 5.4s ease-in-out infinite; }
+@keyframes cpFlotaIzq { 0%, 100% { transform: translateX(-62px) translateY(0) rotate(-14deg); } 50% { transform: translateX(-66px) translateY(-6px) rotate(-16deg); } }
+@keyframes cpFlotaDer { 0%, 100% { transform: translateX(62px) translateY(0) rotate(14deg); } 50% { transform: translateX(66px) translateY(-6px) rotate(16deg); } }
+.cp-centro {
+    z-index: 2; top: 6px; width: 120px; height: 172px; margin-left: -60px;
+    background: none; box-shadow: none; cursor: pointer; perspective: 900px;
+    animation: cpFlota 4.2s ease-in-out infinite; -webkit-tap-highlight-color: transparent;
+}
+@keyframes cpFlota { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.cp-giro { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .9s cubic-bezier(.3,.7,.3,1); }
+.cp-centro.volteada .cp-giro { transform: rotateY(180deg); }
+.cp-cara {
+    position: absolute; inset: 0; border-radius: 16px; display: flex; align-items: center; justify-content: center;
+    -webkit-backface-visibility: hidden; backface-visibility: hidden;
+}
+.cp-dorso {
+    background: linear-gradient(150deg, #8B4789 0%, #A8567F 55%, #C7768F 100%);
+    box-shadow: 0 14px 30px rgba(110, 58, 108, .35), inset 0 0 0 5px rgba(255,255,255,.18), inset 0 0 0 6px rgba(217,174,82,.7);
+}
+.cp-dorso img { width: 62px; height: 62px; filter: brightness(0) invert(1); }
+.cp-dorso::after { content: ''; position: absolute; inset: 0; border-radius: 16px; background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.35) 45%, transparent 60%); background-size: 250% 100%; animation: cpBrilloCarta 3.6s ease-in-out infinite; }
+@keyframes cpBrilloCarta { 0% { background-position: 120% 0; } 60%, 100% { background-position: -120% 0; } }
+.cp-frente {
+    transform: rotateY(180deg); padding: 14px 10px; box-sizing: border-box;
+    background: linear-gradient(160deg, #FFF8FB 0%, #FBE6EF 100%);
+    box-shadow: 0 14px 30px rgba(110, 58, 108, .25), inset 0 0 0 1.5px #E9B8CF, inset 0 0 0 5px #fff, inset 0 0 0 6px rgba(217,174,82,.6);
+    font: italic 500 0.86rem/1.35 var(--a2-serif); color: #6E3A6C;
+}
+.cp-frente strong { font-weight: 600; color: #8B4789; }
+.cp-brillo { position: absolute; color: #D9AE52; font-size: 14px; animation: cpTitila 2.6s ease-in-out infinite; text-shadow: 0 0 6px rgba(255, 230, 160, .9); }
+.cp-brillo.b1 { left: 8%; top: 22%; } .cp-brillo.b2 { right: 10%; top: 12%; animation-delay: .8s; font-size: 18px; }
+.cp-brillo.b3 { left: 20%; bottom: 6%; animation-delay: 1.4s; font-size: 22px; } .cp-brillo.b4 { right: 18%; bottom: 14%; animation-delay: 2s; font-size: 11px; }
+@keyframes cpTitila { 0%, 100% { opacity: .2; transform: scale(.7); } 50% { opacity: 1; transform: scale(1.15); } }
+@media (prefers-reduced-motion: reduce) { .cp-abanico *, .cp-abanico { animation: none !important; } }

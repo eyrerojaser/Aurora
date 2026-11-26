@@ -240,3 +240,30 @@ if (typeof actualizarUIPremium === 'function') {
 document.addEventListener('DOMContentLoaded', () => {
     if (a3Logueada()) mostrarSeccion('hoy');
 });
+
+// ---------- Cartas de Poder: la carta del centro del abanico se voltea sola y muestra frases ----------
+let cpTimer = null, cpUltima = -1;
+function cpFraseNueva() {
+    const lista = (typeof FRASES_PODER_BASICAS !== 'undefined' ? FRASES_PODER_BASICAS : []).concat(typeof FRASES_PODER_PREMIUM !== 'undefined' ? FRASES_PODER_PREMIUM : []);
+    if (!lista.length) return 'Hoy puedes elegirte';
+    let i; do { i = Math.floor(Math.random() * lista.length); } while (i === cpUltima && lista.length > 1);
+    cpUltima = i;
+    return lista[i];
+}
+function cpVoltear(tocada) {
+    const c = document.getElementById('cpCentro');
+    if (!c) return;
+    if (c.classList.contains('volteada')) {
+        c.classList.remove('volteada');                 // vuelve al dorso y, si la tocaron, enseña otra frase
+        if (tocada) setTimeout(() => cpVoltear(false), 650);
+    } else {
+        document.getElementById('cpFrase').innerHTML = a2Resaltar(cpFraseNueva());
+        c.classList.add('volteada');
+    }
+    clearInterval(cpTimer);
+    cpTimer = setInterval(() => { if (document.getElementById('seccion-cartas-poder')?.classList.contains('activa')) cpVoltear(false); }, 5200);
+}
+window.addEventListener('seccion-changed', () => setTimeout(() => {
+    if (document.getElementById('seccion-cartas-poder')?.classList.contains('activa')) setTimeout(() => cpVoltear(false), 900);
+    else clearInterval(cpTimer);
+}, 40));
