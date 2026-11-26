@@ -361,6 +361,13 @@ CREATE TABLE IF NOT EXISTS habitos_calendario (
     horarios_habitos JSONB,
     UNIQUE (usuario_id, fecha)
 );
+CREATE TABLE IF NOT EXISTS jardin_usuario (
+    usuario_id INTEGER PRIMARY KEY REFERENCES usuarios(id) ON DELETE CASCADE,
+    puntos INTEGER NOT NULL DEFAULT 0,
+    registro JSONB NOT NULL DEFAULT '{}'::jsonb,
+    ultima_fecha VARCHAR(10),
+    actualizado TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 CREATE TABLE IF NOT EXISTS habitos_config (
     usuario_id INTEGER PRIMARY KEY REFERENCES usuarios(id) ON DELETE CASCADE,
     habitos JSONB NOT NULL DEFAULT '[]'::jsonb,
@@ -711,6 +718,7 @@ def eliminar_todos_datos():
         cur.execute('DELETE FROM habitos_calendario WHERE usuario_id = %s', (usuario_id,))
         cur.execute('DELETE FROM push_subscriptions WHERE usuario_id = %s', (usuario_id,))
         cur.execute('DELETE FROM habitos_config WHERE usuario_id = %s', (usuario_id,))
+        cur.execute('DELETE FROM jardin_usuario WHERE usuario_id = %s', (usuario_id,))
         cur.execute('DELETE FROM metas WHERE usuario_email = %s', (usuario_email,))
         cur.execute('DELETE FROM vision_board WHERE usuario_id = %s', (usuario_id,))
         cur.execute('DELETE FROM collage_elementos WHERE usuario_id = %s', (usuario_id,))
@@ -1696,6 +1704,73 @@ def guardar_habitos_calendario():
         
     except Exception as e:
         print(f"Error guardar hábitos calendario: {e}")
+        return jsonify({'error': 'Error en el servidor'}), 500
+
+# ============ MI JARDÍN: la flor crece con cada cosa que la usuaria hace por ella ============
+# Gotas que da cada acción y cuántas veces al día cuenta
+JARDIN_ACCIONES = {
+    'visita': (1, 1), 'animo': (1, 1), 'carta': (1, 1), 'reto': (2, 1),
+    'diario': (3, 1), 'habito': (1, 6), 'calma': (1, 2),
+}
+
+def _jardin_fila(cur, usuario_id):
+    cur.execute('SELECT puntos, registro, ultima_fecha FROM jardin_usuario WHERE usuario_id = %s', (usuario_id,))
+    return cur.fetchone()
+
+@app.route('/api/jardin', methods=['GET'])
+def obtener_jardin():
+    usuario_id = session.get('usuario_id')
+    if not usuario_id:
+        return jsonify({'error': 'No autenticado'}), 401
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        fila = _jardin_fila(cur, usuario_id)
+        cur.close(); conn.close()
+        if not fila:
+            return jsonify({'puntos': 0, 'ultima_fecha': None, 'hoy': {}}), 200
+        fecha = request.args.get('fecha', '')
+        return jsonify({'puntos': fila['puntos'], 'ultima_fecha': fila['ultima_fecha'],
+                        'hoy': (fila['registro'] or {}).get(fecha, {})}), 200
+    except Exception as e:
+        print(f'Error obtener jardín: {e}')
+        return jsonify({'error': 'Error en el servidor'}), 500
+
+@app.route('/api/jardin/regar', methods=['POST'])
+@limiter.limit('120 per hour')
+def regar_jardin():
+    usuario_id = session.get('usuario_id')
+    if not usuario_id:
+        return jsonify({'error': 'No autenticado'}), 401
+    datos = request.get_json(silent=True) or {}
+    accion = str(datos.get('accion', ''))
+    fecha = str(datos.get('fecha', ''))
+    if accion not in JARDIN_ACCIONES or not re.fullmatch(r'\d{4}-\d{2}-\d{2}', fecha):
+        return jsonify({'error': 'Acción no válida'}), 400
+    gotas, maximo = JARDIN_ACCIONES[accion]
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute('INSERT INTO jardin_usuario (usuario_id) VALUES (%s) ON CONFLICT (usuario_id) DO NOTHING', (usuario_id,))
+        cur.execute('SELECT puntos, registro FROM jardin_usuario WHERE usuario_id = %s FOR UPDATE', (usuario_id,))
+        fila = cur.fetchone()
+        registro = dict(fila['registro'] or {})
+        dia = dict(registro.get(fecha, {}))
+        ganadas = 0
+        if dia.get(accion, 0) < maximo:
+            dia[accion] = dia.get(accion, 0) + 1
+            ganadas = gotas
+        registro[fecha] = dia
+        # solo se guardan los últimos 60 días del registro
+        for f in sorted(registro)[:-60]:
+            registro.pop(f, None)
+        puntos = fila['puntos'] + ganadas
+        cur.execute('UPDATE jardin_usuario SET puntos = %s, registro = %s, ultima_fecha = %s, actualizado = CURRENT_TIMESTAMP WHERE usuario_id = %s',
+                    (puntos, json.dumps(registro), fecha, usuario_id))
+        conn.commit(); cur.close(); conn.close()
+        return jsonify({'puntos': puntos, 'ganadas': ganadas}), 200
+    except Exception as e:
+        print(f'Error regar jardín: {e}')
         return jsonify({'error': 'Error en el servidor'}), 500
 
 # ============ MIS HÁBITOS: lista propia de cada usuaria y recordatorios ============

@@ -182,6 +182,7 @@
 
     // ---- conexión con la app ----
     window.hadaMostrar = aparecer;
+    window.hadaDecir = function (texto) { if (zona && !zona.classList.contains('escondida')) decir(texto, 6500); };
     window.hadaOcultar = esconder;
     window.hadaCambiarVisible = function () {
         const ahora = !oculta();

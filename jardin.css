@@ -1,0 +1,63 @@
+/* =====================================================================
+   MI JARDÍN (pantalla Hoy)
+   ===================================================================== */
+.jd-tarjeta {
+    position: relative; margin-bottom: 0.9rem; border-radius: 24px; overflow: hidden;
+    background: linear-gradient(180deg, #FDEFF5 0%, #FBF5EF 62%, #F4EADF 100%);
+    border: 1px solid #F3DDE7; box-shadow: 0 8px 24px rgba(139, 71, 137, .10);
+}
+.jd-escena {
+    position: relative; display: block; width: 100%; height: 190px; padding: 0; border: 0; background: none; cursor: pointer;
+    -webkit-tap-highlight-color: transparent; overflow: hidden;
+}
+.jd-escena::before {   /* sol suave detrás */
+    content: ''; position: absolute; left: 50%; top: 18px; width: 150px; height: 150px; margin-left: -75px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 233, 196, .9) 0%, rgba(255, 233, 196, 0) 70%);
+}
+.jd-svg { position: relative; display: block; height: 100%; margin: 0 auto; overflow: visible; }
+
+/* la planta se mece con el viento */
+.jd-planta { transform-box: view-box; transform-origin: 100px 198px; animation: jdMece 4.6s ease-in-out infinite; }
+@keyframes jdMece { 0%, 100% { transform: rotate(-2.2deg); } 50% { transform: rotate(2.2deg); } }
+.jd-planta.dormida { animation-duration: 8s; filter: saturate(.75); }
+.jd-planta.crece { animation: jdCrece .9s cubic-bezier(.3, 1.5, .5, 1), jdMece 4.6s ease-in-out .9s infinite; }
+@keyframes jdCrece { 0% { transform: scale(.94, .9); } 55% { transform: scale(1.04, 1.07); } 100% { transform: scale(1); } }
+.jd-aura { animation: jdAura 2.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes jdAura { 0%, 100% { opacity: .5; transform: scale(.85); } 50% { opacity: 1; transform: scale(1.1); } }
+
+/* gotas que caen al regar */
+.jd-gota { position: absolute; top: -10px; font-size: 18px; animation: jdCae 1.1s ease-in forwards; pointer-events: none; }
+@keyframes jdCae { 0% { transform: translateY(0) scale(.8); opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { transform: translateY(120px) scale(.5); opacity: 0; } }
+
+.jd-info { padding: 0 16px 12px; }
+.jd-linea { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.jd-linea b { font: 500 1.05rem var(--a2-serif, 'Lora', Georgia, serif); color: #6E3A6C; }
+.jd-linea span { font-size: 0.78rem; color: #9A7A8C; }
+.jd-barra { margin-top: 6px; height: 8px; border-radius: 999px; background: #F1DFE8; overflow: hidden; }
+.jd-barra i { display: block; height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, #8DC98A, #F28DB2); transition: width 1s cubic-bezier(.3, .8, .3, 1); }
+.jd-info small { display: block; margin-top: 5px; font-size: 0.74rem; color: #A07A90; min-height: 1em; }
+
+/* cómo regar (se abre al tocar la flor) */
+.jd-como { max-height: 0; overflow: hidden; transition: max-height .4s ease; background: rgba(255, 255, 255, .7); }
+.jd-como.abierto { max-height: 320px; }
+.jd-como p { margin: 0; padding: 10px 16px 4px; font: italic 0.88rem var(--a2-serif, 'Lora', Georgia, serif); color: #6E3A6C; }
+.jd-como ul { list-style: none; margin: 0; padding: 0 16px 12px; }
+.jd-como li { display: flex; justify-content: space-between; gap: 8px; padding: 5px 0; border-bottom: 1px dashed #EBD6E0; font-size: 0.84rem; color: #5A3D52; }
+.jd-como li:last-child { border-bottom: 0; }
+.jd-como li b { font-weight: 400; font-size: 0.75rem; letter-spacing: -2px; }
+
+/* aviso cuando riegas desde otra sección */
+.jd-aviso {
+    position: fixed; left: 50%; bottom: calc(86px + env(safe-area-inset-bottom)); transform: translate(-50%, 10px); z-index: 950;
+    background: #fff; color: #5A3D52; border: 1px solid #F0D6E2; border-radius: 999px; padding: 8px 16px;
+    font: 600 0.88rem system-ui, -apple-system, sans-serif; box-shadow: 0 8px 20px rgba(139, 71, 137, .18);
+    opacity: 0; animation: jdAvisoEntra .4s ease forwards; pointer-events: none;
+}
+.jd-aviso span { display: inline-block; animation: jdGotita 1s ease-in-out infinite; }
+.jd-aviso.fuera { animation: jdAvisoSale .5s ease forwards; }
+@keyframes jdAvisoEntra { to { opacity: 1; transform: translate(-50%, 0); } }
+@keyframes jdAvisoSale { from { opacity: 1; transform: translate(-50%, 0); } to { opacity: 0; transform: translate(-50%, 8px); } }
+@keyframes jdGotita { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+
+@media (max-height: 700px) { .jd-escena { height: 160px; } }
+@media (prefers-reduced-motion: reduce) { .jd-planta, .jd-aura, .jd-gota { animation: none !important; } }
